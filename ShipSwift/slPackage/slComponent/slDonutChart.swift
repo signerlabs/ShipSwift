@@ -10,6 +10,34 @@ import SwiftUI
 import Charts
 
 struct slDonutChart: View {
+    // MARK: - 内置数据模型
+
+    /// 分类模型
+    struct Category: Identifiable, Hashable {
+        let id: UUID
+        let name: String
+
+        init(id: UUID = UUID(), name: String) {
+            self.id = id
+            self.name = name
+        }
+    }
+
+    /// 数据项模型
+    struct Subject: Identifiable {
+        let id: UUID
+        let name: String
+        let category: Category?
+
+        init(id: UUID = UUID(), name: String, category: Category? = nil) {
+            self.id = id
+            self.name = name
+            self.category = category
+        }
+    }
+
+    // MARK: - Properties
+
     let subjects: [Subject]
     @Binding var selectedCategory: String?
 
@@ -129,6 +157,24 @@ struct slDonutChart: View {
 
 #Preview {
     @Previewable @State var selectedCategory: String? = nil
-    slDonutChart(subjects: TripTemplates.previewSubjects, selectedCategory: $selectedCategory)
+
+    // 示例数据
+    let workCategory = slDonutChart.Category(name: "Work")
+    let personalCategory = slDonutChart.Category(name: "Personal")
+    let healthCategory = slDonutChart.Category(name: "Health")
+
+    let sampleSubjects: [slDonutChart.Subject] = [
+        .init(name: "Meeting", category: workCategory),
+        .init(name: "Report", category: workCategory),
+        .init(name: "Email", category: workCategory),
+        .init(name: "Shopping", category: personalCategory),
+        .init(name: "Reading", category: personalCategory),
+        .init(name: "Exercise", category: healthCategory),
+        .init(name: "Meditation", category: healthCategory),
+        .init(name: "Running", category: healthCategory),
+        .init(name: "Uncategorized Task", category: nil),
+    ]
+
+    slDonutChart(subjects: sampleSubjects, selectedCategory: $selectedCategory)
         .padding()
 }

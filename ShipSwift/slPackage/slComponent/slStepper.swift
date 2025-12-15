@@ -16,7 +16,6 @@ struct slStepper: View {
                 quantity -= 1
             } label: {
                 Image(systemName: "chevron.backward")
-                    .foregroundStyle(.accent.opacity(0.8))
                     .imageScale(.large)
             }
             .disabled(quantity <= 0)
@@ -30,7 +29,6 @@ struct slStepper: View {
                 quantity += 1
             } label: {
                 Image(systemName: "chevron.forward")
-                    .foregroundStyle(.accent.opacity(0.8))
                     .imageScale(.large)
             }
             .buttonStyle(.plain)

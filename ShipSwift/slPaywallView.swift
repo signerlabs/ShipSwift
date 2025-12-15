@@ -19,7 +19,6 @@ struct slPaywallView: View {
             SubscriptionStoreView(productIDs: productIDs) {
                 paywallContent
             }
-            .background(.customBg)
             .storeButton(.visible, for: .policies)
             .storeButton(.visible, for: .restorePurchases)
             .storeButton(.visible, for: .cancellation)
@@ -57,7 +56,6 @@ struct slPaywallView: View {
                 ForEach(slConstants.Paywall.features, id: \.id) { feature in
                     HStack {
                         Image(systemName: feature.icon)
-                            .foregroundStyle(.customGreen)
                             .imageScale(.small)
                         Text(feature.text)
                             .font(.subheadline)

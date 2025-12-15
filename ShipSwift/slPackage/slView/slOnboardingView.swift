@@ -48,13 +48,11 @@ struct slOnboardingView: View {
             .buttonStyle(.slPrimary)
             .padding()
         }
-        .background(.customBg)
     }
     
     private func onboardingPage(title: LocalizedStringResource, description: LocalizedStringResource, image: ImageResource) -> some View {
         VStack(spacing: 20) {
             Text(title)
-                .foregroundStyle(.accent)
                 .font(.largeTitle)
                 .fontWeight(.bold)
             

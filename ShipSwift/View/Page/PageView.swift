@@ -1,5 +1,5 @@
 //
-//  AnimationView.swift
+//  PageView.swift
 //  ShipSwift
 //
 //  Created by Wei on 2025/12/15.
@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct AnimationView: View {
+struct PageView: View {
     var body: some View {
-        Text("Hello, Animation!")
+        Text("Hello, Page!")
     }
 }
 
 #Preview {
-    AnimationView()
+    PageView()
 }

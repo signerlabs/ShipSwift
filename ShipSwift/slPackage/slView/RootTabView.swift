@@ -8,24 +8,20 @@
 import SwiftUI
 
 struct RootTabView: View {
-    @State private var selectedTab = "home"
+    @State private var selectedTab = "page"
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Tab("Home", systemImage: "house", value: "home") {
-                HomeView()
+            Tab("Page", systemImage: "house", value: "page") {
+                PageView()
             }
             
-            Tab("Outfit", systemImage: "tshirt", value: "outfit") {
-                OutfitView()
+            Tab("AnimationView", systemImage: "tshirt", value: "animation") {
+                AnimationView()
             }
             
-            Tab("Inventory", systemImage: "archivebox", value: "inventory") {
-                InventoryView()
-            }
-            
-            Tab("Settings", systemImage: "gearshape.fill", value: "settings") {
-                SettingsView()
+            Tab("Setting", systemImage: "gearshape.fill", value: "setting") {
+                SettingView()
             }
         }
         .sensoryFeedback(.increase, trigger: selectedTab)

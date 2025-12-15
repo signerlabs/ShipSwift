@@ -63,10 +63,6 @@ extension View {
 #Preview("Info") {
     RootTabView()
         .slAlert()
-        .environment(WeatherDataService.shared)
-        .environment(slUserManager())
-        .environment(slStoreManager())
-        .modelContainer(TripTemplates.createPreviewContainer())
         .onAppear {
             slAlertManager.shared.show(.info, message: "这是一条提示信息")
         }
@@ -75,10 +71,6 @@ extension View {
 #Preview("Success") {
     RootTabView()
         .slAlert()
-        .environment(WeatherDataService.shared)
-        .environment(slUserManager())
-        .environment(slStoreManager())
-        .modelContainer(TripTemplates.createPreviewContainer())
         .onAppear {
             slAlertManager.shared.show(.success, message: "保存成功")
         }
@@ -87,10 +79,7 @@ extension View {
 #Preview("Warning") {
     RootTabView()
         .slAlert()
-        .environment(WeatherDataService.shared)
-        .environment(slUserManager())
         .environment(slStoreManager())
-        .modelContainer(TripTemplates.createPreviewContainer())
         .onAppear {
             slAlertManager.shared.show(.warning, message: "请先选择一个选项")
         }
@@ -99,10 +88,6 @@ extension View {
 #Preview("Error") {
     RootTabView()
         .slAlert()
-        .environment(WeatherDataService.shared)
-        .environment(slUserManager())
-        .environment(slStoreManager())
-        .modelContainer(TripTemplates.createPreviewContainer())
         .onAppear {
             slAlertManager.shared.show(.error, message: "操作失败，请重试")
         }
