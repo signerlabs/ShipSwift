@@ -10,13 +10,18 @@ import SpriteKit
 
 /// 带轨道动画的 Logo 展示组件
 /// - Parameters:
-///   - logo: 中心 Logo 图片名称
 ///   - images: 轨道上展示的图片数组（最多 8 张）
-struct slLogoOrbit: View {
-    let logo: String
+///   - center: 中心位置显示的自定义视图
+struct slLogoOrbit<Center: View>: View {
     let images: [String]
+    let center: Center
 
     private let baseSize: CGFloat = 300  // 基准设计尺寸
+
+    init(images: [String], @ViewBuilder center: () -> Center) {
+        self.images = images
+        self.center = center()
+    }
 
     var body: some View {
         GeometryReader { geo in
@@ -26,11 +31,8 @@ struct slLogoOrbit: View {
             ZStack {
                 AnimatedLogoOrbit(images: images, scale: scale)
 
-                Image(logo)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 60 * scale, height: 60 * scale)
-                    .offset(y: -5 * scale)
+                center
+                    .scaleEffect(scale)
             }
             .frame(width: size, height: size)
         }
@@ -295,14 +297,22 @@ private extension UIColor {
 #Preview {
     VStack {
         slLogoOrbit(
-            logo: "Fullpack Transparent",
             images: ["airpods", "business-shoes", "sunglasses", "tshirt", "wide-brimmed-hat", "golf-gloves", "suit", "golf-gloves"]
-        )
+        ) {
+            Image("Fullpack Transparent")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 60, height: 60)
+                .offset(y: -5)
+        }
 
         slLogoOrbit(
-            logo: "Fullpack Transparent",
             images: ["airpods", "business-shoes", "sunglasses", "tshirt", "wide-brimmed-hat", "golf-gloves", "suit", "golf-gloves"]
-        )
+        ) {
+            Circle()
+                .fill(.blue)
+                .frame(width: 50, height: 50)
+        }
         .frame(width: 150)
     }
 }
