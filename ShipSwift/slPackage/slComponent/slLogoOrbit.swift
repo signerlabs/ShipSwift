@@ -16,23 +16,32 @@ struct slLogoOrbit: View {
     let logo: String
     let images: [String]
 
-    var body: some View {
-        ZStack {
-            AnimatedLogoOrbit(images: images)
+    private let baseSize: CGFloat = 300  // 基准设计尺寸
 
-            Image(logo)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 60, height: 60)
-                .offset(y: -5)
+    var body: some View {
+        GeometryReader { geo in
+            let size = min(geo.size.width, geo.size.height)
+            let scale = size / baseSize
+
+            ZStack {
+                AnimatedLogoOrbit(images: images, scale: scale)
+
+                Image(logo)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 60 * scale, height: 60 * scale)
+                    .offset(y: -5 * scale)
+            }
+            .frame(width: size, height: size)
         }
-        .ignoresSafeArea()
-        .padding()
+        .aspectRatio(1, contentMode: .fit)
     }
 }
 
 struct AnimatedLogoOrbit: View {
     let images: [String]
+    let scale: CGFloat
+
     @State private var scene: AnimatedLogoOrbitScene?
 
     var body: some View {
@@ -44,14 +53,19 @@ struct AnimatedLogoOrbit: View {
         .onAppear {
             let newScene = AnimatedLogoOrbitScene()
             newScene.images = images
+            newScene.scaleFactor = scale
             newScene.scaleMode = .resizeFill
             scene = newScene
+        }
+        .onChange(of: scale) { _, newScale in
+            scene?.updateScale(newScale)
         }
     }
 }
 
 class AnimatedLogoOrbitScene: SKScene {
     var images: [String] = []
+    var scaleFactor: CGFloat = 1.0
 
     private let dotsPerCircle = 23
     private let numCircles = 4
@@ -77,9 +91,15 @@ class AnimatedLogoOrbitScene: SKScene {
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
 
         addChild(container)
+        container.setScale(scaleFactor)
         buildCircles()
         startRotation()
         animateNextIcon()
+    }
+
+    func updateScale(_ newScale: CGFloat) {
+        scaleFactor = newScale
+        container.setScale(newScale)
     }
 
     private func buildCircles() {
@@ -172,7 +192,7 @@ class AnimatedLogoOrbitScene: SKScene {
             scale.timingMode = .easeIn
             dot.run(scale)
 
-            // 图片延迟淡出 (用 SKAction sequence 避免 async 问题)
+            // 图片延迟淡出
             if let cropNode = dot.childNode(withName: "sprite") as? SKCropNode {
                 cropNode.run(.sequence([
                     .wait(forDuration: 0.35),
@@ -273,8 +293,16 @@ private extension UIColor {
 }
 
 #Preview {
-    slLogoOrbit(
-        logo: "Fullpack Transparent",
-        images: ["airpods", "business-shoes", "sunglasses", "tshirt", "wide-brimmed-hat", "golf-gloves", "suit", "golf-gloves"]
-    )
+    VStack {
+        slLogoOrbit(
+            logo: "Fullpack Transparent",
+            images: ["airpods", "business-shoes", "sunglasses", "tshirt", "wide-brimmed-hat", "golf-gloves", "suit", "golf-gloves"]
+        )
+
+        slLogoOrbit(
+            logo: "Fullpack Transparent",
+            images: ["airpods", "business-shoes", "sunglasses", "tshirt", "wide-brimmed-hat", "golf-gloves", "suit", "golf-gloves"]
+        )
+        .frame(width: 150)
+    }
 }
