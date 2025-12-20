@@ -66,6 +66,7 @@ class AnimatedLogoOrbitScene: SKScene {
     var outerCircleDots: [SKShapeNode] = []
     var nextIconIndex = 0
     var originalPositions: [CGPoint] = []
+    var showingImageDot: SKShapeNode? = nil  // 正在显示图片的dot
     
     let container = SKNode()
     
@@ -132,7 +133,7 @@ class AnimatedLogoOrbitScene: SKScene {
         // 创建圆形遮罩 - 使用更大的尺寸以适应放大动画
         let maskRadius: CGFloat = 40  // 增大到40，放大4倍后是160
         let mask = SKShapeNode(circleOfRadius: maskRadius)
-        mask.fillColor = .white
+        mask.fillColor = SKColor(white: 1, alpha: 1)  // 遮罩需要不透明颜色来定义形状，但不会显示
         mask.strokeColor = .clear
         
         // 创建裁剪节点
@@ -172,9 +173,13 @@ class AnimatedLogoOrbitScene: SKScene {
         let scaleIcon = SKAction.run {
             let a1 = SKAction.scale(to: 4.0 * 1.1, duration: 0.1)
             let a2 = SKAction.scale(to: 4.0, duration: 0.1)
-            
+
             dot.run(.sequence([a1, a2]))
-            
+
+            // 标记正在显示图片的dot，并隐藏背景颜色（带淡出效果）
+            self.showingImageDot = dot
+            dot.fillColor = dot.fillColor.withAlphaComponent(0)
+
             if let cropNode = dot.childNode(withName: "sprite") as? SKCropNode {
                 cropNode.alpha = 1
             }
@@ -186,12 +191,37 @@ class AnimatedLogoOrbitScene: SKScene {
             let scale = SKAction.scale(to: 1.0, duration: 0.6)
             scale.timingFunction = SpriteKitTimingFunctions.easeInQuad
             dot.run(scale)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+
+            let bgFadeDuration = 0.25
+            let imageFadeDelay = 0.15  // 图片延迟淡出，让背景先淡入一部分
+
+            // dot背景提前淡入
+            let steps = 10
+            let stepDuration = bgFadeDuration / Double(steps)
+            for i in 1...steps {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2 + stepDuration * Double(i)) {
+                    if self.showingImageDot === dot {
+                        let worldPos = self.container.convert(dot.position, to: self)
+                        var angle = atan2(worldPos.y, worldPos.x)
+                        if angle < 0 { angle += 2 * .pi }
+                        let targetColor = self.getColor(for: angle)
+                        let alpha = CGFloat(i) / CGFloat(steps)
+                        dot.fillColor = targetColor.withAlphaComponent(alpha)
+                    }
+                }
+            }
+
+            // 图片延迟淡出
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2 + imageFadeDelay) {
                 if let cropNode = dot.childNode(withName: "sprite") as? SKCropNode {
-                    let fade = SKAction.fadeAlpha(to: 0, duration: 0.1)
+                    let fade = SKAction.fadeAlpha(to: 0, duration: 0.15)
                     cropNode.run(fade)
                 }
+            }
+
+            // 完成后清除标记
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2 + bgFadeDuration) {
+                self.showingImageDot = nil
             }
         }
         
@@ -241,17 +271,22 @@ class AnimatedLogoOrbitScene: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         for case let dot as SKShapeNode in container.children {
+            // 跳过正在显示图片的dot
+            if dot === showingImageDot {
+                continue
+            }
+
             let worldPos = container.convert(dot.position, to: self)
             var angle = atan2(worldPos.y, worldPos.x)
-            
+
             // normalise from -pi...pi to 0...2pi
             if angle < 0 {
                 angle += 2 * .pi
             }
-            
+
             dot.fillColor = getColor(for: angle)
         }
-        
+
         let dot = outerCircleDots[nextIconIndex]
         dot.zRotation = -container.zRotation
     }
