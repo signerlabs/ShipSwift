@@ -23,20 +23,20 @@ struct slButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
     
     let variant: Variant
-    var showBorder: Bool = true
+    var showBorder: Bool = false
     var cornerRadius: CGFloat = 16
     
     private var backgroundColor: Color {
         switch variant {
-        case .primary: .primary
-        case .secondary: .clear
+        case .primary: .accent
+        case .secondary: .accent.opacity(0.1)
         }
     }
     
     private var foregroundColor: Color {
         switch variant {
         case .primary: .white
-        case .secondary: .secondary.opacity(0.8)
+        case .secondary: .primary.opacity(0.8)
         }
     }
     
