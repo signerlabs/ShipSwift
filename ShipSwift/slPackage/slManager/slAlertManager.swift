@@ -1,10 +1,56 @@
 //
 //  slAlertManager.swift
-//  full-pack
+//  ShipSwift
 //
 //  Created by Wei on 2025/12/10.
 //  Copyright © 2025 Signer Labs. All rights reserved.
 //
+//  ============================================================
+//  全局 Alert 管理器
+//  ============================================================
+//
+//  【功能说明】
+//  用于在 App 任意位置显示顶部 Toast 提示，自动消失。
+//
+//  【使用步骤】
+//  1. 在 App 入口添加 .slAlert() modifier:
+//
+//     @main
+//     struct MyApp: App {
+//         var body: some Scene {
+//             WindowGroup {
+//                 ContentView()
+//                     .slAlert()  // 添加全局 Alert 支持
+//             }
+//         }
+//     }
+//
+//  2. 在任意位置调用:
+//
+//     // 使用预设类型（推荐）
+//     slAlertManager.shared.show(.info, message: "这是一条提示")
+//     slAlertManager.shared.show(.success, message: "保存成功")
+//     slAlertManager.shared.show(.warning, message: "请注意")
+//     slAlertManager.shared.show(.error, message: "操作失败")
+//
+//     // 自定义样式
+//     slAlertManager.shared.show(
+//         icon: "star.fill",
+//         message: "自定义消息",
+//         textColor: .yellow,
+//         duration: .seconds(3)
+//     )
+//
+//     // 手动关闭
+//     slAlertManager.shared.dismiss()
+//
+//  【预设类型】
+//  - .info    : 蓝色信息提示
+//  - .success : 绿色成功提示
+//  - .warning : 橙色警告提示
+//  - .error   : 红色错误提示
+//
+//  ============================================================
 
 import SwiftUI
 

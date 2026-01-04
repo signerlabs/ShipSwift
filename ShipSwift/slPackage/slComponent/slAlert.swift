@@ -1,10 +1,24 @@
 //
 //  slAlert.swift
-//  full-pack
+//  ShipSwift
 //
 //  Created by Wei on 2025/12/10.
 //  Copyright © 2025 Signer Labs. All rights reserved.
 //
+//  ============================================================
+//  全局 Alert 视图组件
+//  ============================================================
+//
+//  【说明】
+//  此文件包含 Alert 的视图实现和 View Extension。
+//  管理器位于 slAlertManager.swift，请参考该文件了解完整使用方法。
+//
+//  【快速使用】
+//  1. App 入口: .slAlert()
+//  2. 显示: slAlertManager.shared.show(.success, message: "...")
+//  3. 关闭: slAlertManager.shared.dismiss()
+//
+//  ============================================================
 
 import SwiftUI
 
