@@ -11,8 +11,8 @@ struct slAddSheet: View {
     @Binding var isPresented: Bool
     @State private var inputText = ""
     
-    var title: String = "您的生成目的"
-    var placeHolderText: String = "请输入本次生成的目的/心愿/喜欢的事等（可跳过）…"
+    var title: LocalizedStringKey = "您的生成目的"
+    var placeHolderText: LocalizedStringKey = "请输入本次生成的目的/心愿/喜欢的事等（可跳过）…"
     var minLines: Int = 5
     var onConfirm: ((String) -> Void)?
     
@@ -62,7 +62,7 @@ struct slAddSheet: View {
         @Binding var text: String
         var onSend: () -> Void
         var isDisabled: Bool = false
-        var placeHolderText = "输入消息..."
+        var placeHolderText: LocalizedStringKey = "输入消息..."
         var minLines: Int = 1
         
         @FocusState private var isFocused: Bool
