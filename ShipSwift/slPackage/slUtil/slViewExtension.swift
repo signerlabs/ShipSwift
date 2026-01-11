@@ -1,18 +1,21 @@
 //
 //  slViewExtension.swift
-//  full-pack
+//  ShipSwift
 //
-//  Created by Wei on 2025/12/11.
-//  Copyright © 2025 Signer Labs. All rights reserved.
+//  视图样式扩展
+//
+//  Button Style:
+//    Button("确认") { }.buttonStyle(.slPrimary)
+//    Button("取消") { }.buttonStyle(.slSecondary)
+//
+//  Card Style:
+//    content.slSmallCard(strokeColor: .gray, background: .white)
+//    content.slBigCard(strokeColor: .gray, background: .white)
 //
 
 import SwiftUI
 
 // MARK: - Button Style
-// 使用方式:
-//   Button("确认") { }.buttonStyle(.slPrimary)
-//   Button("取消") { }.buttonStyle(.slSecondary)
-//   Button("自定义") { }.buttonStyle(.slPrimary(cornerRadius: 20))
 
 struct slButtonStyle: ButtonStyle {
     enum Variant {
