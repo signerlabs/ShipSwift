@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct ShipSwiftApp: App {
+    @State private var storeManager = slStoreManager.shared
+
     var body: some Scene {
         WindowGroup {
             RootTabView()
+                .environment(storeManager)
         }
     }
 }

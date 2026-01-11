@@ -12,7 +12,9 @@ import StoreKit
 struct slPaywallView: View {
     @Environment(slStoreManager.self) private var storeManager
     @Environment(\.dismiss) private var dismiss
-    let productIDs = slConstants.Paywall.ProductID.allSubscriptions
+    @AppStorage("appLanguage") private var appLanguage = "en"
+
+    private let productIDs = slConstants.Paywall.ProductID.allSubscriptions
     
     var body: some View {
         NavigationStack {
@@ -67,10 +69,11 @@ struct slPaywallView: View {
             .padding(.vertical)
         }
         .padding(.top)
+        .environment(\.locale, Locale(identifier: appLanguage))
     }
 }
 
 #Preview {
     slPaywallView()
-        .environment(slStoreManager())
+        .environment(slStoreManager.shared)
 }

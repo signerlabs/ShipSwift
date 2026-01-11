@@ -13,6 +13,9 @@ import SwiftUI
 @Observable
 final class slStoreManager {
 
+    // MARK: - Singleton
+    static let shared = slStoreManager()
+
     // MARK: - 产品类型
 
     enum ProductType: CaseIterable {

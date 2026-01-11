@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum slConstants {
     
@@ -38,7 +39,7 @@ enum slConstants {
         struct Feature {
             let id = UUID()
             let icon: String
-            let text: LocalizedStringResource
+            let text: LocalizedStringKey
         }
         
         static let features = [
