@@ -48,7 +48,7 @@ struct slPaywallView: View {
     @ViewBuilder
     private var paywallContent: some View {
         VStack(spacing: 20) {
-            slShakingView()
+            slShakingIcon()
 
             Text(slConstants.Paywall.title)
                 .font(.largeTitle)
