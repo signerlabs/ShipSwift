@@ -395,16 +395,25 @@ export default subscription;
 
 ## iOS 客户端实现
 
-### StoreManager
+### slStoreManager（单例 + 环境注入）
 
 ```swift
 import StoreKit
+import SwiftUI
 
+@MainActor
 @Observable
-class StoreManager {
+final class slStoreManager {
+
+    // MARK: - Singleton
+    static let shared = slStoreManager()
+
+    // MARK: - 状态
     private(set) var products: [Product] = []
-    private(set) var isPro: Bool = false
-    private(set) var isTrialPeriod: Bool = false
+    private(set) var hasActiveSubscription = false
+    private(set) var hasLifetimePurchase = false
+
+    var isPro: Bool { hasLifetimePurchase || hasActiveSubscription }
 
     // MARK: - 加载产品
 
@@ -480,6 +489,43 @@ class StoreManager {
 }
 ```
 
+### App 入口环境注入
+
+```swift
+// YourApp.swift
+@main
+struct YourApp: App {
+    @State private var storeManager = slStoreManager.shared
+
+    var body: some Scene {
+        WindowGroup {
+            RootView()
+                .environment(storeManager)
+        }
+    }
+}
+```
+
+### View 中使用
+
+```swift
+struct SomeView: View {
+    @Environment(slStoreManager.self) private var storeManager
+
+    var body: some View {
+        Button("Premium Feature") {
+            if storeManager.isPro {
+                // 执行付费功能
+            } else {
+                showPaywall = true
+            }
+        }
+    }
+}
+```
+
+> **重要**：不要在每个 View 中单独声明 `@State private var storeManager = slStoreManager.shared`，这会导致订阅状态更新后 UI 不刷新。必须使用 `@Environment` 注入。
+
 ### APIService 扩展
 
 ```swift
@@ -516,6 +562,175 @@ struct SubscriptionInfo: Codable {
     let isTrialPeriod: Bool
     let expiresAt: String?
     let autoRenewStatus: Bool
+}
+```
+
+---
+
+## Paywall 实现
+
+### slPayWallView 基础结构
+
+使用 StoreKit 2 的 `SubscriptionStoreView`：
+
+```swift
+import SwiftUI
+import StoreKit
+
+struct slPayWallView: View {
+    @Environment(slStoreManager.self) private var storeManager
+    @Environment(\.dismiss) private var dismiss
+    @AppStorage("appLanguage") private var appLanguage = "en"
+
+    private let productIDs = ["com.yourcompany.app.monthly", "com.yourcompany.app.yearly"]
+
+    var body: some View {
+        NavigationStack {
+            SubscriptionStoreView(productIDs: productIDs) {
+                marketingContent
+            }
+            .storeButton(.visible, for: .policies)
+            .storeButton(.visible, for: .restorePurchases)
+            .storeButton(.visible, for: .cancellation)
+            .subscriptionStorePolicyDestination(url: privacyURL, for: .privacyPolicy)
+            .subscriptionStorePolicyDestination(url: termsURL, for: .termsOfService)
+            .onInAppPurchaseCompletion { _, result in
+                if case .success(.success(.verified)) = result {
+                    Task {
+                        await storeManager.updatePurchaseStatus()
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private var marketingContent: some View {
+        VStack {
+            // 自定义营销内容
+        }
+        .environment(\.locale, Locale(identifier: appLanguage))  // 关键！
+    }
+}
+```
+
+### Paywall 本地化
+
+`SubscriptionStoreView` 的 marketingContent 不会自动继承 SwiftUI 的 locale 环境，必须显式设置：
+
+```swift
+private var marketingContent: some View {
+    VStack {
+        Text("Premium Features")  // 会查找 Localizable.xcstrings
+        ForEach(features, id: \.id) { feature in
+            Text(feature.text)
+        }
+    }
+    .environment(\.locale, Locale(identifier: appLanguage))  // 必须添加
+}
+```
+
+### Features 配置使用 LocalizedStringKey
+
+```swift
+// slConstants.swift
+import SwiftUI
+
+enum slConstants {
+    enum Paywall {
+        struct Feature {
+            let id = UUID()
+            let icon: String
+            let text: LocalizedStringKey  // ✅ 使用 LocalizedStringKey
+        }
+
+        static let features = [
+            Feature(icon: "checkmark.seal.fill", text: "Unlimited access"),
+            Feature(icon: "checkmark.seal.fill", text: "Cloud sync"),
+        ]
+    }
+}
+```
+
+> **注意**：使用 `LocalizedStringKey` 而非 `LocalizedStringResource`。`LocalizedStringKey` 会在运行时根据当前 locale 查找翻译，而 `LocalizedStringResource` 可能不会响应运行时 locale 变化。
+
+### SubscriptionStoreView 语言说明
+
+`SubscriptionStoreView` 中的订阅产品信息（价格、周期描述）来自 App Store Connect，语言取决于：
+
+1. **Sandbox 测试**：Sandbox Apple ID 的国家/地区设置
+2. **正式环境**：用户 Apple ID 的国家/地区设置
+
+这与 app 内的语言设置无关，无法通过代码控制。
+
+---
+
+## 权限检查模式
+
+### 方式一：NavigationLink + overlay 拦截
+
+推荐用于卡片导航，保持原生 NavigationStack 动画：
+
+```swift
+@Environment(slStoreManager.self) private var storeManager
+@State private var showPaywall = false
+
+NavigationLink {
+    DetailView()
+} label: {
+    CardContent()
+}
+.disabled(!storeManager.isPro)
+.overlay {
+    if !storeManager.isPro {
+        Color.clear
+            .contentShape(Rectangle())
+            .onTapGesture {
+                showPaywall = true
+            }
+    }
+}
+.sheet(isPresented: $showPaywall) {
+    slPayWallView()
+}
+```
+
+### 方式二：Button + navigationDestination
+
+用于按钮触发的导航：
+
+```swift
+@State private var showPaywall = false
+@State private var navigateToDetail = false
+
+Button {
+    if storeManager.isPro {
+        navigateToDetail = true
+    } else {
+        showPaywall = true
+    }
+} label: {
+    Text("Premium Action")
+}
+.navigationDestination(isPresented: $navigateToDetail) {
+    DetailView()
+}
+.sheet(isPresented: $showPaywall) {
+    slPayWallView()
+}
+```
+
+### 方式三：功能限制检查
+
+用于非导航类功能（如发送消息、生成内容）：
+
+```swift
+func performAction() {
+    guard storeManager.isPro else {
+        showPaywall = true
+        return
+    }
+    // 执行功能
 }
 ```
 
