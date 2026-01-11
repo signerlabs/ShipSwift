@@ -13,7 +13,7 @@ struct ShipSwiftApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootTabView()
+            slRootTabView()
                 .environment(storeManager)
         }
     }
