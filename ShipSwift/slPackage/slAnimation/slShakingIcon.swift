@@ -1,5 +1,5 @@
 //
-//  slShakingView.swift
+//  slShakingIcon.swift
 //  full-pack
 //
 //  Created by Wei on 2025/12/10.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct slShakingView: View {
+struct slShakingIcon: View {
     var height: CGFloat = 80
     
     enum ShakePhase: CaseIterable {
@@ -41,7 +41,7 @@ struct slShakingView: View {
     
     var body: some View {
         PhaseAnimator(ShakePhase.allCases) { phase in
-            Image(.fullpackTransparent)
+            Image(systemName: "apple.logo")
                 .resizable()
                 .scaledToFit()
                 .frame(height: height)
@@ -60,5 +60,5 @@ struct slShakingView: View {
 }
 
 #Preview {
-    slShakingView()
+    slShakingIcon()
 }

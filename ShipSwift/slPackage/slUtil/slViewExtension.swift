@@ -102,7 +102,10 @@ extension View {
                 RoundedRectangle(cornerRadius: 16)
                     .strokeBorder(
                         LinearGradient(
-                            colors: [strokeColor, strokeColor, strokeColor, strokeColor],
+                            colors: [strokeColor,
+                                     strokeColor.opacity(0.8),
+                                     strokeColor.opacity(0.6),
+                                     .clear],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ),
@@ -123,9 +126,9 @@ extension View {
                         LinearGradient(
                             colors: [
                                 strokeColor,
-                                strokeColor,
-                                strokeColor,
-                                strokeColor
+                                strokeColor.opacity(0.6),
+                                strokeColor.opacity(0.3),
+                                .clear
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
