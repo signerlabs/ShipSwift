@@ -41,7 +41,7 @@ struct slShakingView: View {
     
     var body: some View {
         PhaseAnimator(ShakePhase.allCases) { phase in
-            Image(.fullpackTransparent)
+            Image(systemName: "apple.logo")
                 .resizable()
                 .scaledToFit()
                 .frame(height: height)

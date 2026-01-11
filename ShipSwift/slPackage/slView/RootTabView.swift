@@ -12,16 +12,16 @@ struct RootTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Tab("Page", systemImage: "house", value: "page") {
-                PageView()
+            Tab("Home", systemImage: "house", value: "home") {
+                EmptyView()
             }
             
-            Tab("AnimationView", systemImage: "tshirt", value: "animation") {
-                AnimationView()
+            Tab("Outfit", systemImage: "tshirt", value: "outfit") {
+                EmptyView()
             }
             
             Tab("Setting", systemImage: "gearshape.fill", value: "setting") {
-                SettingView()
+                EmptyView()
             }
         }
         .sensoryFeedback(.increase, trigger: selectedTab)
