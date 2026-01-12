@@ -429,3 +429,54 @@ do {
 - 处理业务逻辑（用户档案、订单等）
 - 从 JWT 中提取用户信息（userId, email）
 - 不处理认证逻辑
+
+---
+
+## 密码策略
+
+### 推荐配置（简化用户体验）
+
+默认采用简化的密码策略，只要求最小长度 8 位：
+
+```swift
+// slAuthViewConfig
+var minPasswordLength: Int = 8
+var requireStrongPassword: Bool = false  // 不要求大小写和数字
+```
+
+### CDK Cognito 配置
+
+```typescript
+passwordPolicy: {
+  minLength: 8,
+  requireLowercase: false,
+  requireUppercase: false,
+  requireDigits: false,
+  requireSymbols: false,
+},
+```
+
+### 如需启用强密码
+
+如果业务需要更高安全性，可以启用强密码：
+
+```swift
+// iOS 客户端
+AuthViewConfig(
+    minPasswordLength: 8,
+    requireStrongPassword: true  // 要求包含大小写和数字
+)
+```
+
+```typescript
+// CDK Cognito
+passwordPolicy: {
+  minLength: 8,
+  requireLowercase: true,
+  requireUppercase: true,
+  requireDigits: true,
+  requireSymbols: false,
+},
+```
+
+**注意**：iOS 客户端的密码验证规则必须与 Cognito 配置一致，否则可能出现客户端验证通过但 Cognito 拒绝的情况。

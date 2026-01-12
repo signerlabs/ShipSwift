@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import UIKit
 
 // MARK: - 认证协议
 
@@ -60,8 +59,8 @@ struct slAuthViewConfig {
     var requireAgreement: Bool = true
     /// 密码最小长度
     var minPasswordLength: Int = 8
-    /// 是否要求密码包含大小写和数字
-    var requireStrongPassword: Bool = true
+    /// 是否要求密码包含大小写和数字（默认关闭，简化用户体验）
+    var requireStrongPassword: Bool = false
 
     static let `default` = slAuthViewConfig()
 }
@@ -99,7 +98,6 @@ struct slAuthView<Service: slAuthService>: View {
     @State private var viewMode: ViewMode = .signIn
     @State private var loadingState: LoadingState = .idle
     @State private var agreementChecked = false
-    @State private var isKeyboardVisible = false
 
     // 手机号登录状态
     @State private var phoneNumber = ""
@@ -186,14 +184,12 @@ struct slAuthView<Service: slAuthService>: View {
                     Spacer(minLength: 40)
 
                     // 图标
-                    if !isKeyboardVisible {
-                        Image(systemName: config.iconName)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: config.iconSize, height: config.iconSize)
-                            .foregroundStyle(Color.accentColor)
-                            .padding()
-                    }
+                    Image(systemName: config.iconName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: config.iconSize, height: config.iconSize)
+                        .foregroundStyle(Color.accentColor)
+                        .padding()
 
                     // 文案
                     headerText
@@ -217,12 +213,6 @@ struct slAuthView<Service: slAuthService>: View {
             .scrollDismissesKeyboard(.interactively)
             .sheet(isPresented: $showingCountryPicker) {
                 countryCodePicker
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
-                withAnimation { isKeyboardVisible = true }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-                withAnimation { isKeyboardVisible = false }
             }
         }
     }
@@ -279,7 +269,7 @@ struct slAuthView<Service: slAuthService>: View {
             }
 
             // 社交登录区域
-            if !isKeyboardVisible && viewMode == .signIn {
+            if viewMode == .signIn {
                 socialSignInSection
             }
         }
