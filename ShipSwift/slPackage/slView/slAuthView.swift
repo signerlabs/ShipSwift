@@ -2,7 +2,7 @@
 //  slAuthView.swift
 //  ShipSwift
 //
-//  通用认证视图，支持手机号验证码登录和邮箱密码登录
+//  通用认证视图，支持手机号验证码登录、邮箱密码登录、邮箱验证码确认、忘记密码
 //
 
 import SwiftUI
@@ -18,8 +18,16 @@ protocol slAuthService {
     func verifyPhoneCode(phoneNumber: String, code: String) async throws
     /// 邮箱密码登录
     func signInWithEmail(email: String, password: String) async throws
-    /// 邮箱注册
+    /// 邮箱注册（发送验证码到邮箱）
     func signUpWithEmail(email: String, password: String) async throws
+    /// 确认邮箱验证码（注册后）
+    func confirmSignUp(email: String, code: String) async throws
+    /// 重新发送邮箱验证码
+    func resendSignUpCode(email: String) async throws
+    /// 发送重置密码验证码
+    func resetPassword(email: String) async throws
+    /// 确认重置密码
+    func confirmResetPassword(email: String, newPassword: String, code: String) async throws
     /// Apple 登录
     func signInWithApple() async throws
     /// Google 登录
@@ -50,6 +58,10 @@ struct slAuthViewConfig {
     var defaultCountryCode: String = "+86"
     /// 是否需要同意协议
     var requireAgreement: Bool = true
+    /// 密码最小长度
+    var minPasswordLength: Int = 8
+    /// 是否要求密码包含大小写和数字
+    var requireStrongPassword: Bool = true
 
     static let `default` = slAuthViewConfig()
 }
@@ -57,6 +69,16 @@ struct slAuthViewConfig {
 // MARK: - slAuthView
 
 struct slAuthView<Service: slAuthService>: View {
+
+    // MARK: - 视图模式
+
+    private enum ViewMode {
+        case signIn                    // 登录
+        case signUp                    // 注册
+        case confirmSignUp             // 确认邮箱验证码
+        case forgotPassword            // 忘记密码（输入邮箱）
+        case resetPassword             // 重置密码（输入验证码和新密码）
+    }
 
     // MARK: - 加载状态
 
@@ -74,6 +96,7 @@ struct slAuthView<Service: slAuthService>: View {
 
     // MARK: - 状态
 
+    @State private var viewMode: ViewMode = .signIn
     @State private var loadingState: LoadingState = .idle
     @State private var agreementChecked = false
     @State private var isKeyboardVisible = false
@@ -81,18 +104,24 @@ struct slAuthView<Service: slAuthService>: View {
     // 手机号登录状态
     @State private var phoneNumber = ""
     @State private var countryCode: String
-    @State private var verificationCode = ""
+    @State private var phoneVerificationCode = ""
     @State private var showingCountryPicker = false
-    @State private var isCodeSent = false
+    @State private var isPhoneCodeSent = false
     @State private var countrySearchText = ""
-    @FocusState private var isVerificationCodeFocused: Bool
+    @FocusState private var isPhoneCodeFocused: Bool
 
     // 邮箱登录状态
     @State private var email = ""
     @State private var password = ""
-    @State private var isSignUpMode = false
     @State private var confirmPassword = ""
+    @State private var emailVerificationCode = ""
     @FocusState private var isPasswordFocused: Bool
+    @FocusState private var isEmailCodeFocused: Bool
+
+    // 重置密码状态
+    @State private var newPassword = ""
+    @State private var confirmNewPassword = ""
+    @State private var resetCode = ""
 
     // MARK: - 计算属性
 
@@ -101,7 +130,7 @@ struct slAuthView<Service: slAuthService>: View {
         return expectedLength.contains(phoneNumber.count)
     }
 
-    private var isValidCode: Bool { verificationCode.count == 6 }
+    private var isValidPhoneCode: Bool { phoneVerificationCode.count == 6 }
 
     private var fullPhoneNumber: String { "\(countryCode)\(phoneNumber)" }
 
@@ -110,9 +139,35 @@ struct slAuthView<Service: slAuthService>: View {
         return email.range(of: emailRegex, options: .regularExpression) != nil
     }
 
-    private var isValidPassword: Bool { password.count >= 6 }
+    private var isValidPassword: Bool {
+        guard password.count >= config.minPasswordLength else { return false }
+        if config.requireStrongPassword {
+            let hasUppercase = password.range(of: "[A-Z]", options: .regularExpression) != nil
+            let hasLowercase = password.range(of: "[a-z]", options: .regularExpression) != nil
+            let hasDigit = password.range(of: "[0-9]", options: .regularExpression) != nil
+            return hasUppercase && hasLowercase && hasDigit
+        }
+        return true
+    }
 
     private var isValidConfirmPassword: Bool { password == confirmPassword && isValidPassword }
+
+    private var isValidEmailCode: Bool { emailVerificationCode.count == 6 }
+
+    private var isValidResetCode: Bool { resetCode.count == 6 }
+
+    private var isValidNewPassword: Bool {
+        guard newPassword.count >= config.minPasswordLength else { return false }
+        if config.requireStrongPassword {
+            let hasUppercase = newPassword.range(of: "[A-Z]", options: .regularExpression) != nil
+            let hasLowercase = newPassword.range(of: "[a-z]", options: .regularExpression) != nil
+            let hasDigit = newPassword.range(of: "[0-9]", options: .regularExpression) != nil
+            return hasUppercase && hasLowercase && hasDigit
+        }
+        return true
+    }
+
+    private var isValidConfirmNewPassword: Bool { newPassword == confirmNewPassword && isValidNewPassword }
 
     // MARK: - 初始化
 
@@ -131,40 +186,30 @@ struct slAuthView<Service: slAuthService>: View {
                     Spacer(minLength: 40)
 
                     // 图标
-                    Image(systemName: config.iconName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: config.iconSize, height: config.iconSize)
-                        .foregroundStyle(Color.accentColor)
-                        .padding()
+                    if !isKeyboardVisible {
+                        Image(systemName: config.iconName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: config.iconSize, height: config.iconSize)
+                            .foregroundStyle(Color.accentColor)
+                            .padding()
+                    }
 
                     // 文案
-                    VStack(spacing: 8) {
-                        Text(config.title)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .multilineTextAlignment(.center)
-
-                        Text(config.subtitle)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
+                    headerText
 
                     Spacer(minLength: 20)
 
-                    // 手机号登录区域
-                    if config.showPhoneSignIn {
-                        phoneSignInSection
-                    }
-
-                    // 邮箱登录区域
-                    if config.showEmailSignIn {
-                        emailSignInSection
-                    }
-
-                    // 社交登录区域
-                    if !isKeyboardVisible {
-                        socialSignInSection
+                    // 根据模式显示不同内容
+                    switch viewMode {
+                    case .signIn, .signUp:
+                        mainAuthSection
+                    case .confirmSignUp:
+                        confirmSignUpSection
+                    case .forgotPassword:
+                        forgotPasswordSection
+                    case .resetPassword:
+                        resetPasswordSection
                     }
                 }
                 .padding()
@@ -182,6 +227,64 @@ struct slAuthView<Service: slAuthService>: View {
         }
     }
 
+    // MARK: - Header Text
+
+    @ViewBuilder
+    private var headerText: some View {
+        VStack(spacing: 8) {
+            Text(headerTitle)
+                .font(.title)
+                .fontWeight(.bold)
+                .multilineTextAlignment(.center)
+
+            Text(headerSubtitle)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+    }
+
+    private var headerTitle: String {
+        switch viewMode {
+        case .signIn: return config.title
+        case .signUp: return "Create Account"
+        case .confirmSignUp: return "Verify Email"
+        case .forgotPassword: return "Forgot Password"
+        case .resetPassword: return "Reset Password"
+        }
+    }
+
+    private var headerSubtitle: String {
+        switch viewMode {
+        case .signIn: return config.subtitle
+        case .signUp: return "Sign up with your email"
+        case .confirmSignUp: return "Enter the 6-digit code sent to \(email)"
+        case .forgotPassword: return "Enter your email to receive a reset code"
+        case .resetPassword: return "Enter the code and your new password"
+        }
+    }
+
+    // MARK: - Main Auth Section (SignIn/SignUp)
+
+    @ViewBuilder
+    private var mainAuthSection: some View {
+        VStack(spacing: 16) {
+            // 手机号登录区域
+            if config.showPhoneSignIn && viewMode == .signIn {
+                phoneSignInSection
+            }
+
+            // 邮箱登录区域
+            if config.showEmailSignIn {
+                emailSignInSection
+            }
+
+            // 社交登录区域
+            if !isKeyboardVisible && viewMode == .signIn {
+                socialSignInSection
+            }
+        }
+    }
+
     // MARK: - 手机号登录区域
 
     @ViewBuilder
@@ -190,10 +293,10 @@ struct slAuthView<Service: slAuthService>: View {
             HStack {
                 // 选择国家
                 Button {
-                    if isCodeSent {
+                    if isPhoneCodeSent {
                         withAnimation {
-                            isCodeSent = false
-                            verificationCode = ""
+                            isPhoneCodeSent = false
+                            phoneVerificationCode = ""
                         }
                     } else {
                         showingCountryPicker = true
@@ -209,7 +312,7 @@ struct slAuthView<Service: slAuthService>: View {
                 }
                 .fixedSize(horizontal: true, vertical: false)
                 .buttonStyle(.slSecondary)
-                
+
                 // 手机号输入
                 TextField("Phone Number", text: $phoneNumber)
                     .keyboardType(.phonePad)
@@ -218,52 +321,52 @@ struct slAuthView<Service: slAuthService>: View {
                     .padding(.vertical, 14)
                     .background(.accent.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .disabled(isCodeSent)
+                    .disabled(isPhoneCodeSent)
                     .onTapGesture {
-                        if isCodeSent {
+                        if isPhoneCodeSent {
                             withAnimation {
-                                isCodeSent = false
-                                verificationCode = ""
+                                isPhoneCodeSent = false
+                                phoneVerificationCode = ""
                             }
                         }
                     }
             }
-            
+
             // 验证码输入框
-            if isCodeSent {
-                TextField("000000", text: $verificationCode)
+            if isPhoneCodeSent {
+                TextField("000000", text: $phoneVerificationCode)
                     .keyboardType(.numberPad)
                     .textContentType(.oneTimeCode)
-                    .focused($isVerificationCodeFocused)
+                    .focused($isPhoneCodeFocused)
                     .multilineTextAlignment(.center)
                     .padding(.vertical, 16)
                     .background(.accent.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .onChange(of: verificationCode) { _, newValue in
-                        verificationCode = String(newValue.prefix(6))
+                    .onChange(of: phoneVerificationCode) { _, newValue in
+                        phoneVerificationCode = String(newValue.filter(\.isNumber).prefix(6))
                     }
                     .overlay(alignment: .trailing) {
                         Button {
-                            resendVerificationCode()
+                            resendPhoneCode()
                         } label: {
                             Text("Resend")
                         }
                         .padding()
                     }
             }
-            
+
             // 按钮
-            if isCodeSent {
+            if isPhoneCodeSent {
                 Button {
-                    verifyCode()
+                    verifyPhoneCode()
                 } label: {
                     Text(loadingState == .verifying ? "Verifying..." : "Verify")
                 }
-                .disabled(!isValidCode || loadingState == .verifying)
+                .disabled(!isValidPhoneCode || loadingState == .verifying)
                 .buttonStyle(.slPrimary)
             } else {
                 Button {
-                    sendVerificationCode()
+                    sendPhoneCode()
                 } label: {
                     HStack {
                         if loadingState == .sendingCode {
@@ -299,22 +402,27 @@ struct slAuthView<Service: slAuthService>: View {
             .padding(.vertical, 14)
             .background(.accent.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 12))
-            
+
             // 密码输入
             HStack {
                 Image(systemName: "lock")
                     .foregroundStyle(.secondary)
                 SecureField("Password", text: $password)
-                    .textContentType(isSignUpMode ? .newPassword : .password)
+                    .textContentType(viewMode == .signUp ? .newPassword : .password)
                     .focused($isPasswordFocused)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
             .background(.accent.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 12))
-            
+
+            // 密码要求提示（仅注册模式）
+            if viewMode == .signUp && !password.isEmpty {
+                passwordRequirements
+            }
+
             // 确认密码（仅注册模式）
-            if isSignUpMode {
+            if viewMode == .signUp {
                 HStack {
                     Image(systemName: "lock.fill")
                         .foregroundStyle(.secondary)
@@ -325,11 +433,17 @@ struct slAuthView<Service: slAuthService>: View {
                 .padding(.vertical, 14)
                 .background(.accent.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                if !confirmPassword.isEmpty && password != confirmPassword {
+                    Text("Passwords do not match")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
             }
-            
+
             // 登录/注册按钮
             Button {
-                if isSignUpMode {
+                if viewMode == .signUp {
                     signUpWithEmail()
                 } else {
                     signInWithEmail()
@@ -345,15 +459,28 @@ struct slAuthView<Service: slAuthService>: View {
             }
             .buttonStyle(.slPrimary)
             .disabled(!isEmailFormValid || loadingState == .signingIn)
-            
+
+            // 忘记密码（仅登录模式）
+            if viewMode == .signIn {
+                Button {
+                    withAnimation {
+                        viewMode = .forgotPassword
+                    }
+                } label: {
+                    Text("Forgot Password?")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.accentColor)
+                }
+            }
+
             // 切换登录/注册
             Button {
                 withAnimation {
-                    isSignUpMode.toggle()
+                    viewMode = viewMode == .signIn ? .signUp : .signIn
                     confirmPassword = ""
                 }
             } label: {
-                Text(isSignUpMode ? "Already have an account? Sign In" : "Don't have an account? Sign Up")
+                Text(viewMode == .signUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up")
                     .font(.subheadline)
                     .foregroundStyle(Color.accentColor)
             }
@@ -361,18 +488,267 @@ struct slAuthView<Service: slAuthService>: View {
         .padding(.vertical)
     }
 
+    // MARK: - Password Requirements
+
+    @ViewBuilder
+    private var passwordRequirements: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            requirementRow("At least \(config.minPasswordLength) characters", met: password.count >= config.minPasswordLength)
+            if config.requireStrongPassword {
+                requirementRow("Contains uppercase letter", met: password.range(of: "[A-Z]", options: .regularExpression) != nil)
+                requirementRow("Contains lowercase letter", met: password.range(of: "[a-z]", options: .regularExpression) != nil)
+                requirementRow("Contains number", met: password.range(of: "[0-9]", options: .regularExpression) != nil)
+            }
+        }
+        .font(.caption)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 4)
+    }
+
+    private func requirementRow(_ text: String, met: Bool) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: met ? "checkmark.circle.fill" : "circle")
+                .foregroundStyle(met ? .green : .secondary)
+            Text(text)
+                .foregroundStyle(met ? .primary : .secondary)
+        }
+    }
+
     private var emailButtonText: String {
         if loadingState == .signingIn {
-            return isSignUpMode ? "Creating Account..." : "Signing In..."
+            return viewMode == .signUp ? "Creating Account..." : "Signing In..."
         }
-        return isSignUpMode ? "Create Account" : "Sign In"
+        return viewMode == .signUp ? "Create Account" : "Sign In"
     }
 
     private var isEmailFormValid: Bool {
-        if isSignUpMode {
+        if viewMode == .signUp {
             return isValidEmail && isValidConfirmPassword
         }
-        return isValidEmail && isValidPassword
+        return isValidEmail && password.count >= config.minPasswordLength
+    }
+
+    // MARK: - Confirm SignUp Section
+
+    @ViewBuilder
+    private var confirmSignUpSection: some View {
+        VStack(spacing: 16) {
+            // 验证码输入
+            TextField("000000", text: $emailVerificationCode)
+                .keyboardType(.numberPad)
+                .textContentType(.oneTimeCode)
+                .focused($isEmailCodeFocused)
+                .multilineTextAlignment(.center)
+                .font(.title2.monospacedDigit())
+                .padding(.vertical, 16)
+                .background(.accent.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .onChange(of: emailVerificationCode) { _, newValue in
+                    emailVerificationCode = String(newValue.filter(\.isNumber).prefix(6))
+                }
+
+            // 确认按钮
+            Button {
+                confirmSignUp()
+            } label: {
+                HStack {
+                    if loadingState == .verifying {
+                        ProgressView()
+                            .tint(.white)
+                    }
+                    Text(loadingState == .verifying ? "Verifying..." : "Verify Email")
+                }
+            }
+            .buttonStyle(.slPrimary)
+            .disabled(!isValidEmailCode || loadingState == .verifying)
+
+            // 重新发送验证码
+            Button {
+                resendEmailCode()
+            } label: {
+                Text("Resend Code")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.accentColor)
+            }
+            .disabled(loadingState == .sendingCode)
+
+            // 返回登录
+            Button {
+                withAnimation {
+                    viewMode = .signIn
+                    emailVerificationCode = ""
+                }
+            } label: {
+                Text("Back to Sign In")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical)
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                isEmailCodeFocused = true
+            }
+        }
+    }
+
+    // MARK: - Forgot Password Section
+
+    @ViewBuilder
+    private var forgotPasswordSection: some View {
+        VStack(spacing: 16) {
+            // 邮箱输入
+            HStack {
+                Image(systemName: "envelope")
+                    .foregroundStyle(.secondary)
+                TextField("Email", text: $email)
+                    .keyboardType(.emailAddress)
+                    .textContentType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .background(.accent.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // 发送验证码按钮
+            Button {
+                sendResetCode()
+            } label: {
+                HStack {
+                    if loadingState == .sendingCode {
+                        ProgressView()
+                            .tint(.white)
+                    }
+                    Text(loadingState == .sendingCode ? "Sending..." : "Send Reset Code")
+                }
+            }
+            .buttonStyle(.slPrimary)
+            .disabled(!isValidEmail || loadingState == .sendingCode)
+
+            // 返回登录
+            Button {
+                withAnimation {
+                    viewMode = .signIn
+                }
+            } label: {
+                Text("Back to Sign In")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical)
+    }
+
+    // MARK: - Reset Password Section
+
+    @ViewBuilder
+    private var resetPasswordSection: some View {
+        VStack(spacing: 16) {
+            // 验证码输入
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Verification Code")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                TextField("000000", text: $resetCode)
+                    .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .multilineTextAlignment(.center)
+                    .font(.title2.monospacedDigit())
+                    .padding(.vertical, 16)
+                    .background(.accent.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .onChange(of: resetCode) { _, newValue in
+                        resetCode = String(newValue.filter(\.isNumber).prefix(6))
+                    }
+            }
+
+            // 新密码
+            VStack(alignment: .leading, spacing: 4) {
+                Text("New Password")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                HStack {
+                    Image(systemName: "lock")
+                        .foregroundStyle(.secondary)
+                    SecureField("New Password", text: $newPassword)
+                        .textContentType(.newPassword)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
+                .background(.accent.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+
+            // 密码要求提示
+            if !newPassword.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    requirementRow("At least \(config.minPasswordLength) characters", met: newPassword.count >= config.minPasswordLength)
+                    if config.requireStrongPassword {
+                        requirementRow("Contains uppercase letter", met: newPassword.range(of: "[A-Z]", options: .regularExpression) != nil)
+                        requirementRow("Contains lowercase letter", met: newPassword.range(of: "[a-z]", options: .regularExpression) != nil)
+                        requirementRow("Contains number", met: newPassword.range(of: "[0-9]", options: .regularExpression) != nil)
+                    }
+                }
+                .font(.caption)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 4)
+            }
+
+            // 确认新密码
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Confirm New Password")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                HStack {
+                    Image(systemName: "lock.fill")
+                        .foregroundStyle(.secondary)
+                    SecureField("Confirm New Password", text: $confirmNewPassword)
+                        .textContentType(.newPassword)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
+                .background(.accent.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                if !confirmNewPassword.isEmpty && newPassword != confirmNewPassword {
+                    Text("Passwords do not match")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
+            }
+
+            // 重置密码按钮
+            Button {
+                confirmResetPassword()
+            } label: {
+                HStack {
+                    if loadingState == .verifying {
+                        ProgressView()
+                            .tint(.white)
+                    }
+                    Text(loadingState == .verifying ? "Resetting..." : "Reset Password")
+                }
+            }
+            .buttonStyle(.slPrimary)
+            .disabled(!isValidResetCode || !isValidConfirmNewPassword || loadingState == .verifying)
+
+            // 返回登录
+            Button {
+                withAnimation {
+                    viewMode = .signIn
+                    resetCode = ""
+                    newPassword = ""
+                    confirmNewPassword = ""
+                }
+            } label: {
+                Text("Back to Sign In")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical)
     }
 
     // MARK: - 社交登录区域
@@ -447,7 +823,8 @@ struct slAuthView<Service: slAuthService>: View {
 
     // MARK: - 操作方法
 
-    private func sendVerificationCode() {
+    // 手机号相关
+    private func sendPhoneCode() {
         if config.requireAgreement && !agreementChecked {
             slAlertManager.shared.show(.error, message: "Please agree to the Terms of Service and Privacy Policy")
             return
@@ -458,10 +835,10 @@ struct slAuthView<Service: slAuthService>: View {
             do {
                 try await authService.sendPhoneVerificationCode(phoneNumber: fullPhoneNumber)
                 withAnimation {
-                    isCodeSent = true
+                    isPhoneCodeSent = true
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    isVerificationCodeFocused = true
+                    isPhoneCodeFocused = true
                 }
             } catch {
                 slAlertManager.shared.show(.error, message: error.localizedDescription)
@@ -469,28 +846,30 @@ struct slAuthView<Service: slAuthService>: View {
         }
     }
 
-    private func resendVerificationCode() {
+    private func resendPhoneCode() {
         Task {
             do {
                 try await authService.sendPhoneVerificationCode(phoneNumber: fullPhoneNumber)
+                slAlertManager.shared.show(.success, message: "Code sent")
             } catch {
                 slAlertManager.shared.show(.error, message: error.localizedDescription)
             }
         }
     }
 
-    private func verifyCode() {
+    private func verifyPhoneCode() {
         loadingState = .verifying
         Task {
             defer { loadingState = .idle }
             do {
-                try await authService.verifyPhoneCode(phoneNumber: fullPhoneNumber, code: verificationCode)
+                try await authService.verifyPhoneCode(phoneNumber: fullPhoneNumber, code: phoneVerificationCode)
             } catch {
                 slAlertManager.shared.show(.error, message: error.localizedDescription)
             }
         }
     }
 
+    // 邮箱相关
     private func signInWithEmail() {
         if config.requireAgreement && !agreementChecked {
             slAlertManager.shared.show(.error, message: "Please agree to the Terms of Service and Privacy Policy")
@@ -517,12 +896,80 @@ struct slAuthView<Service: slAuthService>: View {
             defer { loadingState = .idle }
             do {
                 try await authService.signUpWithEmail(email: email, password: password)
+                // 注册成功，切换到验证码确认页面
+                withAnimation {
+                    viewMode = .confirmSignUp
+                }
             } catch {
                 slAlertManager.shared.show(.error, message: error.localizedDescription)
             }
         }
     }
 
+    private func confirmSignUp() {
+        loadingState = .verifying
+        Task {
+            defer { loadingState = .idle }
+            do {
+                try await authService.confirmSignUp(email: email, code: emailVerificationCode)
+                // 验证成功，自动登录
+                try await authService.signInWithEmail(email: email, password: password)
+            } catch {
+                slAlertManager.shared.show(.error, message: error.localizedDescription)
+            }
+        }
+    }
+
+    private func resendEmailCode() {
+        loadingState = .sendingCode
+        Task {
+            defer { loadingState = .idle }
+            do {
+                try await authService.resendSignUpCode(email: email)
+                slAlertManager.shared.show(.success, message: "Code sent to \(email)")
+            } catch {
+                slAlertManager.shared.show(.error, message: error.localizedDescription)
+            }
+        }
+    }
+
+    // 重置密码相关
+    private func sendResetCode() {
+        loadingState = .sendingCode
+        Task {
+            defer { loadingState = .idle }
+            do {
+                try await authService.resetPassword(email: email)
+                withAnimation {
+                    viewMode = .resetPassword
+                }
+            } catch {
+                slAlertManager.shared.show(.error, message: error.localizedDescription)
+            }
+        }
+    }
+
+    private func confirmResetPassword() {
+        loadingState = .verifying
+        Task {
+            defer { loadingState = .idle }
+            do {
+                try await authService.confirmResetPassword(email: email, newPassword: newPassword, code: resetCode)
+                slAlertManager.shared.show(.success, message: "Password reset successfully")
+                withAnimation {
+                    viewMode = .signIn
+                    resetCode = ""
+                    newPassword = ""
+                    confirmNewPassword = ""
+                    password = ""
+                }
+            } catch {
+                slAlertManager.shared.show(.error, message: error.localizedDescription)
+            }
+        }
+    }
+
+    // 社交登录
     private func signInWithApple() {
         if config.requireAgreement && !agreementChecked {
             slAlertManager.shared.show(.error, message: "Please agree to the Terms of Service and Privacy Policy")
@@ -638,6 +1085,18 @@ private struct CountryCodePickerView: View {
         func signUpWithEmail(email: String, password: String) async throws {
             try await Task.sleep(for: .seconds(1))
         }
+        func confirmSignUp(email: String, code: String) async throws {
+            try await Task.sleep(for: .seconds(1))
+        }
+        func resendSignUpCode(email: String) async throws {
+            try await Task.sleep(for: .seconds(1))
+        }
+        func resetPassword(email: String) async throws {
+            try await Task.sleep(for: .seconds(1))
+        }
+        func confirmResetPassword(email: String, newPassword: String, code: String) async throws {
+            try await Task.sleep(for: .seconds(1))
+        }
         func signInWithApple() async throws {
             try await Task.sleep(for: .seconds(1))
         }
@@ -651,7 +1110,8 @@ private struct CountryCodePickerView: View {
         config: slAuthViewConfig(
             title: "Welcome",
             subtitle: "Sign in to continue",
-            iconName: "star.circle.fill"
+            iconName: "star.circle.fill",
+            showPhoneSignIn: false
         )
     )
 }
