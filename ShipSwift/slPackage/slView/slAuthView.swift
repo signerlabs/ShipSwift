@@ -214,7 +214,20 @@ struct slAuthView<Service: slAuthService>: View {
             .sheet(isPresented: $showingCountryPicker) {
                 countryCodePicker
             }
+            .task {
+                // 预先触发网络权限请求，避免登录时才弹出权限弹窗导致登录失败
+                await prefetchNetworkPermission()
+            }
         }
+    }
+
+    // MARK: - Network Permission Prefetch
+
+    /// 预先触发网络权限请求
+    private func prefetchNetworkPermission() async {
+        // 发起一个简单的网络请求来触发 iOS 网络权限弹窗
+        guard let url = URL(string: "https://www.apple.com") else { return }
+        _ = try? await URLSession.shared.data(from: url)
     }
 
     // MARK: - Header Text
