@@ -279,11 +279,13 @@ const userPool = new cognito.UserPool(this, 'UserPool', {
     fullname: { required: false, mutable: true },
   },
 
+  // 密码策略（简化：只要求8位，不要求大小写和数字）
+  // 注意：密码策略创建后不可修改，如需更改需创建新的 User Pool
   passwordPolicy: {
     minLength: 8,
-    requireLowercase: true,
-    requireUppercase: true,
-    requireDigits: true,
+    requireLowercase: false,
+    requireUppercase: false,
+    requireDigits: false,
     requireSymbols: false,
   },
 
