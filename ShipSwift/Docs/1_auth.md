@@ -696,6 +696,167 @@ private func prefetchNetworkPermission() async {
 
 ---
 
+## Google 登录配置
+
+### 配置概览
+
+配置 Cognito + Google Sign In 需要完成以下步骤：
+
+| 步骤 | 平台 | 说明 |
+|------|------|------|
+| 1 | Google Cloud Console | 创建项目、配置 OAuth 同意屏幕 |
+| 2 | Google Cloud Console | 创建 OAuth 2.0 客户端（Web 应用类型） |
+| 3 | AWS CDK | 配置 Google Identity Provider |
+| 4 | AWS Secrets Manager | 上传 Google Client Secret |
+| 5 | CDK 部署 | 部署更新 |
+
+---
+
+### 步骤 1: Google Cloud Console 创建项目
+
+1. 访问 [Google Cloud Console](https://console.cloud.google.com/)
+2. 创建新项目或选择现有项目
+3. 记录项目名称
+
+---
+
+### 步骤 2: 配置 OAuth 同意屏幕
+
+1. 导航到 `APIs & Services` → `OAuth consent screen`
+2. 用户类型选择 **External**
+3. 填写应用信息：
+   - App name: `My App`
+   - User support email: 选择你的邮箱
+   - Developer contact information: 填写邮箱
+4. 点击 `Save and Continue`
+5. Scopes 页面点击 `Add or Remove Scopes`，添加：
+   - `email`
+   - `profile`
+   - `openid`
+6. 点击 `Save and Continue`
+7. Test users 页面可以跳过（发布后所有用户可用）
+8. 点击 `Back to Dashboard`
+
+---
+
+### 步骤 3: 创建 OAuth 2.0 客户端
+
+1. 导航到 `APIs & Services` → `Credentials`
+2. 点击 `+ Create Credentials` → `OAuth client ID`
+3. 应用类型选择 **Web application**（⚠️ 不是 iOS）
+4. 填写：
+   - Name: `My App Cognito`
+   - Authorized redirect URIs: 添加 Cognito 回调 URL
+
+```
+https://myapp-auth.auth.us-east-1.amazoncognito.com/oauth2/idpresponse
+```
+
+5. 点击 `Create`
+6. 记录生成的：
+   - **Client ID**: `123456789-xxxxxx.apps.googleusercontent.com`
+   - **Client Secret**: `GOCSPX-xxxxxxxxxxxxxxxx`
+
+**⚠️ 注意**：
+- 必须选择 **Web application** 类型，不是 iOS 类型
+- Cognito 使用 Web OAuth 流程，即使是 iOS App 也需要 Web 类型的客户端
+- 回调 URL 中的 domain 需要与你的 Cognito Domain 一致
+
+---
+
+### 步骤 4: CDK 配置
+
+在 `cognito-construct.ts` 中添加 Google Identity Provider：
+
+```typescript
+// Google Identity Provider
+const googleProvider = new cognito.UserPoolIdentityProviderGoogle(
+  this,
+  'GoogleIdp',
+  {
+    userPool: this.userPool,
+    clientId: '123456789-xxxxxx.apps.googleusercontent.com',  // Google Client ID
+    clientSecretValue: props.appSecret.secretValueFromJson('AUTH_GOOGLE_CLIENT_SECRET'),
+    scopes: ['email', 'profile', 'openid'],
+    attributeMapping: {
+      email: cognito.ProviderAttribute.GOOGLE_EMAIL,
+      fullname: cognito.ProviderAttribute.GOOGLE_NAME,
+    },
+  }
+);
+
+// App Client 中添加 Google 支持
+this.userPoolClient = this.userPool.addClient('IOSClient', {
+  // ...
+  supportedIdentityProviders: [
+    cognito.UserPoolClientIdentityProvider.COGNITO,
+    cognito.UserPoolClientIdentityProvider.custom('SignInWithApple'),
+    cognito.UserPoolClientIdentityProvider.custom('Google'),  // 添加 Google
+  ],
+  // ...
+});
+
+// 确保依赖关系
+this.userPoolClient.node.addDependency(googleProvider);
+```
+
+---
+
+### 步骤 5: 配置 AWS Secrets Manager
+
+将 Google Client Secret 添加到 Secrets Manager：
+
+```bash
+# 获取当前 secret
+aws secretsmanager get-secret-value --secret-id myapp/app-secrets --query SecretString --output text
+
+# 更新 secret（添加 AUTH_GOOGLE_CLIENT_SECRET）
+# 方法1: 在 AWS Console 中直接编辑
+# 方法2: 使用 AWS CLI put-secret-value（需要包含所有字段）
+```
+
+Secret 中需要添加：
+```json
+{
+  "AUTH_GOOGLE_CLIENT_SECRET": "GOCSPX-xxxxxxxxxxxxxxxx"
+}
+```
+
+---
+
+### 步骤 6: 部署 CDK
+
+```bash
+npx cdk deploy
+```
+
+---
+
+### Google 登录配置检查清单
+
+| 检查项 | 位置 | 状态 |
+|-------|------|------|
+| Google Cloud 项目创建 | Google Cloud Console | ⬜ |
+| OAuth 同意屏幕配置 | Google Cloud Console | ⬜ |
+| OAuth 2.0 客户端创建（Web 应用类型） | Google Cloud Console | ⬜ |
+| Authorized redirect URI 配置 | Google Cloud Console | ⬜ |
+| CDK Google Provider 配置 | AWS CDK | ⬜ |
+| AUTH_GOOGLE_CLIENT_SECRET 上传 | AWS Secrets Manager | ⬜ |
+| CDK 部署完成 | AWS | ⬜ |
+
+---
+
+### Google 登录常见错误
+
+| 错误信息 | 原因 | 解决方案 |
+|---------|------|---------|
+| "redirect_uri_mismatch" | 回调 URL 不匹配 | 检查 Google Console 中的 Authorized redirect URIs |
+| "invalid_client" | Client ID 或 Secret 错误 | 检查 CDK 配置和 Secrets Manager |
+| "access_denied" | OAuth 同意屏幕未配置 | 配置 OAuth 同意屏幕并添加 scopes |
+| 选择账号后无响应 | 使用了 iOS 类型的客户端 | 创建 Web application 类型的客户端 |
+
+---
+
 ## 设计决策
 
 ### 为什么客户端直连 Cognito？
