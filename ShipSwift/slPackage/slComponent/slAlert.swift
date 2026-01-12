@@ -43,9 +43,11 @@ private struct slAlertView: View {
 
     var body: some View {
         if alertManager.isShowing {
-            HStack(spacing: 8) {
+            HStack(spacing: 6) {
                 Image(systemName: alertManager.icon)
+                    .font(.footnote)
                 Text(alertManager.message)
+                    .font(.footnote)
                     .multilineTextAlignment(.center)
             }
             .foregroundStyle(alertManager.textColor)

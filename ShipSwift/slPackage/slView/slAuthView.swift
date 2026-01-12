@@ -7,6 +7,8 @@
 //
 
 import SwiftUI
+import Amplify
+import AWSCognitoAuthPlugin
 
 struct slAuthView: View {
 
@@ -588,7 +590,7 @@ struct slAuthView: View {
             do {
                 try await userManager.signIn(email: email, password: password)
             } catch {
-                slAlertManager.shared.show(.error, message: error.localizedDescription)
+                slAlertManager.shared.show(.error, message: error.displayMessage)
             }
         }
     }
@@ -607,7 +609,7 @@ struct slAuthView: View {
                     viewMode = .confirmSignUp
                 }
             } catch {
-                slAlertManager.shared.show(.error, message: error.localizedDescription)
+                slAlertManager.shared.show(.error, message: error.displayMessage)
             }
         }
     }
@@ -620,7 +622,7 @@ struct slAuthView: View {
                 try await userManager.confirmSignUp(email: email, code: emailVerificationCode)
                 try await userManager.signIn(email: email, password: password)
             } catch {
-                slAlertManager.shared.show(.error, message: error.localizedDescription)
+                slAlertManager.shared.show(.error, message: error.displayMessage)
             }
         }
     }
@@ -633,7 +635,7 @@ struct slAuthView: View {
                 try await userManager.resendSignUpCode(email: email)
                 slAlertManager.shared.show(.success, message: "Code sent to \(email)")
             } catch {
-                slAlertManager.shared.show(.error, message: error.localizedDescription)
+                slAlertManager.shared.show(.error, message: error.displayMessage)
             }
         }
     }
@@ -648,7 +650,7 @@ struct slAuthView: View {
                     viewMode = .resetPassword
                 }
             } catch {
-                slAlertManager.shared.show(.error, message: error.localizedDescription)
+                slAlertManager.shared.show(.error, message: error.displayMessage)
             }
         }
     }
@@ -668,7 +670,7 @@ struct slAuthView: View {
                     password = ""
                 }
             } catch {
-                slAlertManager.shared.show(.error, message: error.localizedDescription)
+                slAlertManager.shared.show(.error, message: error.displayMessage)
             }
         }
     }
@@ -682,7 +684,7 @@ struct slAuthView: View {
             do {
                 try await userManager.signInWithApple()
             } catch {
-                slAlertManager.shared.show(.error, message: error.localizedDescription)
+                slAlertManager.shared.show(.error, message: error.displayMessage)
             }
         }
     }
@@ -696,7 +698,7 @@ struct slAuthView: View {
             do {
                 try await userManager.signInWithGoogle()
             } catch {
-                slAlertManager.shared.show(.error, message: error.localizedDescription)
+                slAlertManager.shared.show(.error, message: error.displayMessage)
             }
         }
     }
@@ -705,4 +707,75 @@ struct slAuthView: View {
 #Preview {
     slAuthView()
         .environment(slUserManager())
+}
+
+// MARK: - Auth Error Localization
+
+extension Error {
+    /// User-friendly error message
+    var displayMessage: String {
+        if let authError = self as? AuthError {
+            if let cognitoError = authError.underlyingError as? AWSCognitoAuthError {
+                return cognitoError.localizedMessage
+            }
+            return authError.localizedMessage
+        }
+        return localizedDescription
+    }
+}
+
+extension AuthError {
+    var localizedMessage: String {
+        switch self {
+        case .notAuthorized:
+            return "Incorrect email or password"
+        case .signedOut:
+            return "Please sign in first"
+        case .validation:
+            return "Invalid input"
+        case .configuration:
+            return "App configuration error"
+        case .service, .unknown, .invalidState:
+            let desc = errorDescription.lowercased()
+            if desc.contains("incorrect username or password") {
+                return "Incorrect email or password"
+            }
+            if desc.contains("user does not exist") || desc.contains("user not found") {
+                return "This email is not registered"
+            }
+            if desc.contains("user is not confirmed") {
+                return "Please verify your email first"
+            }
+            return "Service error, please try again"
+        default:
+            return "Operation failed, please try again"
+        }
+    }
+}
+
+extension AWSCognitoAuthError {
+    var localizedMessage: String {
+        switch self {
+        case .userNotFound:
+            return "This email is not registered"
+        case .userNotConfirmed:
+            return "Please verify your email first"
+        case .usernameExists:
+            return "This email is already registered"
+        case .codeDelivery:
+            return "Failed to send verification code"
+        case .codeMismatch:
+            return "Incorrect verification code"
+        case .codeExpired:
+            return "Verification code expired"
+        case .invalidPassword:
+            return "Password must be at least 8 characters"
+        case .limitExceeded, .failedAttemptsLimitExceeded, .requestLimitExceeded, .limitExceededException:
+            return "Too many attempts, please try again later"
+        case .network, .lambda, .externalServiceException:
+            return "Network error, please try again"
+        default:
+            return "An error occurred, please try again"
+        }
+    }
 }
