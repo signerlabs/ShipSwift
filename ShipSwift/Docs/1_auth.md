@@ -428,6 +428,66 @@ await cognitoService.updateUserAttributes(
 try await Amplify.Auth.deleteUser()  // SDK 内部使用 Access Token
 ```
 
+### iOS tRPC 客户端最佳实践
+
+#### 响应格式处理
+
+tRPC 使用 superjson 序列化，响应数据包装在 `json` 字段中：
+
+```json
+// tRPC 实际响应格式
+{
+  "result": {
+    "data": {
+      "json": {
+        "onboardingCompleted": false
+      }
+    }
+  }
+}
+```
+
+**iOS 解码模型**：
+
+```swift
+/// tRPC 响应格式 (使用 superjson 序列化)
+struct TRPCResponse<T: Decodable>: Decodable {
+    let result: TRPCResult<T>
+}
+
+struct TRPCResult<T: Decodable>: Decodable {
+    let data: TRPCData<T>
+}
+
+struct TRPCData<T: Decodable>: Decodable {
+    let json: T  // ⚠️ 关键：数据在 json 字段内
+}
+
+// 使用示例
+let response: TRPCResponse<OnboardingStatus> = try JSONDecoder().decode(...)
+let status = response.result.data.json  // 访问实际数据
+```
+
+#### POST 请求 Content-Type
+
+tRPC mutation（POST 请求）必须设置 `Content-Type: application/json`，即使没有请求体：
+
+```swift
+/// 无参数的 tRPC mutation
+func post<T: Decodable>(_ endpoint: Endpoint, idToken: String) async throws -> T {
+    // ⚠️ 必须发送空 JSON body，否则会返回 415 Unsupported Media Type
+    let emptyBody = "{}".data(using: .utf8)
+    return try await request(endpoint, body: emptyBody, idToken: idToken)
+}
+```
+
+**常见错误**：
+
+| 错误 | 原因 | 解决方案 |
+|------|------|----------|
+| 415 Unsupported Media Type | POST 请求没有 Content-Type | 发送空 JSON body `{}` |
+| 解码失败 keyNotFound | 没有处理 superjson 的 `json` 包装 | 添加 `TRPCData` 中间层 |
+
 ---
 
 ## 完整配置流程
