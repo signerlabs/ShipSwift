@@ -381,6 +381,53 @@ do {
 | Access Token | Cognito API | 1 小时 | 如更新用户属性、删除用户 |
 | Refresh Token | 刷新 Token | 30 天 | 用于获取新的 ID/Access Token |
 
+### ID Token vs Access Token 最佳实践
+
+**⚠️ 重要：API 认证应使用 ID Token，不是 Access Token**
+
+| 特性 | ID Token | Access Token |
+|------|----------|--------------|
+| 用途 | API 认证（推荐） | Cognito API 调用 |
+| `aud` claim | Client ID | "access" |
+| API Gateway 验证 | ✅ 通过 | ❌ 失败（401） |
+
+**为什么使用 ID Token？**
+
+API Gateway JWT Authorizer 配置了 `jwtAudience: [clientId]`，会验证 token 的 `aud` claim：
+- ID Token 的 `aud` = Client ID → 验证通过
+- Access Token 的 `aud` = "access" → 验证失败
+
+**iOS 代码示例**：
+
+```swift
+// ✅ 正确：使用 ID Token 调用业务 API
+let response = try await apiClient.request(
+    endpoint,
+    idToken: tokens.idToken
+)
+
+// ❌ 错误：使用 Access Token 会导致 401
+let response = try await apiClient.request(
+    endpoint,
+    accessToken: tokens.accessToken  // 不要这样做！
+)
+```
+
+**何时使用 Access Token？**
+
+仅在调用 Cognito User Pool API 时使用：
+
+```swift
+// 调用 Cognito API 更新用户属性
+await cognitoService.updateUserAttributes(
+    accessToken: tokens.accessToken,  // 这里用 Access Token
+    attributes: [...]
+)
+
+// 删除 Cognito 用户
+try await Amplify.Auth.deleteUser()  // SDK 内部使用 Access Token
+```
+
 ---
 
 ## 完整配置流程
