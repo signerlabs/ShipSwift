@@ -53,7 +53,7 @@ export async function handler(event: ScheduledEvent) {
 }
 ```
 
-### 3. Lambda 调用 Lambda
+### 3. Lambda 调用 Lambda（同步）
 
 ```typescript
 import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
@@ -65,7 +65,7 @@ export async function handler(event: any) {
   const response = await lambdaClient.send(
     new InvokeCommand({
       FunctionName: process.env.TARGET_LAMBDA_ARN,
-      InvocationType: 'RequestResponse',
+      InvocationType: 'RequestResponse',  // 同步调用，等待结果
       Payload: JSON.stringify({ key: 'value' }),
     })
   );
@@ -74,6 +74,156 @@ export async function handler(event: any) {
   return result;
 }
 ```
+
+### 4. 异步任务处理 Handler (Fire-and-Forget)
+
+App Runner 触发 Lambda 后立即返回，Lambda 在后台处理并更新数据库状态。适用于 AI 生成、图像处理等耗时任务。
+
+#### 架构
+
+```
+┌─────────────────┐    POST /api/tasks     ┌─────────────────┐
+│   iOS Client    │ ───────────────────────▶│   App Runner    │
+└────────┬────────┘                         └────────┬────────┘
+         │                                           │
+         │ GET /api/tasks/:id (轮询)                 │ Lambda.invoke(Event)
+         │                                           ▼
+         │                                  ┌─────────────────┐
+         │                                  │  Task Processor │
+         │                                  │     Lambda      │
+         │                                  └────────┬────────┘
+         │                                           │
+         │                                           ▼ 更新状态
+         │                                  ┌─────────────────┐
+         └─────────────────────────────────▶│    Database     │
+                    读取结果                 └─────────────────┘
+```
+
+#### App Runner 端（触发 Lambda）
+
+```typescript
+// src/services/task-processor.service.ts
+import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
+
+const lambdaClient = new LambdaClient({ region: process.env.AWS_REGION });
+
+export async function triggerTask(taskId: string, type: string, input: any): Promise<boolean> {
+  try {
+    await lambdaClient.send(
+      new InvokeCommand({
+        FunctionName: process.env.TASK_PROCESSOR_LAMBDA_ARN,
+        InvocationType: 'Event',  // 异步调用，不等待结果
+        Payload: JSON.stringify({ taskId, type, input }),
+      })
+    );
+    return true;
+  } catch (error) {
+    console.error('Failed to trigger task', error);
+    return false;
+  }
+}
+```
+
+#### Route Handler
+
+```typescript
+// src/routes/tasks.ts
+app.post('/api/tasks', async (c) => {
+  const { type, input } = await c.req.json();
+  const userId = c.get('userId');
+
+  // 1. 创建任务记录
+  const [task] = await db.insert(tasks).values({
+    userId,
+    type,
+    status: 'pending',
+  }).returning();
+
+  // 2. 异步触发 Lambda（fire-and-forget）
+  await triggerTask(task.id, type, input);
+
+  // 3. 立即返回 taskId
+  return c.json({ taskId: task.id });
+});
+
+app.get('/api/tasks/:id', async (c) => {
+  const taskId = c.req.param('id');
+  const [task] = await db.select().from(tasks).where(eq(tasks.id, taskId));
+  return c.json(task);
+});
+```
+
+#### Lambda Handler
+
+```typescript
+// lib/lambda/task-processor/index.ts
+interface TaskPayload {
+  taskId: string;
+  type: string;
+  input: Record<string, unknown>;
+}
+
+export async function handler(event: TaskPayload) {
+  const { taskId, type, input } = event;
+  const db = await getDb();
+
+  // 更新状态为 processing
+  await db.update(tasks)
+    .set({ status: 'processing', updatedAt: new Date() })
+    .where(eq(tasks.id, taskId));
+
+  try {
+    // 根据类型路由到对应处理器
+    const result = await processTask(type, input);
+
+    // 更新为 completed
+    await db.update(tasks)
+      .set({ status: 'completed', result, updatedAt: new Date() })
+      .where(eq(tasks.id, taskId));
+
+    return { statusCode: 200 };
+  } catch (error) {
+    // 更新为 failed
+    await db.update(tasks)
+      .set({ status: 'failed', error: error.message, updatedAt: new Date() })
+      .where(eq(tasks.id, taskId));
+
+    return { statusCode: 500 };
+  }
+}
+```
+
+#### 任务状态
+
+| 状态 | 说明 |
+|------|------|
+| `pending` | 任务已创建，等待 Lambda 处理 |
+| `processing` | Lambda 正在处理 |
+| `completed` | 处理完成，result 字段包含结果 |
+| `failed` | 处理失败，error 字段包含错误信息 |
+
+#### 数据库 Schema
+
+```typescript
+export const tasks = pgTable('tasks', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => users.id),
+  type: varchar('type', { length: 50 }).notNull(),
+  status: varchar('status', { length: 20 }).notNull().default('pending'),
+  input: jsonb('input'),
+  result: jsonb('result'),
+  error: text('error'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+```
+
+#### 注意事项
+
+1. **幂等性**：Lambda 可能重试，处理器需要幂等
+2. **超时**：Lambda 默认 3 秒，AI 任务需要设置更长（如 5 分钟）
+3. **VPC 访问**：Lambda 需要访问 RDS Proxy，需配置 VPC 和安全组
+4. **状态更新失败**：使用重试机制确保状态更新成功
 
 ## 性能优化
 
