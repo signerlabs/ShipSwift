@@ -6,7 +6,7 @@
 //  Copyright © 2026 Signer Labs. All rights reserved.
 //
 //  ============================================================
-//  全局 Loading 视图组件
+//  全局 Loading 视图组件 - 全屏毛玻璃覆盖样式
 //  ============================================================
 //
 //  【说明】
@@ -15,7 +15,7 @@
 //
 //  【快速使用】
 //  1. App 入口: .slLoading()
-//  2. 显示: slLoadingManager.shared.show(message: "...")
+//  2. 显示: slLoadingManager.shared.show(message: "...", systemImage: "...")
 //  3. 隐藏: slLoadingManager.shared.hide()
 //
 //  ============================================================
@@ -29,30 +29,30 @@ private struct slLoadingView: View {
 
     var body: some View {
         if loadingManager.isShowing {
-            ZStack {
-                // 背景遮罩
-                Color.black.opacity(0.3)
-                    .ignoresSafeArea(.all)
+            // 全屏毛玻璃覆盖
+            VStack(spacing: 24) {
+                // Icon
+                if let systemImage = loadingManager.systemImage {
+                    Image(systemName: systemImage)
+                        .font(.system(size: 64, weight: .light))
+                        .foregroundStyle(.primary.opacity(0.8))
+                        .symbolEffect(.pulse, options: .repeating)
+                }
 
-                // Loading 内容
-                VStack(spacing: 16) {
-                    if let systemImage = loadingManager.systemImage {
-                        Image(systemName: systemImage)
-                            .font(.system(size: 48))
-                            .foregroundStyle(.secondary)
-                    }
+                // 文案 + 加载指示器
+                VStack(spacing: 12) {
+                    Text(loadingManager.message)
+                        .font(.headline)
+                        .foregroundStyle(.primary.opacity(0.9))
+                        .multilineTextAlignment(.center)
 
                     ProgressView()
-                        .scaleEffect(1.2)
-
-                    Text(loadingManager.message)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
+                        .tint(.primary.opacity(0.6))
                 }
-                .padding(32)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.ultraThinMaterial)
+            .ignoresSafeArea(.all)
             .transition(.opacity)
         }
     }
@@ -68,14 +68,14 @@ private struct slLoadingModifier: ViewModifier {
             .overlay {
                 slLoadingView()
             }
-            .animation(.easeInOut(duration: 0.2), value: loadingManager.isShowing)
+            .animation(.easeInOut(duration: 0.25), value: loadingManager.isShowing)
     }
 }
 
 // MARK: - View Extension
 
 extension View {
-    /// 添加全局 Loading 支持
+    /// 添加全局 Loading 支持（全屏毛玻璃覆盖）
     func slLoading() -> some View {
         modifier(slLoadingModifier())
     }
@@ -83,25 +83,54 @@ extension View {
 
 // MARK: - Preview
 
-#Preview("Loading") {
-    Text("Content")
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.gray.opacity(0.2))
-        .slLoading()
-        .onAppear {
-            slLoadingManager.shared.show(message: "数据加载中，请稍等...")
+#Preview("Loading - 全屏毛玻璃") {
+    ZStack {
+        // 模拟页面内容
+        LinearGradient(
+            colors: [.blue, .purple],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+
+        VStack {
+            Text("页面内容")
+                .font(.largeTitle)
+                .foregroundStyle(.white)
         }
+    }
+    .slLoading()
+    .onAppear {
+        slLoadingManager.shared.show(
+            message: "数据加载中...",
+            systemImage: "arrow.down.circle"
+        )
+    }
 }
 
-#Preview("Loading with Icon") {
-    Text("Content")
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.gray.opacity(0.2))
-        .slLoading()
-        .onAppear {
-            slLoadingManager.shared.show(
-                message: "正在同步数据...",
-                systemImage: "arrow.triangle.2.circlepath"
-            )
-        }
+#Preview("Loading - 同步数据") {
+    ZStack {
+        Color.gray.opacity(0.2)
+        Text("Content")
+    }
+    .slLoading()
+    .onAppear {
+        slLoadingManager.shared.show(
+            message: "正在同步数据，请稍候",
+            systemImage: "arrow.triangle.2.circlepath"
+        )
+    }
+}
+
+#Preview("Loading - AI 分析") {
+    ZStack {
+        Color.gray.opacity(0.2)
+        Text("Content")
+    }
+    .slLoading()
+    .onAppear {
+        slLoadingManager.shared.show(
+            message: "AI 分析中...",
+            systemImage: "sparkles"
+        )
+    }
 }
