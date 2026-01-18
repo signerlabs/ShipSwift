@@ -7,13 +7,19 @@
 //
 //  使用示例:
 //  ```
-//  slScanImage(.myImage)
+//  slScanImage {
+//      Image(.myImage)
+//          .resizable()
+//          .scaledToFit()
+//  }
 //
-//  slScanImage(.myImage, lineWidth: 100, duration: 2.0)
+//  slScanImage(lineWidth: 100, duration: 2.0) {
+//      AsyncImage(url: imageURL)
+//  }
 //  ```
 //
 //  参数说明:
-//  - image: ImageResource 图片资源
+//  - content: 要显示的图片视图
 //  - lineWidth: 扫描线宽度，默认 80
 //  - duration: 扫描周期（秒），默认 1.5
 //  - lineColor: 扫描线颜色，默认 .white.opacity(0.6)
@@ -21,21 +27,30 @@
 
 import SwiftUI
 
-struct slScanImage: View {
+struct slScanImage<Content: View>: View {
     @State private var animate = false
 
-    var image: ImageResource
-    var lineWidth: CGFloat = 80
-    var duration: Double = 1.5
-    var lineColor: Color = .white.opacity(0.6)
+    let content: Content
+    var lineWidth: CGFloat
+    var duration: Double
+    var lineColor: Color
+
+    init(
+        lineWidth: CGFloat = 80,
+        duration: Double = 1.5,
+        lineColor: Color = .white.opacity(0.6),
+        @ViewBuilder content: () -> Content
+    ) {
+        self.content = content()
+        self.lineWidth = lineWidth
+        self.duration = duration
+        self.lineColor = lineColor
+    }
 
     var body: some View {
-        Image(image)
-            .resizable()
-            .scaledToFit()
+        content
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .overlay {
-                // 扫描线动效
                 GeometryReader { geo in
                     LinearGradient(
                         colors: [.clear, lineColor, .clear],
@@ -59,8 +74,11 @@ struct slScanImage: View {
 
 // MARK: - Preview
 
-#Preview("Default") {
-    slScanImage(image: .init(name: "photo", bundle: nil))
-        .frame(width: 300, height: 200)
-        .padding()
+#Preview {
+    slScanImage {
+        Rectangle()
+            .fill(.gray)
+            .frame(width: 300, height: 200)
+    }
+    .padding()
 }
