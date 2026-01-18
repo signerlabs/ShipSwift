@@ -108,6 +108,12 @@ public struct SLChatInputView: View {
                 .lineLimit(minLines...5)
                 .focused($isFocused)
                 .disabled(isDisabled)
+                .onChange(of: isDisabled) { oldValue, newValue in
+                    // 当从禁用状态恢复时，保持输入框非焦点状态，避免键盘自动弹出
+                    if oldValue && !newValue {
+                        isFocused = false
+                    }
+                }
 
         case .recording:
             // 录音中显示音波
@@ -168,6 +174,8 @@ public struct SLChatInputView: View {
     private var sendButton: some View {
         Button {
             guard hasText else { return }
+            // 先取消焦点，避免键盘弹出
+            isFocused = false
             onSend()
         } label: {
             Image(systemName: "arrow.up.circle.fill")
