@@ -104,6 +104,12 @@ public struct SLChatInputView: View {
             .padding(.trailing, -2)
         }
         .padding(10)
+        .contentShape(Rectangle()) // 让整个区域可点击
+        .onTapGesture {
+            if !isDisabled && asrState == .idle {
+                isFocused = true
+            }
+        }
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .stroke(.accent, lineWidth: 1)
