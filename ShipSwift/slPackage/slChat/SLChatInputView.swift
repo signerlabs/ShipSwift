@@ -18,7 +18,22 @@ import SwiftUI
 /// - 转录中显示加载状态
 /// - 发送按钮
 ///
-/// 使用方式:
+/// 配合 `SLMessageList` 使用构建完整聊天界面：
+/// ```swift
+/// VStack(spacing: 0) {
+///     SLMessageList(messages: messages) { message in
+///         SLMessageBubble(isFromUser: message.isUser) {
+///             Text(message.content)
+///         }
+///     }
+///
+///     SLChatInputView(text: $text, asrConfig: asrConfig) {
+///         sendMessage()
+///     }
+/// }
+/// ```
+///
+/// 单独使用:
 /// ```swift
 /// @State private var text = ""
 ///
