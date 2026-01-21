@@ -338,22 +338,41 @@ function validateToken(token: string): string {
 
 ## iOS 客户端集成
 
-### EventSource / SSE 解析
+### 1. SSE 解析（ChatService）
 
 ```swift
 // Services/ChatService.swift
 import Foundation
 
-actor ChatService {
+struct ChatService {
     func sendMessage(
-        _ message: String,
-        conversationId: String? = nil,
-        onDelta: @escaping (String) -> Void,
-        onFinish: @escaping (String, String, String) -> Void
-    ) async throws {
-        guard let url = URL(string: "https://xxx.lambda-url.us-east-1.on.aws/") else {
-            throw ChatError.invalidURL
+        conversationId: String?,
+        message: String,
+        idToken: String
+    ) -> AsyncThrowingStream<ChatSSEEvent, Error> {
+        AsyncThrowingStream { continuation in
+            Task {
+                do {
+                    try await streamChat(
+                        conversationId: conversationId,
+                        message: message,
+                        idToken: idToken,
+                        continuation: continuation
+                    )
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
         }
+    }
+
+    private func streamChat(
+        conversationId: String?,
+        message: String,
+        idToken: String,
+        continuation: AsyncThrowingStream<ChatSSEEvent, Error>.Continuation
+    ) async throws {
+        let url = URL(string: "https://xxx.lambda-url.us-east-1.on.aws/")!
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -361,60 +380,309 @@ actor ChatService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
 
-        let body: [String: Any] = [
-            "message": message,
-            "conversationId": conversationId as Any
-        ]
-        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let body = ChatRequest(conversationId: conversationId, message: message)
+        request.httpBody = try JSONEncoder().encode(body)
 
-        // URLSession 支持 SSE 流式解析
-        let (bytes, response) = try await URLSession.shared.bytes(for: request)
+        // 禁用响应缓存
+        let config = URLSessionConfiguration.default
+        config.urlCache = nil
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        let session = URLSession(configuration: config)
+
+        let (asyncBytes, response) = try await session.bytes(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse,
               httpResponse.statusCode == 200 else {
-            throw ChatError.requestFailed
+            throw ChatServiceError.httpError
         }
 
-        var buffer = ""
-        for try await byte in bytes {
-            let char = String(UnicodeScalar(byte))
-            buffer.append(char)
+        // 处理 SSE 流
+        for try await line in asyncBytes.lines {
+            let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmedLine.isEmpty else { continue }
 
-            // SSE 格式：data: {...}\n\n
-            if buffer.hasSuffix("\n\n") {
-                let lines = buffer.components(separatedBy: "\n")
-                for line in lines {
-                    if line.hasPrefix("data: ") {
-                        let jsonString = line.dropFirst(6)  // 去掉 "data: "
-                        if let data = jsonString.data(using: .utf8),
-                           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                           let type = json["type"] as? String {
+            // SSE 格式: "data: {...}"
+            var jsonString = trimmedLine
+            if trimmedLine.hasPrefix("data: ") {
+                jsonString = String(trimmedLine.dropFirst(6))
+            }
 
-                            switch type {
-                            case "text-delta":
-                                if let content = json["content"] as? String {
-                                    onDelta(content)
-                                }
-                            case "finish":
-                                if let convId = json["conversationId"] as? String,
-                                   let userMsgId = json["userMessageId"] as? String,
-                                   let assistantMsgId = json["assistantMessageId"] as? String {
-                                    onFinish(convId, userMsgId, assistantMsgId)
-                                }
-                            case "error":
-                                throw ChatError.streamError
-                            default:
-                                break
-                            }
+            guard let jsonData = jsonString.data(using: .utf8),
+                  let sseEvent = parseSSEEvent(jsonData) else {
+                continue
+            }
+
+            continuation.yield(sseEvent)
+
+            if case .finish = sseEvent {
+                continuation.finish()
+                return
+            }
+            if case .error = sseEvent {
+                continuation.finish()
+                return
+            }
+        }
+
+        continuation.finish()
+    }
+
+    private func parseSSEEvent(_ data: Data) -> ChatSSEEvent? {
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let type = json["type"] as? String else {
+            return nil
+        }
+
+        switch type {
+        case "text-delta":
+            if let content = json["content"] as? String {
+                return .textDelta(content)
+            }
+        case "finish":
+            if let conversationId = json["conversationId"] as? String,
+               let userMessageId = json["userMessageId"] as? String,
+               let assistantMessageId = json["assistantMessageId"] as? String {
+                return .finish(
+                    conversationId: conversationId,
+                    userMessageId: userMessageId,
+                    assistantMessageId: assistantMessageId
+                )
+            }
+        case "error":
+            if let message = json["message"] as? String {
+                return .error(message)
+            }
+        default:
+            break
+        }
+
+        return nil
+    }
+}
+
+// SSE 事件类型
+enum ChatSSEEvent {
+    case textDelta(String)
+    case finish(conversationId: String, userMessageId: String, assistantMessageId: String)
+    case error(String)
+}
+```
+
+### 2. 状态管理（ChatManager）
+
+```swift
+// Manager/ChatManager.swift
+import Foundation
+import SwiftUI
+
+@Observable
+class ChatManager {
+    var messages: [ChatMessage] = []
+    var currentConversationId: String?
+    var isStreaming = false
+    var errorMessage: String?
+
+    private let chatService = ChatService()
+
+    @MainActor
+    func sendMessage(_ content: String, idToken: String) async {
+        guard !content.isEmpty, !isStreaming else { return }
+
+        errorMessage = nil
+
+        // 添加用户消息
+        let userMessage = ChatMessage(
+            id: UUID().uuidString,
+            role: .user,
+            content: content,
+            createdAt: Date()
+        )
+        messages.append(userMessage)
+
+        // 添加空 AI 消息用于流式填充
+        let assistantMessageId = UUID().uuidString
+        let assistantMessage = ChatMessage(
+            id: assistantMessageId,
+            role: .assistant,
+            content: "",
+            createdAt: Date(),
+            isStreaming: true
+        )
+        messages.append(assistantMessage)
+
+        isStreaming = true
+
+        do {
+            let stream = chatService.sendMessage(
+                conversationId: currentConversationId,
+                message: content,
+                idToken: idToken
+            )
+
+            // 使用临时变量收集内容，减少 UI 更新频率
+            var pendingContent = ""
+            var lastUpdateTime = Date()
+            let updateInterval: TimeInterval = 0.1 // 100ms 更新一次
+
+            for try await event in stream {
+                switch event {
+                case .textDelta(let text):
+                    pendingContent += text
+
+                    let now = Date()
+                    if now.timeIntervalSince(lastUpdateTime) >= updateInterval {
+                        if let index = messages.lastIndex(where: { $0.id == assistantMessageId }) {
+                            messages[index].content += pendingContent
+                            pendingContent = ""
+                            lastUpdateTime = now
                         }
                     }
+
+                case .finish(let conversationId, _, let newAssistantMessageId):
+                    if !pendingContent.isEmpty {
+                        if let index = messages.lastIndex(where: { $0.id == assistantMessageId }) {
+                            messages[index].content += pendingContent
+                        }
+                    }
+                    currentConversationId = conversationId
+                    if let index = messages.lastIndex(where: { $0.id == assistantMessageId }) {
+                        messages[index].id = newAssistantMessageId
+                        messages[index].isStreaming = false
+                    }
+
+                case .error(let message):
+                    errorMessage = message
+                    messages.removeAll { $0.id == assistantMessageId }
                 }
-                buffer = ""
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+            messages.removeAll { $0.id == assistantMessageId }
+        }
+
+        isStreaming = false
+    }
+}
+```
+
+### 3. 实时 Markdown 渲染（UI）
+
+**⚡ 关键优化：边 streaming 边渲染 Markdown**
+
+使用 [MarkdownUI](https://github.com/gonzalezreal/swift-markdown-ui) 库可以实现实时增量渲染：
+
+```swift
+// View/Chat/ChatView.swift
+import SwiftUI
+import MarkdownUI
+
+struct MessageBubble: View {
+    let message: ChatMessage
+
+    var body: some View {
+        if message.isUser {
+            // 用户消息 - 纯文本
+            Text(message.content)
+                .padding(12)
+                .background(Color.accentColor)
+                .foregroundStyle(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+        } else {
+            // AI 消息
+            if message.content.isEmpty {
+                // 等待响应时显示 thinking indicator
+                ThinkingIndicator()
+            } else {
+                // ✅ 关键：始终使用 Markdown 渲染（支持实时增量渲染）
+                BrushmoMarkdown(message.content)
+                    .padding(12)
+                    .background(Color(.systemGray6))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
             }
         }
     }
 }
+
+// Markdown 渲染组件
+struct BrushmoMarkdown: View {
+    let content: String
+
+    var body: some View {
+        Markdown(content)
+            .markdownTheme(.brushmo)  // 自定义主题
+    }
+}
 ```
+
+**为什么这样做？**
+
+```swift
+// ❌ 不推荐：streaming 时用纯文本，完成后才用 Markdown
+if message.isStreaming {
+    Text(message.content)              // 无样式，用户体验差
+} else {
+    BrushmoMarkdown(message.content)   // 有样式，突然切换
+}
+
+// ✅ 推荐：始终使用 Markdown 渲染
+if message.content.isEmpty {
+    ThinkingIndicator()                // 空内容时显示加载状态
+} else {
+    BrushmoMarkdown(message.content)   // 有内容就渲染 Markdown
+}
+```
+
+**MarkdownUI 如何处理不完整语法？**
+
+1. **完整语法** → 立即渲染样式
+   ```
+   收到: "Based on your **brushing** habits"
+   显示: "Based on your brushing habits" (brushing 加粗)
+   ```
+
+2. **不完整语法** → 暂时显示纯文本
+   ```
+   收到: "Based on your **brush"
+   显示: "Based on your **brush" (等待闭合标记)
+
+   收到: "ing**"
+   显示: "Based on your brushing" (立即加粗)
+   ```
+
+3. **列表、标题、代码块** → 实时渲染
+   ```
+   收到: "## Top 3 Tips\n\n1. "
+   显示: 标题和列表标记立即渲染
+   ```
+
+**性能优化：减少 UI 更新频率**
+
+```swift
+// 使用临时变量收集内容，每 100ms 更新一次 UI
+var pendingContent = ""
+var lastUpdateTime = Date()
+let updateInterval: TimeInterval = 0.1
+
+for try await event in stream {
+    case .textDelta(let text):
+        pendingContent += text
+
+        let now = Date()
+        if now.timeIntervalSince(lastUpdateTime) >= updateInterval {
+            // 每 100ms 批量更新
+            messages[index].content += pendingContent
+            pendingContent = ""
+            lastUpdateTime = now
+        }
+}
+```
+
+**效果对比：**
+
+| 方案 | streaming 时 | 完成后 | 用户体验 |
+|------|-------------|--------|---------|
+| ❌ 分离渲染 | 纯文本 | Markdown | 突然切换，体验差 |
+| ✅ 统一渲染 | Markdown | Markdown | 流畅过渡，体验好 |
 
 ---
 
