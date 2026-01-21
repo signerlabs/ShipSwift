@@ -33,6 +33,7 @@ ShipSwift 包含两个核心部分：
 | [4_lambda.md](docs/4_lambda.md) | Lambda 开发 (handler 代码写法、性能优化、错误处理) |
 | [5_messaging.md](docs/5_messaging.md) | 消息服务 (AWS SES/SNS + 阿里云短信/邮件，工厂模式切换) |
 | [6_asr.md](docs/6_asr.md) | 语音识别 (火山引擎流式ASR、聊天输入框集成) |
+| [7_streaming.md](docs/7_streaming.md) | 流式传输 (Lambda Response Streaming、AI 聊天、SSE 最佳实践) |
 
 ---
 
@@ -91,7 +92,8 @@ ShipSwift/
 │   ├── 3_subscription.md      # 订阅
 │   ├── 4_lambda.md            # Lambda
 │   ├── 5_messaging.md         # 消息
-│   └── 6_asr.md               # 语音识别
+│   ├── 6_asr.md               # 语音识别
+│   └── 7_streaming.md         # 流式传输
 ├── slPackage/                  # 代码模板
 │   ├── slAnimation/           # 动画
 │   ├── slASR/                 # 语音识别
