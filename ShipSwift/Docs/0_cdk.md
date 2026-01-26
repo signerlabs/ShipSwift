@@ -54,6 +54,71 @@
 
 ---
 
+## Secrets 管理最佳实践
+
+### 推荐：创建模式（模板项目更友好）
+
+使用 `new Secret()` 创建，CDK 自动管理 IAM 权限和 ARN。
+
+```typescript
+// ✅ 推荐：创建模式
+const appSecret = new secretsmanager.Secret(this, 'AppSecret', {
+  secretName: 'my-app/secrets',
+  description: 'Application secrets (API keys, OAuth credentials)',
+  secretObjectValue: {
+    AUTH_APPLE_PRIVATE_KEY: cdk.SecretValue.unsafePlainText('PLACEHOLDER'),
+    AUTH_GOOGLE_CLIENT_SECRET: cdk.SecretValue.unsafePlainText('PLACEHOLDER'),
+    OPENAI_API_KEY: cdk.SecretValue.unsafePlainText('PLACEHOLDER'),
+  },
+});
+```
+
+> ⚠️ **重要**：占位符文案（如 `PLACEHOLDER`）一旦设定**永远不要修改**！
+> 如果修改占位符文案，CDK 会用新值覆盖你手动设置的真实密钥。
+
+### 首次部署流程（有社交登录时）
+
+社交登录（Apple/Google）需要在部署时读取 Secret 中的私钥，但 Secret 刚创建时是占位符，会导致部署失败。
+
+**解决方案：分两步部署**
+
+```bash
+# 步骤 1: 禁用社交登录，创建 Secret
+# 修改 cdk.json: "enableSocialLogin": "false"
+npm run cdk:deploy
+
+# 步骤 2: 更新 Secret 真实值
+aws secretsmanager put-secret-value \
+  --secret-id my-app/secrets \
+  --secret-string '{
+    "AUTH_APPLE_PRIVATE_KEY": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----",
+    "AUTH_GOOGLE_CLIENT_SECRET": "GOCSPX-xxxxx",
+    "OPENAI_API_KEY": "sk-proj-xxxxx"
+  }'
+
+# 步骤 3: 启用社交登录，重新部署
+# 修改 cdk.json: "enableSocialLogin": "true"
+npm run cdk:deploy
+```
+
+### 后续部署
+
+直接 `npm run cdk:deploy`，不会覆盖已设置的 Secret 值（因为占位符不变）。
+
+### 为什么不用引用模式
+
+| 模式 | 首次部署 | ARN 管理 | 新项目复用 |
+|-----|---------|---------|-----------|
+| **创建模式** | ✅ 自动创建 | ✅ CDK 自动处理 | ✅ 直接部署 |
+| **引用模式** | ❌ 需手动创建 | ❌ 需硬编码完整 ARN | ❌ 每个项目都要手动配置 |
+
+**引用模式的问题**：
+- `fromSecretNameV2` 返回的 `secretArn` 不包含后缀，Lambda 可能找不到 Secret
+- 需要用 `fromSecretCompleteArn` 并硬编码完整 ARN（含后缀如 `-eBU0rH`）
+- 新项目需要先手动创建 Secret，获取 ARN，再更新代码
+
+---
+
 ## 项目结构
 
 ```
@@ -175,6 +240,10 @@ const cluster = new rds.DatabaseCluster(this, 'AuroraCluster', {
     retention: cdk.Duration.days(7),
   },
 
+  // [仅开发环境] 启用 RDS Data API，便于本地直接查询数据库调试
+  // 生产环境建议关闭，App Runner/Lambda 通过 RDS Proxy 访问即可
+  enableDataApi: true,
+
   // 开发环境可删除
   deletionProtection: false,
   removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -279,11 +348,13 @@ const userPool = new cognito.UserPool(this, 'UserPool', {
     fullname: { required: false, mutable: true },
   },
 
+  // 密码策略（简化：只要求8位，不要求大小写和数字）
+  // 注意：密码策略创建后不可修改，如需更改需创建新的 User Pool
   passwordPolicy: {
     minLength: 8,
-    requireLowercase: true,
-    requireUppercase: true,
-    requireDigits: true,
+    requireLowercase: false,
+    requireUppercase: false,
+    requireDigits: false,
     requireSymbols: false,
   },
 
@@ -645,6 +716,50 @@ npx cdk diff
 # 销毁
 npx cdk destroy
 ```
+
+---
+
+## 开发调试：RDS Data API
+
+> **仅限开发环境使用**，生产环境建议关闭
+
+启用 `enableDataApi: true` 后，可以在本地直接通过 AWS CLI 查询数据库，无需 VPN 或 Bastion Host。
+
+### 查询示例
+
+```bash
+# 设置变量（替换为实际值）
+CLUSTER_ARN="arn:aws:rds:us-east-1:123456789:cluster:my-aurora-cluster"
+SECRET_ARN="arn:aws:secretsmanager:us-east-1:123456789:secret:my-db-credentials-xxxxx"
+
+# 执行 SQL 查询
+aws rds-data execute-statement \
+  --resource-arn "$CLUSTER_ARN" \
+  --secret-arn "$SECRET_ARN" \
+  --database my_database \
+  --sql "SELECT * FROM users WHERE id = 'xxx'" \
+  --region us-east-1
+```
+
+### 获取 ARN
+
+```bash
+# 获取 RDS 集群 ARN
+aws rds describe-db-clusters \
+  --query "DBClusters[?contains(DBClusterIdentifier, 'my-app')].DBClusterArn" \
+  --output text
+
+# 获取 Secrets Manager ARN
+aws secretsmanager list-secrets \
+  --query "SecretList[?contains(Name, 'db-credentials')].ARN" \
+  --output text
+```
+
+### 为什么不在生产环境启用
+
+- 增加攻击面（可从 VPC 外部访问）
+- 性能不如 RDS Proxy（HTTP 开销）
+- App Runner/Lambda 已经通过 RDS Proxy 访问，不需要
 
 ---
 

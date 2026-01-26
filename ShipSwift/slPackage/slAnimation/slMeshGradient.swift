@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct slMeshGradient: View {
-    @State var appear: Bool = false
-    @State var appear2: Bool = false
+    @State private var appear = false
     
     var body: some View {
         MeshGradient(width: 3, height: 3, points: [

@@ -18,7 +18,22 @@ import SwiftUI
 /// - 转录中显示加载状态
 /// - 发送按钮
 ///
-/// 使用方式:
+/// 配合 `SLMessageList` 使用构建完整聊天界面：
+/// ```swift
+/// VStack(spacing: 0) {
+///     SLMessageList(messages: messages) { message in
+///         SLMessageBubble(isFromUser: message.isUser) {
+///             Text(message.content)
+///         }
+///     }
+///
+///     SLChatInputView(text: $text, asrConfig: asrConfig) {
+///         sendMessage()
+///     }
+/// }
+/// ```
+///
+/// 单独使用:
 /// ```swift
 /// @State private var text = ""
 ///
@@ -89,6 +104,12 @@ public struct SLChatInputView: View {
             .padding(.trailing, -2)
         }
         .padding(10)
+        .contentShape(Rectangle()) // 让整个区域可点击
+        .onTapGesture {
+            if !isDisabled && asrState == .idle {
+                isFocused = true
+            }
+        }
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .stroke(.accent, lineWidth: 1)
@@ -108,6 +129,12 @@ public struct SLChatInputView: View {
                 .lineLimit(minLines...5)
                 .focused($isFocused)
                 .disabled(isDisabled)
+                .onChange(of: isDisabled) { oldValue, newValue in
+                    // 当从禁用状态恢复时，保持输入框非焦点状态，避免键盘自动弹出
+                    if oldValue && !newValue {
+                        isFocused = false
+                    }
+                }
 
         case .recording:
             // 录音中显示音波
@@ -168,6 +195,8 @@ public struct SLChatInputView: View {
     private var sendButton: some View {
         Button {
             guard hasText else { return }
+            // 先取消焦点，避免键盘弹出
+            isFocused = false
             onSend()
         } label: {
             Image(systemName: "arrow.up.circle.fill")

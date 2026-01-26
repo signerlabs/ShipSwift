@@ -6,50 +6,32 @@
 //  Copyright © 2026 Signer Labs. All rights reserved.
 //
 //  ============================================================
-//  全局 Loading 管理器
+//  Page-level Loading Manager
 //  ============================================================
 //
-//  【功能说明】
-//  用于在 App 任意位置显示全屏 Loading 遮罩，覆盖 NavigationBar 和 TabBar。
+//  Usage:
+//  1. Add .slPageLoading(.home) modifier to your view
+//  2. Show: slLoadingManager.shared.show(page: .home, message: "Loading...")
+//  3. Hide: slLoadingManager.shared.hide(page: .home)
 //
-//  【使用步骤】
-//  1. 在 App 入口添加 .slLoading() modifier:
+//  Example:
 //
-//     @main
-//     struct MyApp: App {
-//         var body: some Scene {
-//             WindowGroup {
-//                 ContentView()
-//                     .slLoading()  // 添加全局 Loading 支持
-//             }
+//     struct HomeView: View {
+//         var body: some View {
+//             content
+//                 .slPageLoading(.home)
 //         }
-//     }
 //
-//  2. 在任意位置调用:
+//         func fetchData() async {
+//             slLoadingManager.shared.show(page: .home, message: "Loading...")
+//             defer { slLoadingManager.shared.hide(page: .home) }
 //
-//     // 显示 Loading
-//     slLoadingManager.shared.show(message: "加载中...")
-//
-//     // 显示带图标的 Loading
-//     slLoadingManager.shared.show(message: "同步中...", systemImage: "arrow.triangle.2.circlepath")
-//
-//     // 动态更新消息
-//     slLoadingManager.shared.updateMessage("处理中...")
-//
-//     // 隐藏 Loading
-//     slLoadingManager.shared.hide()
-//
-//  【典型使用场景】
-//
-//     func fetchData() async {
-//         slLoadingManager.shared.show(message: "数据加载中...")
-//         defer { slLoadingManager.shared.hide() }
-//
-//         do {
-//             let data = try await api.fetchData()
-//             // 处理数据...
-//         } catch {
-//             slAlertManager.shared.show(.error, message: error.localizedDescription)
+//             do {
+//                 let data = try await api.fetchData()
+//                 // handle data...
+//             } catch {
+//                 // handle error...
+//             }
 //         }
 //     }
 //
@@ -57,39 +39,50 @@
 
 import SwiftUI
 
+/// Page Loading State
+struct slPageLoadingState {
+    var isShowing: Bool = false
+    var message: String = "Loading..."
+    var systemImage: String? = nil
+}
+
+/// Page Identifier - Add your page cases here
+enum slLoadingPage: String {
+    case home
+    case settings
+    case profile
+    // Add more pages as needed
+}
+
 @MainActor
 @Observable
 final class slLoadingManager {
     static let shared = slLoadingManager()
 
-    // MARK: - 状态
-
-    private(set) var isShowing = false
-    private(set) var message = "加载中..."
-    private(set) var systemImage: String? = nil
+    // Page-level Loading states
+    private var pageStates: [slLoadingPage: slPageLoadingState] = [:]
 
     private init() {}
 
-    // MARK: - 公开方法
+    // MARK: - Page-level Loading
 
-    /// 显示 Loading（使用系统图标）
-    func show(message: String = "加载中...", systemImage: String? = nil) {
-        self.message = message
-        self.systemImage = systemImage
-        withAnimation(.easeInOut(duration: 0.2)) {
-            isShowing = true
-        }
+    /// Show page Loading
+    func show(page: slLoadingPage, message: String = "Loading...", systemImage: String? = nil) {
+        pageStates[page] = slPageLoadingState(isShowing: true, message: message, systemImage: systemImage)
     }
 
-    /// 更新 Loading 消息
-    func updateMessage(_ message: String) {
-        self.message = message
+    /// Update page Loading message
+    func updateMessage(page: slLoadingPage, message: String) {
+        pageStates[page]?.message = message
     }
 
-    /// 隐藏 Loading
-    func hide() {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            isShowing = false
-        }
+    /// Hide page Loading
+    func hide(page: slLoadingPage) {
+        pageStates[page]?.isShowing = false
+    }
+
+    /// Get page Loading state
+    func state(for page: slLoadingPage) -> slPageLoadingState {
+        pageStates[page] ?? slPageLoadingState()
     }
 }

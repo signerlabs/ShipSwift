@@ -15,6 +15,7 @@ struct ShipSwiftApp: App {
         WindowGroup {
             slRootTabView()
                 .environment(storeManager)
+                .slAlert()
         }
     }
 }

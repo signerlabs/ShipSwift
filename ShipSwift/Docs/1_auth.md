@@ -381,29 +381,586 @@ do {
 | Access Token | Cognito API | 1 小时 | 如更新用户属性、删除用户 |
 | Refresh Token | 刷新 Token | 30 天 | 用于获取新的 ID/Access Token |
 
+### ID Token vs Access Token 最佳实践
+
+**⚠️ 重要：API 认证应使用 ID Token，不是 Access Token**
+
+| 特性 | ID Token | Access Token |
+|------|----------|--------------|
+| 用途 | API 认证（推荐） | Cognito API 调用 |
+| `aud` claim | Client ID | "access" |
+| API Gateway 验证 | ✅ 通过 | ❌ 失败（401） |
+
+**为什么使用 ID Token？**
+
+API Gateway JWT Authorizer 配置了 `jwtAudience: [clientId]`，会验证 token 的 `aud` claim：
+- ID Token 的 `aud` = Client ID → 验证通过
+- Access Token 的 `aud` = "access" → 验证失败
+
+**iOS 代码示例**：
+
+```swift
+// ✅ 正确：使用 ID Token 调用业务 API
+let response = try await apiClient.request(
+    endpoint,
+    idToken: tokens.idToken
+)
+
+// ❌ 错误：使用 Access Token 会导致 401
+let response = try await apiClient.request(
+    endpoint,
+    accessToken: tokens.accessToken  // 不要这样做！
+)
+```
+
+**何时使用 Access Token？**
+
+仅在调用 Cognito User Pool API 时使用：
+
+```swift
+// 调用 Cognito API 更新用户属性
+await cognitoService.updateUserAttributes(
+    accessToken: tokens.accessToken,  // 这里用 Access Token
+    attributes: [...]
+)
+
+// 删除 Cognito 用户
+try await Amplify.Auth.deleteUser()  // SDK 内部使用 Access Token
+```
+
+### iOS tRPC 客户端最佳实践
+
+#### 响应格式处理
+
+tRPC 使用 superjson 序列化，响应数据包装在 `json` 字段中：
+
+```json
+// tRPC 实际响应格式
+{
+  "result": {
+    "data": {
+      "json": {
+        "onboardingCompleted": false
+      }
+    }
+  }
+}
+```
+
+**iOS 解码模型**：
+
+```swift
+/// tRPC 响应格式 (使用 superjson 序列化)
+struct TRPCResponse<T: Decodable>: Decodable {
+    let result: TRPCResult<T>
+}
+
+struct TRPCResult<T: Decodable>: Decodable {
+    let data: TRPCData<T>
+}
+
+struct TRPCData<T: Decodable>: Decodable {
+    let json: T  // ⚠️ 关键：数据在 json 字段内
+}
+
+// 使用示例
+let response: TRPCResponse<OnboardingStatus> = try JSONDecoder().decode(...)
+let status = response.result.data.json  // 访问实际数据
+```
+
+#### POST 请求 Content-Type
+
+tRPC mutation（POST 请求）必须设置 `Content-Type: application/json`，即使没有请求体：
+
+```swift
+/// 无参数的 tRPC mutation
+func post<T: Decodable>(_ endpoint: Endpoint, idToken: String) async throws -> T {
+    // ⚠️ 必须发送空 JSON body，否则会返回 415 Unsupported Media Type
+    let emptyBody = "{}".data(using: .utf8)
+    return try await request(endpoint, body: emptyBody, idToken: idToken)
+}
+```
+
+**常见错误**：
+
+| 错误 | 原因 | 解决方案 |
+|------|------|----------|
+| 415 Unsupported Media Type | POST 请求没有 Content-Type | 发送空 JSON body `{}` |
+| 解码失败 keyNotFound | 没有处理 superjson 的 `json` 包装 | 添加 `TRPCData` 中间层 |
+
 ---
 
-## Apple Developer 配置步骤
+## 完整配置流程
 
-1. **创建 App ID**
-   - 登录 Apple Developer Console
-   - Certificates, Identifiers & Profiles → Identifiers
-   - 创建 App ID，启用 "Sign in with Apple"
+### 配置概览
 
-2. **创建 Services ID**
-   - 创建新的 Services ID（用于 Web/Cognito）
-   - 配置 "Sign in with Apple"
-   - Domains: `your-cognito-domain.auth.region.amazoncognito.com`
-   - Return URLs: `https://your-cognito-domain.auth.region.amazoncognito.com/oauth2/idpresponse`
+配置 Cognito + Apple Sign In 需要完成以下步骤：
 
-3. **创建 Key**
-   - Keys → 创建新 Key
-   - 启用 "Sign in with Apple"
-   - 下载 `.p8` 私钥文件（只能下载一次）
-   - 记录 Key ID
+| 步骤 | 平台 | 说明 |
+|------|------|------|
+| 1 | Apple Developer | 创建 App ID、Services ID、Key |
+| 2 | AWS CDK | 部署 Cognito User Pool |
+| 3 | Apple Developer | 配置 Return URL（需要 Cognito Domain） |
+| 4 | AWS Secrets Manager | 上传 Apple 私钥 |
+| 5 | iOS Xcode | 配置 SPM、Capabilities、URL Scheme |
+| 6 | iOS 项目 | 添加 amplifyconfiguration.json |
 
-4. **获取 Team ID**
-   - 在 Membership 页面查看
+---
+
+### 步骤 1: Apple Developer 配置
+
+登录 [Apple Developer Console](https://developer.apple.com) → `Certificates, Identifiers & Profiles`
+
+#### 1.1 创建 App ID
+
+1. `Identifiers` → 点击 `+` → 选择 `App IDs` → Continue
+2. 选择 `App` → Continue
+3. 填写：
+   - Description: `My App`
+   - Bundle ID: `com.yourcompany.myapp`（与 Xcode 中一致）
+4. 勾选 `Sign in with Apple` → Continue → Register
+
+#### 1.2 创建 Services ID
+
+Services ID 用于 Web/Cognito OAuth 回调。
+
+1. `Identifiers` → 点击 `+` → 选择 `Services IDs` → Continue
+2. 填写：
+   - Description: `My App Auth Service`
+   - Identifier: `com.yourcompany.myapp.serviceid`（建议加 `.serviceid` 后缀区分）
+3. Continue → Register
+4. **先不要配置 Sign in with Apple**（需要等 Cognito 部署后获取 Domain）
+
+#### 1.3 创建 Key（私钥）
+
+1. `Keys` → 点击 `+`
+2. 填写 Key Name: `My App Sign In Key`
+3. 勾选 `Sign in with Apple` → Configure
+4. Primary App ID: 选择刚创建的 App ID
+5. Save → Continue → Register
+6. **⚠️ 立即下载 `.p8` 文件**（只能下载一次！）
+7. 记录 **Key ID**（如 `6J2QTCMPYH`）
+
+#### 1.4 获取 Team ID
+
+`Membership` 页面 → 复制 **Team ID**（如 `C6FPV8XHV8`）
+
+---
+
+### 步骤 2: 部署 AWS CDK
+
+确保 CDK 中的 Cognito 配置正确：
+
+```typescript
+// cognito-construct.ts
+const appleProvider = new cognito.UserPoolIdentityProviderApple(this, 'AppleIdp', {
+  userPool: this.userPool,
+  clientId: 'com.yourcompany.myapp.serviceid',  // Services ID
+  teamId: 'YOUR_TEAM_ID',
+  keyId: 'YOUR_KEY_ID',
+  privateKeyValue: props.appSecret.secretValueFromJson('AUTH_APPLE_PRIVATE_KEY'),
+  scopes: ['email', 'name'],
+  attributeMapping: {
+    email: cognito.ProviderAttribute.APPLE_EMAIL,
+    fullname: cognito.ProviderAttribute.APPLE_NAME,
+  },
+});
+```
+
+部署获取 Cognito Domain：
+
+```bash
+npx cdk deploy
+```
+
+部署完成后记录输出的 Cognito Domain（如 `myapp-auth.auth.us-east-1.amazoncognito.com`）
+
+---
+
+### 步骤 3: 配置 Apple Services ID 的 Return URL
+
+**⚠️ 这一步必须在 CDK 部署后进行**，因为需要 Cognito Domain。
+
+1. 回到 Apple Developer Console → `Identifiers` → 选择之前创建的 **Services ID**
+2. 勾选 `Sign in with Apple` → Configure
+3. 配置：
+
+| 字段 | 值 |
+|------|-----|
+| **Primary App ID** | 选择你的 App ID |
+| **Domains and Subdomains** | `myapp-auth.auth.us-east-1.amazoncognito.com` |
+| **Return URLs** | `https://myapp-auth.auth.us-east-1.amazoncognito.com/oauth2/idpresponse` |
+
+4. Next → Done → Continue → Save
+
+**注意**：
+- Domain 不带 `https://` 前缀
+- Return URL 必须带 `https://` 和完整路径 `/oauth2/idpresponse`
+- 可以配置多个 Domain/Return URL（开发、测试、生产环境）
+
+---
+
+### 步骤 4: 配置 AWS Secrets Manager
+
+将 Apple 私钥（.p8 文件内容）上传到 Secrets Manager：
+
+```bash
+# 查看当前 secrets
+aws secretsmanager get-secret-value --secret-id myapp/app-secrets --query SecretString --output text | jq
+
+# 更新私钥（注意换行符处理）
+# 方法1: 直接在 AWS Console 中编辑 AUTH_APPLE_PRIVATE_KEY 字段
+# 方法2: 使用 AWS CLI
+```
+
+私钥格式示例：
+```
+-----BEGIN PRIVATE KEY-----
+MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg...
+...
+-----END PRIVATE KEY-----
+```
+
+---
+
+### 步骤 5: iOS Xcode 配置
+
+#### 5.1 添加 SPM 依赖
+
+1. Xcode → File → Add Package Dependencies
+2. URL: `https://github.com/aws-amplify/amplify-swift`
+3. 添加产品：`Amplify`, `AWSCognitoAuthPlugin`, `AWSPluginsCore`
+
+#### 5.2 添加 Sign in with Apple Capability
+
+1. 选择项目 → Target → `Signing & Capabilities`
+2. 点击 `+ Capability`
+3. 搜索并添加 `Sign in with Apple`
+
+#### 5.3 配置 URL Scheme
+
+OAuth 回调需要 URL Scheme。
+
+**方法1: 通过 Xcode UI**
+1. Target → `Info` → `URL Types`
+2. 点击 `+` 添加：
+   - Identifier: `myapp`
+   - URL Schemes: `myapp`
+   - Role: `Editor`
+
+**方法2: 通过 Info.plist**
+
+在项目**根目录**创建 `Info.plist`（不是在源码目录，避免被自动同步复制）：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>myapp</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>myapp</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>
+```
+
+然后在 Build Settings 中设置 `INFOPLIST_FILE = Info.plist`
+
+---
+
+### 步骤 6: 添加 amplifyconfiguration.json
+
+在项目中创建 `amplifyconfiguration.json`（添加到 Xcode 项目中）：
+
+```json
+{
+  "auth": {
+    "plugins": {
+      "awsCognitoAuthPlugin": {
+        "CognitoUserPool": {
+          "Default": {
+            "PoolId": "us-east-1_XXXXXXXX",
+            "AppClientId": "xxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "Region": "us-east-1"
+          }
+        },
+        "Auth": {
+          "Default": {
+            "OAuth": {
+              "WebDomain": "myapp-auth.auth.us-east-1.amazoncognito.com",
+              "AppClientId": "xxxxxxxxxxxxxxxxxxxxxxxxxx",
+              "SignInRedirectURI": "myapp://callback",
+              "SignOutRedirectURI": "myapp://signout",
+              "Scopes": [
+                "email",
+                "openid",
+                "profile",
+                "aws.cognito.signin.user.admin"
+              ]
+            },
+            "authenticationFlowType": "USER_SRP_AUTH"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+**注意**：
+- `PoolId` 和 `AppClientId` 从 CDK 部署输出获取
+- `SignInRedirectURI` 和 `SignOutRedirectURI` 的 scheme 必须与 URL Scheme 一致
+- `aws.cognito.signin.user.admin` scope 用于删除账户功能
+
+---
+
+### 配置检查清单
+
+| 检查项 | 位置 | 状态 |
+|-------|------|------|
+| App ID 创建并启用 Sign in with Apple | Apple Developer | ⬜ |
+| Services ID 创建 | Apple Developer | ⬜ |
+| Key 创建并下载 .p8 文件 | Apple Developer | ⬜ |
+| CDK Cognito 部署完成 | AWS | ⬜ |
+| Services ID 配置 Domain 和 Return URL | Apple Developer | ⬜ |
+| AUTH_APPLE_PRIVATE_KEY 上传 | AWS Secrets Manager | ⬜ |
+| Amplify SDK 添加 | Xcode SPM | ⬜ |
+| Sign in with Apple Capability | Xcode | ⬜ |
+| URL Scheme 配置 | Xcode Info.plist | ⬜ |
+| amplifyconfiguration.json 添加 | iOS 项目 | ⬜ |
+
+---
+
+### 调试技巧
+
+#### 添加日志
+
+在 `AuthService` 中添加调试日志：
+
+```swift
+func signInWithApple(presentationAnchor: AuthUIPresentationAnchor) async throws -> AuthTokens {
+    debugLog("🍎 [AuthService] signInWithApple started")
+
+    do {
+        let result = try await Amplify.Auth.signInWithWebUI(
+            for: .apple,
+            presentationAnchor: presentationAnchor,
+            options: options
+        )
+        debugLog("🍎 [AuthService] signInWithWebUI returned, isSignedIn:", result.isSignedIn)
+        // ...
+    } catch {
+        debugLog("🍎 [AuthService] ❌ Error:", String(describing: error))
+        throw error
+    }
+}
+```
+
+#### 常见错误
+
+| 错误信息 | 原因 | 解决方案 |
+|---------|------|---------|
+| "未完成注册" | Return URL 未配置或错误 | 检查 Apple Services ID 的 Return URL |
+| "The Internet connection appears to be offline" | 网络问题或 Domain 配置错误 | 检查网络连接和 Domain 配置 |
+| "invalid_client" | Services ID 或私钥配置错误 | 检查 CDK 中的 clientId 和私钥 |
+
+---
+
+### 网络权限预请求
+
+**问题**：iOS 首次发起网络请求时会弹出网络权限弹窗。如果在 Apple 登录过程中才触发，用户授权后登录可能已经失败。
+
+**解决方案**：在 AuthView 显示时立即发起一个简单的网络请求，预先触发权限弹窗：
+
+```swift
+var body: some View {
+    NavigationStack {
+        // ...
+    }
+    .task {
+        // 预先触发网络权限请求
+        await prefetchNetworkPermission()
+    }
+}
+
+private func prefetchNetworkPermission() async {
+    guard let url = URL(string: "https://www.apple.com") else { return }
+    _ = try? await URLSession.shared.data(from: url)
+}
+```
+
+这样用户在看到登录界面时就会收到网络权限弹窗，授权后再点击登录就不会有问题。
+
+---
+
+## Google 登录配置
+
+### 配置概览
+
+配置 Cognito + Google Sign In 需要完成以下步骤：
+
+| 步骤 | 平台 | 说明 |
+|------|------|------|
+| 1 | Google Cloud Console | 创建项目、配置 OAuth 同意屏幕 |
+| 2 | Google Cloud Console | 创建 OAuth 2.0 客户端（Web 应用类型） |
+| 3 | AWS CDK | 配置 Google Identity Provider |
+| 4 | AWS Secrets Manager | 上传 Google Client Secret |
+| 5 | CDK 部署 | 部署更新 |
+
+---
+
+### 步骤 1: Google Cloud Console 创建项目
+
+1. 访问 [Google Cloud Console](https://console.cloud.google.com/)
+2. 创建新项目或选择现有项目
+3. 记录项目名称
+
+---
+
+### 步骤 2: 配置 OAuth 同意屏幕
+
+1. 导航到 `APIs & Services` → `OAuth consent screen`
+2. 用户类型选择 **External**
+3. 填写应用信息：
+   - App name: `My App`
+   - User support email: 选择你的邮箱
+   - Developer contact information: 填写邮箱
+4. 点击 `Save and Continue`
+5. Scopes 页面点击 `Add or Remove Scopes`，添加：
+   - `email`
+   - `profile`
+   - `openid`
+6. 点击 `Save and Continue`
+7. Test users 页面可以跳过（发布后所有用户可用）
+8. 点击 `Back to Dashboard`
+
+---
+
+### 步骤 3: 创建 OAuth 2.0 客户端
+
+1. 导航到 `APIs & Services` → `Credentials`
+2. 点击 `+ Create Credentials` → `OAuth client ID`
+3. 应用类型选择 **Web application**（⚠️ 不是 iOS）
+4. 填写：
+   - Name: `My App Cognito`
+   - Authorized redirect URIs: 添加 Cognito 回调 URL
+
+```
+https://myapp-auth.auth.us-east-1.amazoncognito.com/oauth2/idpresponse
+```
+
+5. 点击 `Create`
+6. 记录生成的：
+   - **Client ID**: `123456789-xxxxxx.apps.googleusercontent.com`
+   - **Client Secret**: `GOCSPX-xxxxxxxxxxxxxxxx`
+
+**⚠️ 注意**：
+- 必须选择 **Web application** 类型，不是 iOS 类型
+- Cognito 使用 Web OAuth 流程，即使是 iOS App 也需要 Web 类型的客户端
+- 回调 URL 中的 domain 需要与你的 Cognito Domain 一致
+
+---
+
+### 步骤 4: CDK 配置
+
+在 `cognito-construct.ts` 中添加 Google Identity Provider：
+
+```typescript
+// Google Identity Provider
+const googleProvider = new cognito.UserPoolIdentityProviderGoogle(
+  this,
+  'GoogleIdp',
+  {
+    userPool: this.userPool,
+    clientId: '123456789-xxxxxx.apps.googleusercontent.com',  // Google Client ID
+    clientSecretValue: props.appSecret.secretValueFromJson('AUTH_GOOGLE_CLIENT_SECRET'),
+    scopes: ['email', 'profile', 'openid'],
+    attributeMapping: {
+      email: cognito.ProviderAttribute.GOOGLE_EMAIL,
+      fullname: cognito.ProviderAttribute.GOOGLE_NAME,
+    },
+  }
+);
+
+// App Client 中添加 Google 支持
+this.userPoolClient = this.userPool.addClient('IOSClient', {
+  // ...
+  supportedIdentityProviders: [
+    cognito.UserPoolClientIdentityProvider.COGNITO,
+    cognito.UserPoolClientIdentityProvider.custom('SignInWithApple'),
+    cognito.UserPoolClientIdentityProvider.custom('Google'),  // 添加 Google
+  ],
+  // ...
+});
+
+// 确保依赖关系
+this.userPoolClient.node.addDependency(googleProvider);
+```
+
+---
+
+### 步骤 5: 配置 AWS Secrets Manager
+
+将 Google Client Secret 添加到 Secrets Manager：
+
+```bash
+# 获取当前 secret
+aws secretsmanager get-secret-value --secret-id myapp/app-secrets --query SecretString --output text
+
+# 更新 secret（添加 AUTH_GOOGLE_CLIENT_SECRET）
+# 方法1: 在 AWS Console 中直接编辑
+# 方法2: 使用 AWS CLI put-secret-value（需要包含所有字段）
+```
+
+Secret 中需要添加：
+```json
+{
+  "AUTH_GOOGLE_CLIENT_SECRET": "GOCSPX-xxxxxxxxxxxxxxxx"
+}
+```
+
+---
+
+### 步骤 6: 部署 CDK
+
+```bash
+npx cdk deploy
+```
+
+---
+
+### Google 登录配置检查清单
+
+| 检查项 | 位置 | 状态 |
+|-------|------|------|
+| Google Cloud 项目创建 | Google Cloud Console | ⬜ |
+| OAuth 同意屏幕配置 | Google Cloud Console | ⬜ |
+| OAuth 2.0 客户端创建（Web 应用类型） | Google Cloud Console | ⬜ |
+| Authorized redirect URI 配置 | Google Cloud Console | ⬜ |
+| CDK Google Provider 配置 | AWS CDK | ⬜ |
+| AUTH_GOOGLE_CLIENT_SECRET 上传 | AWS Secrets Manager | ⬜ |
+| CDK 部署完成 | AWS | ⬜ |
+
+---
+
+### Google 登录常见错误
+
+| 错误信息 | 原因 | 解决方案 |
+|---------|------|---------|
+| "redirect_uri_mismatch" | 回调 URL 不匹配 | 检查 Google Console 中的 Authorized redirect URIs |
+| "invalid_client" | Client ID 或 Secret 错误 | 检查 CDK 配置和 Secrets Manager |
+| "access_denied" | OAuth 同意屏幕未配置 | 配置 OAuth 同意屏幕并添加 scopes |
+| 选择账号后无响应 | 使用了 iOS 类型的客户端 | 创建 Web application 类型的客户端 |
 
 ---
 
@@ -429,3 +986,54 @@ do {
 - 处理业务逻辑（用户档案、订单等）
 - 从 JWT 中提取用户信息（userId, email）
 - 不处理认证逻辑
+
+---
+
+## 密码策略
+
+### 推荐配置（简化用户体验）
+
+默认采用简化的密码策略，只要求最小长度 8 位：
+
+```swift
+// slAuthViewConfig
+var minPasswordLength: Int = 8
+var requireStrongPassword: Bool = false  // 不要求大小写和数字
+```
+
+### CDK Cognito 配置
+
+```typescript
+passwordPolicy: {
+  minLength: 8,
+  requireLowercase: false,
+  requireUppercase: false,
+  requireDigits: false,
+  requireSymbols: false,
+},
+```
+
+### 如需启用强密码
+
+如果业务需要更高安全性，可以启用强密码：
+
+```swift
+// iOS 客户端
+AuthViewConfig(
+    minPasswordLength: 8,
+    requireStrongPassword: true  // 要求包含大小写和数字
+)
+```
+
+```typescript
+// CDK Cognito
+passwordPolicy: {
+  minLength: 8,
+  requireLowercase: true,
+  requireUppercase: true,
+  requireDigits: true,
+  requireSymbols: false,
+},
+```
+
+**注意**：iOS 客户端的密码验证规则必须与 Cognito 配置一致，否则可能出现客户端验证通过但 Cognito 拒绝的情况。
