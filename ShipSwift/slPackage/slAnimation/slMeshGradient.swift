@@ -16,11 +16,22 @@ struct slMeshGradient: View {
             .init(0, 0), .init(0.5, 0), .init(1, 0),
             .init(0, 0.5), .init(0.5, 0.5), .init(1, 0.5),
             .init(0, 1), .init(0.5, 1), .init(1, 1)
-        ], colors: [
-            .mint.opacity(0.6), .cyan.opacity(0.6), .yellow.opacity(0.6),
-            .brown.opacity(0.6), .blue.opacity(0.6), .green.opacity(0.6),
-            .gray.opacity(0.6), .blue.opacity(0.6), .teal.opacity(0.6)
+        ], colors: appear ? [
+            // appear = true 时的颜色（indigo/blue/cyan）
+            .indigo.opacity(0.9),  .blue.opacity(0.85),   .cyan.opacity(0.8),
+            .blue.opacity(0.85),   .indigo.opacity(0.9),  .blue.opacity(0.85),
+            .cyan.opacity(0.8),    .blue.opacity(0.85),   .indigo.opacity(0.9)
+        ] : [
+            // appear = false 时的颜色（indigo/blue/cyan）
+            .cyan.opacity(0.8),    .indigo.opacity(0.9),  .blue.opacity(0.85),
+            .indigo.opacity(0.85), .blue.opacity(0.9),    .cyan.opacity(0.85),
+            .blue.opacity(0.85),   .cyan.opacity(0.8),    .indigo.opacity(0.9)
         ])
+        .onAppear {
+            withAnimation(.easeInOut(duration: 5).repeatForever(autoreverses: true)) {
+                appear = true
+            }
+        }
     }
 }
 
