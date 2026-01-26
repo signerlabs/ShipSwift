@@ -9,6 +9,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 // MARK: - Message List View
 
@@ -124,25 +125,23 @@ public struct SLMessageBubble<Content: View>: View {
 
 // MARK: - Preview
 
+private struct PreviewMessage: Identifiable {
+    let id = UUID()
+    let content: String
+    let isUser: Bool
+}
+
 #Preview("Message List") {
-    struct DemoMessage: Identifiable {
-        let id = UUID()
-        let content: String
-        let isUser: Bool
-    }
-
-    let messages = [
-        DemoMessage(content: "Hello!", isUser: true),
-        DemoMessage(content: "Hi there! How can I help you today?", isUser: false),
-        DemoMessage(content: "I have a question about SwiftUI performance.", isUser: true),
-        DemoMessage(content: "Sure, I'd be happy to help! What would you like to know about SwiftUI performance optimization?", isUser: false),
-    ]
-
-    SLMessageList(messages: messages) { message in
+    SLMessageList(messages: [
+        PreviewMessage(content: "Hello!", isUser: true),
+        PreviewMessage(content: "Hi there! How can I help you today?", isUser: false),
+        PreviewMessage(content: "I have a question about SwiftUI performance.", isUser: true),
+        PreviewMessage(content: "Sure, I'd be happy to help! What would you like to know about SwiftUI performance optimization?", isUser: false),
+    ]) { message in
         SLMessageBubble(isFromUser: message.isUser) {
             Text(message.content)
                 .padding(12)
-                .background(message.isUser ? Color.accentColor : Color(uiColor: .systemGray6))
+                .background(message.isUser ? Color.accentColor : Color(UIColor.systemGray6))
                 .foregroundStyle(message.isUser ? .white : .primary)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
         }

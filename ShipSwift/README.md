@@ -12,53 +12,19 @@ ShipSwift 包含两个核心部分：
 
 | 目录 | 说明 |
 |------|------|
-| `slAnimation/` | 动画组件（滚动FAQ、Rive加载器、摇晃效果、渐变、扫描动画等） |
-| `slComponent/` | UI组件（步进器、图表、Onboarding、Tab按钮、Loading等） |
-| `slASR/` | 语音识别（火山引擎ASR服务、聊天输入框） |
+| `slAnimation/` | 动画组件（扫描动画、渐变、Rive加载器、摇晃效果等） |
+| `slComponent/` | UI组件（活动热力图、旋转引用、图表、Loading等） |
+| `slChat/` | 聊天组件（语音识别、消息列表等） |
 | `slManager/` | 管理类（状态管理、数据管理等） |
 | `slConfig/` | 配置相关 |
 | `slUtil/` | 工具类 |
-| `slView/` | 视图组件 |
+| `slView/` | 视图组件（Auth、Onboarding、Setting等） |
 
-### 常用组件示例
+### 常用组件
 
-#### slImageScanOverlay - 图片扫描动画
-
-叠加在任意图片上，实现科技感十足的扫描效果（AI 处理、图片分析等场景）。
-
-```swift
-import SwiftUI
-
-// 基础用法
-Image(uiImage: processingImage)
-    .resizable()
-    .scaledToFit()
-    .overlay {
-        slImageScanOverlay()
-    }
-
-// 自定义参数
-Image(uiImage: scanImage)
-    .resizable()
-    .scaledToFit()
-    .overlay {
-        slImageScanOverlay(
-            gridOpacity: 0.3,      // 网格透明度
-            bandOpacity: 0.5,      // 光带透明度
-            bandHeightRatio: 0.15, // 光带高度
-            gridSpacing: 20,       // 网格密度
-            speed: 3.0             // 扫描速度
-        )
-    }
-```
-
-**特性：**
-- ✅ 动态网格（轻微流动效果）
-- ✅ 循环扫描光带（从上到下）
-- ✅ 轻量级噪点（真实感）
-- ✅ 所有参数可自定义
-- ✅ 高性能（Canvas + TimelineView）
-- ✅ 无需额外图片资源
+- **slImageScanOverlay** - 图片扫描动画，AI 处理、图片分析场景
+- **slRotatingQuote** - 旋转引用文本，设置页底部展示名人名言
+- **slActivityHeatmap** - 活动热力图，展示连续打卡和活动记录
 
 ### 2. 开发文档 (`docs/`)
 
