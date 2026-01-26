@@ -32,9 +32,9 @@ struct slLabelWithIcon: View {
 }
 
 struct slLabelWithImage: View {
-    var image: String = "Journey Logo"
+    var image: ImageResource
     var name: LocalizedStringResource = "Name"
-    
+
     var body: some View {
         HStack {
             Image(image)
@@ -52,6 +52,6 @@ struct slLabelWithImage: View {
 #Preview {
     VStack {
         slLabelWithIcon()
-        slLabelWithImage()
+        // slLabelWithImage(image: .journeyLogo)
     }
 }

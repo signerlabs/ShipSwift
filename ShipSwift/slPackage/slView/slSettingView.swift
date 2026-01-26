@@ -25,6 +25,11 @@ struct slSettingView: View {
     private let termsURL = URL(string: "https://example.com/terms")!
     private let privacyURL = URL(string: "https://example.com/privacy")!
 
+    // App Store URLs（示例，请替换为实际 URL）
+    private let appStoreFullpack = "https://apps.apple.com/us/app/fullpack-packing-outfit/id6745692929"
+    private let appStoreBrushmo = "https://apps.apple.com/us/app/brushmo/id6744569822"
+    private let appStoreJourney = "https://apps.apple.com/us/app/journey-goal-tracker-diary/id6748666816"
+
     /// App 版本号
     private var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
@@ -81,6 +86,23 @@ struct slSettingView: View {
                         }
                     }
                 }
+
+                // MARK: - 我的应用
+                // 使用前需要：
+                // 1. 将对应的 Logo 图片资源添加到项目的 Assets.xcassets 中
+                // 2. 确保资源命名为 "Fullpack Logo", "Brushmo Logo", "Journey Logo"（会自动转换为 .fullpackLogo 等）
+                // 3. 取消下面的注释
+                // Section("My Apps") {
+                //     Link(destination: URL(string: appStoreFullpack)!) {
+                //         slLabelWithImage(image: .fullpackLogo, name: "Fullpack - Packing & Outfit")
+                //     }
+                //     Link(destination: URL(string: appStoreBrushmo)!) {
+                //         slLabelWithImage(image: .brushmoLogo, name: "Brushmo - Oral Health Companion")
+                //     }
+                //     Link(destination: URL(string: appStoreJourney)!) {
+                //         slLabelWithImage(image: .journeyLogo, name: "Journey - Goal Tracker & Diary")
+                //     }
+                // }
 
                 // MARK: - 账户操作
                 Section {
