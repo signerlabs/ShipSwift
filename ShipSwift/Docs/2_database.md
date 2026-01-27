@@ -201,3 +201,82 @@ npx drizzle-kit status
 ```
 
 迁移文件位置: `drizzle/migrations/`
+
+## 迁移最佳实践
+
+### 核心原则
+
+1. **始终使用 `drizzle-kit generate`** 生成迁移文件，避免手动创建
+2. **一个表只在一个迁移中创建**，不要在多个迁移文件中重复定义
+3. **检查 `_journal.json` 时间戳**，确保时间戳严格递增
+
+### 幂等 SQL 写法
+
+手动创建迁移时，必须使用幂等语句，确保重复执行不会失败：
+
+```sql
+-- ✅ 正确：使用 IF NOT EXISTS
+CREATE TABLE IF NOT EXISTS "appointments" (
+  "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  "user_id" uuid NOT NULL,
+  "name" varchar(100) NOT NULL
+);
+
+-- ✅ 正确：索引使用 IF NOT EXISTS
+CREATE INDEX IF NOT EXISTS "idx_user_id" ON "appointments" ("user_id");
+
+-- ✅ 正确：约束使用异常处理
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'appointments_user_id_fk'
+  ) THEN
+    ALTER TABLE "appointments" ADD CONSTRAINT "appointments_user_id_fk"
+    FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade;
+  END IF;
+END $$;
+
+-- ❌ 错误：直接 ALTER TABLE 会在重复执行时失败
+ALTER TABLE "appointments" ADD CONSTRAINT "appointments_user_id_fk" ...
+```
+
+### Drizzle 迁移机制
+
+Drizzle 在数据库中维护 `__drizzle_migrations` 表跟踪已执行的迁移：
+
+```sql
+-- 查看迁移记录
+SELECT * FROM drizzle.__drizzle_migrations;
+```
+
+**注意事项：**
+- 迁移按 `_journal.json` 中的 `idx` 顺序执行
+- 如果迁移 hash 已存在，即使 SQL 执行失败，drizzle 也会跳过
+- 日志显示 "Migrations completed successfully" 不代表 SQL 真正执行成功
+
+### 常见问题排查
+
+| 问题 | 原因 | 解决方案 |
+|------|------|----------|
+| 迁移显示成功但表不存在 | 迁移记录已存在，被跳过 | 创建新的幂等迁移文件 |
+| `_journal.json` 时间戳乱序 | 手动创建迁移时时间戳错误 | 确保新迁移时间戳大于前一个 |
+| `duplicate_object` 错误 | 约束已存在 | 使用 `DO $$ ... EXCEPTION` 包装 |
+| 多个迁移创建同一个表 | 迁移文件重复 | 删除重复的迁移，只保留一个 |
+
+### 修复迁移问题
+
+当迁移状态混乱时，创建修复迁移：
+
+```sql
+-- 0004_fix_table.sql
+-- 使用完全幂等的语句，无论之前状态如何都能正确执行
+
+CREATE TABLE IF NOT EXISTS "my_table" (...);
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'my_fk') THEN
+    ALTER TABLE "my_table" ADD CONSTRAINT "my_fk" ...;
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS "my_idx" ON "my_table" (...);
+```
