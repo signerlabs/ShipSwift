@@ -19,6 +19,7 @@ import UIKit
 /// - 使用 `List` 代替 `ScrollView + LazyVStack`，避免布局计算无限循环
 /// - 使用 `ScrollViewReader` 实现滚动到底部
 /// - 消息气泡使用 `.frame(maxWidth: .infinity)` 固定宽度
+/// - 流式回复时使用 `asyncAfter` 延迟 + 动画，避免滚动冲突
 ///
 /// 错误示例（会导致 CPU 100%）：
 /// ```swift
@@ -45,15 +46,25 @@ import UIKit
 /// ```
 public struct SLMessageList<Message: Identifiable, Content: View>: View {
     let messages: [Message]
+    let isStreaming: Bool
+    let lastMessageContent: String?
     let content: (Message) -> Content
 
-    @State private var scrollProxy: ScrollViewProxy?
-
+    /// 初始化消息列表
+    /// - Parameters:
+    ///   - messages: 消息数组
+    ///   - isStreaming: 是否正在流式输出（用于触发滚动）
+    ///   - lastMessageContent: 最后一条消息的内容（用于流式滚动检测）
+    ///   - content: 消息视图构建器
     public init(
         messages: [Message],
+        isStreaming: Bool = false,
+        lastMessageContent: String? = nil,
         @ViewBuilder content: @escaping (Message) -> Content
     ) {
         self.messages = messages
+        self.isStreaming = isStreaming
+        self.lastMessageContent = lastMessageContent
         self.content = content
     }
 
@@ -72,20 +83,38 @@ public struct SLMessageList<Message: Identifiable, Content: View>: View {
             .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(.immediately)
             .defaultScrollAnchor(.bottom)
-            .onAppear {
-                scrollProxy = proxy
-            }
-            .onChange(of: messages.count) {
-                scrollToBottom()
+            .onChange(of: lastMessageContent) {
+                // 流式回复时，内容增长触发滚动
+                if isStreaming {
+                    scrollToBottom(proxy: proxy)
+                }
             }
         }
     }
 
     /// 滚动到底部
-    public func scrollToBottom() {
+    ///
+    /// 最佳实践：
+    /// - 使用 `asyncAfter` 延迟 0.2s，等待渲染完成
+    /// - 使用 `withAnimation` 0.3s 平滑滚动
+    /// - UI 更新间隔建议 1s，确保动画不冲突
+    ///
+    /// 时序图：
+    /// ```
+    /// |--0.2s--|---0.3s 动画---|-------0.5s 空闲-------|
+    ///   延迟       滚动动画            等待下次更新
+    ///
+    /// |<------------------- 1s 更新周期 ----------------->|
+    /// ```
+    ///
+    /// 参考：https://developer.apple.com/forums/thread/735479
+    private func scrollToBottom(proxy: ScrollViewProxy) {
         guard let lastMessage = messages.last else { return }
-        withAnimation(.easeOut(duration: 0.3)) {
-            scrollProxy?.scrollTo(lastMessage.id, anchor: .bottom)
+        // asyncAfter 加延迟，保留动画效果
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            withAnimation(.easeOut(duration: 0.3)) {
+                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+            }
         }
     }
 }

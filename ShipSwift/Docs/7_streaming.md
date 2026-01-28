@@ -522,7 +522,7 @@ class ChatManager {
             // 使用临时变量收集内容，减少 UI 更新频率
             var pendingContent = ""
             var lastUpdateTime = Date()
-            let updateInterval: TimeInterval = 0.1 // 100ms 更新一次
+            let updateInterval: TimeInterval = 1.0 // 1s 更新一次（避免滚动动画冲突）
 
             for try await event in stream {
                 switch event {
@@ -658,10 +658,10 @@ if message.content.isEmpty {
 **性能优化：减少 UI 更新频率**
 
 ```swift
-// 使用临时变量收集内容，每 100ms 更新一次 UI
+// 使用临时变量收集内容，每 1s 更新一次 UI
 var pendingContent = ""
 var lastUpdateTime = Date()
-let updateInterval: TimeInterval = 0.1
+let updateInterval: TimeInterval = 1.0
 
 for try await event in stream {
     case .textDelta(let text):
@@ -669,7 +669,7 @@ for try await event in stream {
 
         let now = Date()
         if now.timeIntervalSince(lastUpdateTime) >= updateInterval {
-            // 每 100ms 批量更新
+            // 每 1s 批量更新（避免滚动动画冲突）
             messages[index].content += pendingContent
             pendingContent = ""
             lastUpdateTime = now
@@ -683,6 +683,73 @@ for try await event in stream {
 |------|-------------|--------|---------|
 | ❌ 分离渲染 | 纯文本 | Markdown | 突然切换，体验差 |
 | ✅ 统一渲染 | Markdown | Markdown | 流畅过渡，体验好 |
+
+### 4. 流式滚动最佳实践
+
+**问题：** 流式回复时，内容不断增长，需要自动滚动到底部。但 SwiftUI 的 `ScrollViewReader.scrollTo()` 动画存在已知 Bug。
+
+**常见问题：**
+- `DispatchQueue.main.async` 内部的 `withAnimation` 会丢失动画上下文
+- 更新间隔太短（如 100ms）会导致动画叠加冲突
+- iOS 17 以下动画效果不稳定
+
+**最佳实践：**
+
+```swift
+// View/Chat/ChatView.swift
+private var messageList: some View {
+    ScrollViewReader { proxy in
+        List {
+            ForEach(chatManager.messages) { message in
+                MessageBubble(message: message)
+                    .id(message.id)
+            }
+        }
+        .onChange(of: chatManager.messages.last?.content) {
+            // 流式回复时，内容增长触发滚动
+            if chatManager.isStreaming {
+                scrollToBottom(proxy: proxy)
+            }
+        }
+        .defaultScrollAnchor(.bottom)
+    }
+}
+
+private func scrollToBottom(proxy: ScrollViewProxy) {
+    guard let lastMessage = chatManager.messages.last else { return }
+    // asyncAfter 加延迟，保留动画效果
+    // https://developer.apple.com/forums/thread/735479
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        withAnimation(.easeOut(duration: 0.3)) {
+            proxy.scrollTo(lastMessage.id, anchor: .bottom)
+        }
+    }
+}
+```
+
+**关键参数配置：**
+
+| 参数 | 推荐值 | 说明 |
+|------|--------|------|
+| UI 更新间隔 | 1.0s | 减少更新频率，避免动画冲突 |
+| asyncAfter 延迟 | 0.2s | 等待渲染完成，保留动画效果 |
+| 滚动动画时长 | 0.3s | 平滑滚动，不卡顿 |
+| 富余时间 | 0.5s | 1.0 - 0.2 - 0.3 = 0.5s，确保不冲突 |
+
+**时序图：**
+
+```
+|--0.2s--|---0.3s 动画---|-------0.5s 空闲-------|
+  延迟       滚动动画            等待下次更新
+
+|<------------------- 1s 更新周期 ----------------->|
+```
+
+**为什么不用 `scrollPosition` API？**
+
+iOS 18 的 `scrollPosition` 是更现代的滚动 API，但**不支持 List**，只支持 `ScrollView`。如果使用 List，仍需使用 `ScrollViewReader`。
+
+> 参考：[Apple Developer Forums - scrollTo Animation Issue](https://developer.apple.com/forums/thread/735479)
 
 ---
 
