@@ -189,6 +189,8 @@ export async function getDb() {
 
 ## 迁移管理
 
+### 本地开发
+
 ```bash
 # 生成迁移文件
 npx drizzle-kit generate
@@ -200,7 +202,87 @@ npx drizzle-kit migrate
 npx drizzle-kit status
 ```
 
-迁移文件位置: `drizzle/migrations/`
+迁移文件位置: `drizzle/`
+
+### 生产环境迁移（推荐：应用启动时迁移）
+
+**推荐在应用启动时自动执行迁移**，而不是使用 Lambda 或 CI/CD 流水线。
+
+```typescript
+// src/lib/migrate.ts
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import { getDb } from "../../lib/db/client.js";
+import { logger } from "./logger.js";
+import * as path from "path";
+import * as fs from "fs";
+
+function getMigrationsFolder(): string {
+  const possiblePaths = [
+    path.resolve(__dirname, "../../../drizzle"),  // 生产环境
+    path.resolve(__dirname, "../../drizzle"),     // 开发环境
+    path.resolve(process.cwd(), "drizzle"),       // 相对于 cwd
+  ];
+
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) return p;
+  }
+  return possiblePaths[0]!;
+}
+
+export async function runMigrations(): Promise<void> {
+  const migrationsFolder = getMigrationsFolder();
+
+  // 列出迁移文件（调试用）
+  const files = fs.readdirSync(migrationsFolder)
+    .filter(f => f.endsWith('.sql'))
+    .sort();
+  logger.info({ folder: migrationsFolder, count: files.length }, "[Migrate] Files found");
+
+  // 执行迁移
+  const db = await getDb();
+  await migrate(db, { migrationsFolder });
+  logger.info("[Migrate] Completed successfully");
+}
+```
+
+```typescript
+// src/server.ts
+import { runMigrations } from "./lib/migrate.js";
+
+async function startServer() {
+  // 1. 执行数据库迁移
+  try {
+    await runMigrations();
+  } catch (err) {
+    logger.error({ err }, "[Startup] Migration failed, continuing...");
+  }
+
+  // 2. 启动 HTTP 服务
+  serve({ fetch: app.fetch, port });
+}
+
+startServer();
+```
+
+**为什么推荐应用启动时迁移：**
+
+| 方案 | 优点 | 缺点 |
+|------|------|------|
+| **应用启动时迁移** ✅ | 迁移文件随代码部署，无打包问题 | 迁移失败可能阻止启动 |
+| Lambda 自定义资源 | 与 CDK 部署集成 | 打包机制复杂，容易出错 |
+| CI/CD 流水线 | 迁移与部署解耦 | 需要额外的基础设施访问配置 |
+
+**App Runner 部署流程：**
+
+```
+git push origin main
+    ↓
+App Runner 自动构建和部署
+    ↓
+应用启动时执行迁移（drizzle migrate）
+    ↓
+启动 HTTP 服务
+```
 
 ## 迁移最佳实践
 
@@ -212,9 +294,13 @@ npx drizzle-kit status
 
 ### 幂等 SQL 写法
 
-手动创建迁移时，必须使用幂等语句，确保重复执行不会失败：
+**drizzle-kit 生成的 SQL 默认不是幂等的**，手动修改或创建迁移时必须使用幂等语句：
 
 ```sql
+-- ========================================
+-- 创建表
+-- ========================================
+
 -- ✅ 正确：使用 IF NOT EXISTS
 CREATE TABLE IF NOT EXISTS "appointments" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
@@ -222,10 +308,53 @@ CREATE TABLE IF NOT EXISTS "appointments" (
   "name" varchar(100) NOT NULL
 );
 
--- ✅ 正确：索引使用 IF NOT EXISTS
+-- ========================================
+-- 添加列
+-- ========================================
+
+-- ✅ 正确：使用异常处理
+DO $$ BEGIN
+  ALTER TABLE "users" ADD COLUMN "identity_id" varchar(255) UNIQUE;
+EXCEPTION
+  WHEN duplicate_column THEN null;
+END $$;
+
+-- ❌ 错误：重复执行会失败
+ALTER TABLE "users" ADD COLUMN "identity_id" varchar(255);
+
+-- ========================================
+-- 重命名列
+-- ========================================
+
+-- ✅ 正确：使用异常处理
+DO $$ BEGIN
+  ALTER TABLE "user_profiles" RENAME COLUMN "old_name" TO "new_name";
+EXCEPTION
+  WHEN undefined_column THEN null;
+END $$;
+
+-- ========================================
+-- 添加枚举值
+-- ========================================
+
+-- ✅ 正确：使用 IF NOT EXISTS（PostgreSQL 9.3+）
+ALTER TYPE "public"."status_enum" ADD VALUE IF NOT EXISTS 'new_status';
+
+-- ❌ 错误：drizzle-kit 默认生成的（重复执行会失败）
+ALTER TYPE "public"."status_enum" ADD VALUE 'new_status';
+
+-- ========================================
+-- 创建索引
+-- ========================================
+
+-- ✅ 正确：使用 IF NOT EXISTS
 CREATE INDEX IF NOT EXISTS "idx_user_id" ON "appointments" ("user_id");
 
--- ✅ 正确：约束使用异常处理
+-- ========================================
+-- 添加外键约束
+-- ========================================
+
+-- ✅ 正确：检查约束是否存在
 DO $$ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_constraint WHERE conname = 'appointments_user_id_fk'
@@ -234,10 +363,9 @@ DO $$ BEGIN
     FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade;
   END IF;
 END $$;
-
--- ❌ 错误：直接 ALTER TABLE 会在重复执行时失败
-ALTER TABLE "appointments" ADD CONSTRAINT "appointments_user_id_fk" ...
 ```
+
+**重要提示：** drizzle-kit generate 生成的迁移文件需要手动检查并添加幂等语法。
 
 ### Drizzle 迁移机制
 
