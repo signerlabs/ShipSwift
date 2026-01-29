@@ -136,8 +136,13 @@ final class slUserManager {
     /// 是否正在进行认证操作
     var isAuthenticating = false
 
-    /// 是否为首次启动
-    var isFirstLaunch: Bool = false
+    /// 是否为首次启动（存储属性，@Observable 可追踪）
+    var isFirstLaunch: Bool = false {
+        didSet {
+            // 注意：存储的是"是否已完成首次启动"，所以取反
+            UserDefaults.standard.set(!isFirstLaunch, forKey: StorageKey.isFirstLaunch.rawValue)
+        }
+    }
 
     private let authService = slAuthService.shared
 
@@ -177,8 +182,7 @@ final class slUserManager {
     // MARK: - 公开方法
 
     func completeFirstLaunch() {
-        UserDefaults.standard.set(true, forKey: StorageKey.isFirstLaunch.rawValue)
-        isFirstLaunch = false
+        isFirstLaunch = false  // didSet 自动同步到 UserDefaults
     }
 
     // MARK: - 认证状态检查
