@@ -4,7 +4,7 @@
 
 ## 架构概览
 
-采用 **客户端直连 Cognito + API Gateway JWT 验证** 架构：
+采用 **客户端直连 Cognito + API Gateway JWT 验证** 架构，同时支持匿名访客模式：
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -15,7 +15,7 @@
 │  └────────┬────────┘              └────────────┬────────────┘   │
 └───────────┼────────────────────────────────────┼────────────────┘
             │                                    │
-            ▼ 直连认证                           ▼ Bearer Token
+            ▼ 直连认证                           ▼ Bearer Token / Identity ID
     ┌───────────────┐                   ┌─────────────────────┐
     │    Cognito    │◄──────────┐       │   API Gateway       │
     │   User Pool   │           │       │  (JWT Authorizer)   │
@@ -28,6 +28,11 @@
     │  Providers    │                   └─────────────────────┘
     │ Apple/Google  │
     └───────────────┘
+
+    ┌───────────────┐
+    │ Identity Pool │  ◄── 支持匿名访客 (Unauthenticated)
+    │ (可选)        │      访客也能获得唯一 Identity ID
+    └───────────────┘
 ```
 
 ### 核心优势
@@ -38,6 +43,258 @@
 4. **简化后端**：后端只处理业务逻辑，不涉及认证
 
 > CDK 配置详见 [0_cdk.md](0_cdk.md#4-cognito--api-gateway)
+
+---
+
+## 匿名登录（访客模式）
+
+使用 Cognito Identity Pool 支持匿名用户，让用户无需注册即可使用核心功能。
+
+### 核心概念
+
+| 概念 | 说明 |
+|------|------|
+| **User Pool** | 管理已注册用户（邮箱、Apple、Google 登录） |
+| **Identity Pool** | 为所有用户（包括匿名访客）提供唯一 Identity ID 和 AWS 临时凭证 |
+| **Identity ID** | 每个用户的唯一标识，格式如 `us-east-1:abc123-def456-...` |
+| **临时凭证** | AWS AccessKey + SecretKey + Token，用于访问 S3、调用 API 等 |
+
+### 工作流程
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        匿名用户流程                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. App 首次启动                                                 │
+│     └─▶ 调用 Identity Pool，获取 Identity ID + 临时凭证         │
+│                                                                  │
+│  2. 使用 App（聊天、扫描等）                                     │
+│     └─▶ 用 Identity ID 标识用户，数据存入后端                    │
+│                                                                  │
+│  3. 用户决定注册/登录                                            │
+│     └─▶ 使用 User Pool 登录（邮箱/Apple/Google）                │
+│     └─▶ Identity Pool 自动合并，Identity ID 保持不变            │
+│     └─▶ 历史数据无缝关联 ✅                                      │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### ⚠️ 重要限制
+
+**删除 App 后 Identity ID 会丢失！**
+
+- Identity ID 缓存在 App 本地存储
+- 卸载 App 后，本地缓存被清除
+- 重新安装会获得新的 Identity ID
+- **结论**：匿名用户数据在卸载后无法恢复（可接受的设计）
+
+### CDK 配置
+
+> 完整 CDK 配置详见 [0_cdk.md](0_cdk.md#5-identity-pool-匿名登录)
+
+```typescript
+import * as cognito from 'aws-cdk-lib/aws-cognito';
+
+// Identity Pool
+const identityPool = new cognito.CfnIdentityPool(this, 'IdentityPool', {
+  identityPoolName: 'my-app-identity-pool',
+  allowUnauthenticatedIdentities: true,  // 允许匿名访客
+  cognitoIdentityProviders: [{
+    clientId: userPoolClient.userPoolClientId,
+    providerName: userPool.userPoolProviderName,
+  }],
+});
+
+// IAM 角色配置（区分匿名和已认证用户）
+const unauthenticatedRole = new iam.Role(this, 'UnauthRole', {
+  assumedBy: new iam.FederatedPrincipal(
+    'cognito-identity.amazonaws.com',
+    {
+      StringEquals: { 'cognito-identity.amazonaws.com:aud': identityPool.ref },
+      'ForAnyValue:StringLike': { 'cognito-identity.amazonaws.com:amr': 'unauthenticated' },
+    },
+    'sts:AssumeRoleWithWebIdentity'
+  ),
+});
+
+// 匿名用户权限（限制访问自己的数据）
+unauthenticatedRole.addToPolicy(new iam.PolicyStatement({
+  actions: ['s3:PutObject', 's3:GetObject'],
+  resources: [`arn:aws:s3:::${bucket.bucketName}/\${cognito-identity.amazonaws.com:sub}/*`],
+}));
+```
+
+### iOS 客户端配置
+
+#### amplifyconfiguration.json
+
+在现有配置基础上添加 `CredentialsProvider` 部分：
+
+```json
+{
+  "auth": {
+    "plugins": {
+      "awsCognitoAuthPlugin": {
+        "CognitoUserPool": {
+          "Default": {
+            "PoolId": "us-east-1_XXXXXXXX",
+            "AppClientId": "xxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "Region": "us-east-1"
+          }
+        },
+        "CredentialsProvider": {
+          "CognitoIdentity": {
+            "Default": {
+              "PoolId": "us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+              "Region": "us-east-1"
+            }
+          }
+        },
+        "Auth": {
+          "Default": {
+            "OAuth": {
+              "WebDomain": "myapp-auth.auth.us-east-1.amazoncognito.com",
+              "AppClientId": "xxxxxxxxxxxxxxxxxxxxxxxxxx",
+              "SignInRedirectURI": "myapp://callback",
+              "SignOutRedirectURI": "myapp://signout",
+              "Scopes": ["email", "openid", "profile", "aws.cognito.signin.user.admin"]
+            },
+            "authenticationFlowType": "USER_SRP_AUTH"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#### AuthService 扩展
+
+```swift
+import Amplify
+import AWSCognitoAuthPlugin
+
+extension AuthService {
+
+    // MARK: - 匿名登录
+
+    /// 获取当前用户的 Identity ID（匿名或已登录用户都有）
+    func fetchIdentityId() async throws -> String {
+        let session = try await Amplify.Auth.fetchAuthSession()
+        guard let cognitoSession = session as? AWSAuthCognitoSession else {
+            throw ServiceError.sessionInvalid
+        }
+
+        switch cognitoSession.getIdentityId() {
+        case .success(let identityId):
+            return identityId
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    /// 获取 AWS 临时凭证（用于直接访问 S3 等 AWS 服务）
+    func fetchAWSCredentials() async throws -> AWSTemporaryCredentials {
+        let session = try await Amplify.Auth.fetchAuthSession()
+        guard let cognitoSession = session as? AWSAuthCognitoSession else {
+            throw ServiceError.sessionInvalid
+        }
+
+        switch cognitoSession.getAWSCredentials() {
+        case .success(let credentials):
+            guard let tempCredentials = credentials as? AWSTemporaryCredentials else {
+                throw ServiceError.credentialsInvalid
+            }
+            return tempCredentials
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    /// 检查当前是否为匿名用户
+    func isGuestUser() async -> Bool {
+        do {
+            let session = try await Amplify.Auth.fetchAuthSession()
+            return !session.isSignedIn
+        } catch {
+            return true
+        }
+    }
+}
+```
+
+#### 使用示例
+
+```swift
+// App 启动时获取 Identity ID
+func onAppLaunch() async {
+    do {
+        let identityId = try await AuthService.shared.fetchIdentityId()
+        print("用户 Identity ID: \(identityId)")
+
+        // 用 identityId 作为用户标识，同步数据到后端
+        await syncUserData(identityId: identityId)
+    } catch {
+        print("获取 Identity ID 失败: \(error)")
+    }
+}
+
+// 检查用户状态并引导注册
+func checkAndPromptSignUp() async {
+    let isGuest = await AuthService.shared.isGuestUser()
+
+    if isGuest {
+        // 显示注册引导
+        showSignUpPrompt()
+    }
+}
+```
+
+### 后端 API 设计
+
+后端需要同时支持匿名用户（Identity ID）和已登录用户（JWT）：
+
+```typescript
+// 获取用户标识
+function getUserIdentifier(c: Context): { type: 'guest' | 'authenticated', id: string } {
+  // 优先检查 JWT（已登录用户）
+  const authHeader = c.req.header('Authorization');
+  if (authHeader?.startsWith('Bearer ')) {
+    const claims = c.get('jwtPayload');
+    return { type: 'authenticated', id: claims.sub };
+  }
+
+  // 检查 Identity ID（匿名用户）
+  const identityId = c.req.header('X-Identity-Id');
+  if (identityId) {
+    return { type: 'guest', id: identityId };
+  }
+
+  throw new HTTPException(401, { message: 'Unauthorized' });
+}
+```
+
+### 数据库设计建议
+
+```typescript
+// 用户表
+interface User {
+  id: string;                    // 主键 (UUID)
+  identityId: string;            // Cognito Identity ID (匿名和正式用户都有)
+  cognitoSub?: string;           // User Pool sub (仅正式用户)
+  isGuest: boolean;              // 是否为访客
+  createdAt: Date;
+  lastActiveAt: Date;
+}
+
+// 当访客注册时，更新记录而非创建新记录
+async function linkGuestToAccount(identityId: string, cognitoSub: string) {
+  await db.update(users)
+    .set({ cognitoSub, isGuest: false })
+    .where(eq(users.identityId, identityId));
+}
+```
 
 ---
 
@@ -286,6 +543,7 @@ r.delete('/me', async c => {
 
 | Provider | Cognito 原生支持 | 实现方式 |
 |----------|-----------------|---------|
+| **匿名访客** | ✅ | Identity Pool + `fetchIdentityId()` |
 | Apple | ✅ | `signInWithWebUI(for: .apple)` |
 | Google | ✅ | `signInWithWebUI(for: .google)` |
 | Facebook | ✅ | `signInWithWebUI(for: .facebook)` |
@@ -370,6 +628,26 @@ do {
     await userManager.signOut()
 }
 ```
+
+### 6. 匿名用户 Identity ID 丢失
+
+**问题**：用户卸载重装 App 后，之前的匿名数据无法恢复
+
+**原因**：Identity ID 缓存在 App 本地存储，卸载后丢失
+
+**解决**：这是预期行为。可以通过以下方式缓解：
+1. 引导用户在使用核心功能后尽早注册
+2. 在 App 中提示："未登录状态下，卸载 App 将丢失数据"
+3. 接受这个限制，将其视为产品设计的一部分
+
+### 7. 匿名用户无法获取 Identity ID
+
+**问题**：`fetchIdentityId()` 返回错误
+
+**检查清单**：
+1. Identity Pool 是否启用了 `allowUnauthenticatedIdentities: true`
+2. `amplifyconfiguration.json` 是否包含 `CredentialsProvider.CognitoIdentity` 配置
+3. IAM 角色是否正确配置了信任关系
 
 ---
 

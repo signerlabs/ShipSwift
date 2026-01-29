@@ -9,34 +9,33 @@
 │                              iOS Client                                       │
 └───────────────────────────────────┬─────────────────────────────────────────┘
                                     │
-                    ┌───────────────┴───────────────┐
-                    │                               │
-                    ▼                               ▼
-            ┌───────────────┐             ┌─────────────────────┐
-            │    Cognito    │             │   API Gateway       │
-            │   User Pool   │◄────────────│  (JWT Authorizer)   │
-            │  + Hosted UI  │             └──────────┬──────────┘
+                    ┌───────────────┼───────────────┐
+                    │               │               │
+                    ▼               │               ▼
+            ┌───────────────┐       │     ┌─────────────────────┐
+            │    Cognito    │       │     │   API Gateway       │
+            │   User Pool   │◄──────┼─────│  (JWT Authorizer)   │
+            │  + Hosted UI  │       │     └──────────┬──────────┘
+            └───────┬───────┘       │                │
+                    │               │                ▼
+                    ▼               │     ┌─────────────────────┐
+            ┌───────────────┐       │     │     App Runner      │
+            │ Identity Pool │◄──────┘     │   (Hono 后端)       │
+            │ (匿名+已认证) │              └──────────┬──────────┘
             └───────────────┘                        │
-                    ▲                                ▼
-                    │ OAuth              ┌─────────────────────┐
-            ┌───────────────┐            │     App Runner      │
-            │   Identity    │            │   (Hono 后端)       │
-            │   Providers   │            └──────────┬──────────┘
-            │  Apple/Google │                       │
-            └───────────────┘                       │
-                                    ┌───────────────┴───────────────┐
-                                    │                               │
-                                    ▼                               ▼
-                           ┌───────────────┐              ┌─────────────────┐
-                           │   RDS Proxy   │              │   S3 Bucket     │
-                           │  (连接池)     │              │  (文件存储)     │
-                           └───────┬───────┘              └─────────────────┘
-                                   │
-                                   ▼
-                           ┌───────────────┐
-                           │    Aurora     │
-                           │ Serverless v2 │
-                           └───────────────┘
+                    ▲                 ┌──────────────┴──────────────┐
+                    │ OAuth           │                             │
+            ┌───────────────┐         ▼                             ▼
+            │   Identity    │ ┌───────────────┐           ┌─────────────────┐
+            │   Providers   │ │   RDS Proxy   │           │   S3 Bucket     │
+            │  Apple/Google │ │  (连接池)     │           │  (文件存储)     │
+            └───────────────┘ └───────┬───────┘           └─────────────────┘
+                                      │
+                                      ▼
+                              ┌───────────────┐
+                              │    Aurora     │
+                              │ Serverless v2 │
+                              └───────────────┘
 ```
 
 ## 推荐 AWS 服务
@@ -44,6 +43,7 @@
 | 服务 | 用途 | 优势 |
 |------|------|------|
 | **Cognito User Pool** | 用户认证 | 原生支持 Apple/Google 登录，JWT 自动刷新 |
+| **Cognito Identity Pool** | 匿名访客 + 凭证管理 | 支持匿名用户，自动分配唯一 ID 和 AWS 临时凭证 |
 | **API Gateway HTTP API** | API 网关 | JWT Authorizer 统一认证，低延迟 |
 | **App Runner** | 后端运行时 | 自动部署、自动扩缩、无需管理服务器 |
 | **Aurora Serverless v2** | 数据库 | 自动扩缩、按需计费、PostgreSQL 兼容 |
@@ -467,6 +467,121 @@ const userPoolClient = userPool.addClient('IOSClient', {
 userPoolClient.node.addDependency(appleProvider);
 userPoolClient.node.addDependency(googleProvider);
 ```
+
+#### 5. Identity Pool（匿名登录）
+
+Identity Pool 为所有用户（包括匿名访客）提供唯一标识和 AWS 临时凭证。
+
+```typescript
+import * as cognito from 'aws-cdk-lib/aws-cognito';
+import * as iam from 'aws-cdk-lib/aws-iam';
+
+// 创建 Identity Pool
+const identityPool = new cognito.CfnIdentityPool(this, 'IdentityPool', {
+  identityPoolName: 'my-app-identity-pool',
+  allowUnauthenticatedIdentities: true,  // ⚠️ 关键：允许匿名访客
+
+  // 关联 User Pool（已登录用户通过这里验证）
+  cognitoIdentityProviders: [{
+    clientId: userPoolClient.userPoolClientId,
+    providerName: userPool.userPoolProviderName,
+  }],
+});
+
+// 匿名用户 IAM 角色
+const unauthenticatedRole = new iam.Role(this, 'CognitoUnauthRole', {
+  roleName: 'my-app-cognito-unauth-role',
+  assumedBy: new iam.FederatedPrincipal(
+    'cognito-identity.amazonaws.com',
+    {
+      StringEquals: {
+        'cognito-identity.amazonaws.com:aud': identityPool.ref,
+      },
+      'ForAnyValue:StringLike': {
+        'cognito-identity.amazonaws.com:amr': 'unauthenticated',
+      },
+    },
+    'sts:AssumeRoleWithWebIdentity'
+  ),
+});
+
+// 已认证用户 IAM 角色
+const authenticatedRole = new iam.Role(this, 'CognitoAuthRole', {
+  roleName: 'my-app-cognito-auth-role',
+  assumedBy: new iam.FederatedPrincipal(
+    'cognito-identity.amazonaws.com',
+    {
+      StringEquals: {
+        'cognito-identity.amazonaws.com:aud': identityPool.ref,
+      },
+      'ForAnyValue:StringLike': {
+        'cognito-identity.amazonaws.com:amr': 'authenticated',
+      },
+    },
+    'sts:AssumeRoleWithWebIdentity'
+  ),
+});
+
+// 绑定角色到 Identity Pool
+new cognito.CfnIdentityPoolRoleAttachment(this, 'IdentityPoolRoleAttachment', {
+  identityPoolId: identityPool.ref,
+  roles: {
+    unauthenticated: unauthenticatedRole.roleArn,
+    authenticated: authenticatedRole.roleArn,
+  },
+});
+
+// 输出 Identity Pool ID
+new cdk.CfnOutput(this, 'IdentityPoolId', {
+  value: identityPool.ref,
+  description: 'Cognito Identity Pool ID',
+});
+```
+
+**匿名用户权限配置示例**（按需添加）：
+
+```typescript
+// 允许匿名用户上传文件到 S3（仅限自己的目录）
+unauthenticatedRole.addToPolicy(new iam.PolicyStatement({
+  effect: iam.Effect.ALLOW,
+  actions: ['s3:PutObject', 's3:GetObject', 's3:DeleteObject'],
+  resources: [
+    `arn:aws:s3:::${bucket.bucketName}/guests/\${cognito-identity.amazonaws.com:sub}/*`,
+  ],
+}));
+
+// 允许匿名用户调用特定 API Gateway 端点
+unauthenticatedRole.addToPolicy(new iam.PolicyStatement({
+  effect: iam.Effect.ALLOW,
+  actions: ['execute-api:Invoke'],
+  resources: [
+    `arn:aws:execute-api:${this.region}:${this.account}:${httpApi.apiId}/*/*/*`,
+  ],
+}));
+```
+
+**已认证用户权限配置示例**：
+
+```typescript
+// 已认证用户有更多权限
+authenticatedRole.addToPolicy(new iam.PolicyStatement({
+  effect: iam.Effect.ALLOW,
+  actions: ['s3:PutObject', 's3:GetObject', 's3:DeleteObject', 's3:ListBucket'],
+  resources: [
+    `arn:aws:s3:::${bucket.bucketName}/users/\${cognito-identity.amazonaws.com:sub}/*`,
+    `arn:aws:s3:::${bucket.bucketName}`,
+  ],
+}));
+```
+
+**⚠️ 关于 Identity ID 持久性**：
+
+| 场景 | Identity ID 是否保留 |
+|------|---------------------|
+| App 正常使用 | ✅ 保留（缓存在本地） |
+| App 卸载后重装 | ❌ 生成新 ID（本地缓存丢失） |
+| 匿名用户登录注册 | ✅ 保留（自动合并） |
+| 同一账号多设备登录 | ✅ 相同 Identity ID |
 
 #### HTTP API + JWT Authorizer
 
