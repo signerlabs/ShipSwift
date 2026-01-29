@@ -2,10 +2,10 @@
 
 ## 技术栈
 
-- **数据库引擎**: Amazon Aurora Serverless v2 (PostgreSQL 15)
+- **数据库引擎**: Amazon Aurora Serverless v2 (PostgreSQL 15+)
 - **连接池**: Amazon RDS Proxy
 - **ORM**: Drizzle ORM
-- **运行时**: App Runner (生产) / Docker PostgreSQL (本地开发)
+- **运行时**: App Runner
 
 ## 架构
 
@@ -26,8 +26,6 @@ Aurora Cluster (VPC Isolated Subnet)
 3. **VPC 隔离**: 数据库在 Isolated Subnet，仅通过 Proxy 访问
 
 ## 连接配置
-
-### 生产环境
 
 通过 Secrets Manager 获取凭证：
 
@@ -56,56 +54,18 @@ if (process.env.DB_SECRET_ARN) {
 - `DB_NAME`: 数据库名称
 - `DB_SECRET_ARN`: Secrets Manager ARN
 
-### 本地开发
-
-直接使用环境变量：
-
-```bash
-# .env.local
-DB_HOST=localhost
-DB_NAME=my_database
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
-```
-
-## 本地开发命令
-
-```json
-// package.json scripts
-{
-  "db:start": "docker run --name my-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=my_database -p 5432:5432 -d postgres:15",
-  "db:stop": "docker rm -f my-postgres",
-  "db:migrate": "drizzle-kit migrate",
-  "db:reset": "npm run db:stop && npm run db:start && sleep 2 && npm run db:migrate"
-}
-```
-
-```bash
-# 启动 PostgreSQL 容器
-npm run db:start
-
-# 运行迁移
-npm run db:migrate
-
-# 停止并删除容器
-npm run db:stop
-
-# 重置数据库（停止→启动→迁移）
-npm run db:reset
-```
-
 ## 查看数据
 
+通过 RDS Data API 查询数据库（需在 Aurora 集群启用 `enableDataApi: true`）：
+
 ```bash
-# 查看所有表
-docker exec my-postgres psql -U postgres -d my_database -c "\dt"
-
-# 查看表数据
-docker exec my-postgres psql -U postgres -d my_database -c "SELECT * FROM users;"
-
-# 进入交互模式
-docker exec -it my-postgres psql -U postgres -d my_database
+# 使用 AWS CLI 查询
+aws rds-data execute-statement \
+  --resource-arn "arn:aws:rds:us-east-1:xxx:cluster:my-cluster" \
+  --secret-arn "arn:aws:secretsmanager:us-east-1:xxx:secret:my-secret" \
+  --database "my_database" \
+  --sql "SELECT * FROM users LIMIT 10" \
+  --profile my_profile --region us-east-1
 ```
 
 ## Drizzle ORM 配置
@@ -120,11 +80,11 @@ export default defineConfig({
   out: './drizzle/migrations',
   dialect: 'postgresql',
   dbCredentials: {
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST!,
     port: Number(process.env.DB_PORT) || 5432,
-    user: process.env.DB_USERNAME || 'postgres',
-    password: process.env.DB_PASSWORD || 'postgres',
-    database: process.env.DB_NAME || 'my_database',
+    user: process.env.DB_USERNAME!,
+    password: process.env.DB_PASSWORD!,
+    database: process.env.DB_NAME!,
   },
 });
 ```
@@ -161,10 +121,10 @@ let db: ReturnType<typeof drizzle<typeof schema>> | null = null;
 export async function getDb() {
   if (db) return db;
 
-  let username = process.env.DB_USERNAME || 'postgres';
-  let password = process.env.DB_PASSWORD || 'postgres';
+  let username = process.env.DB_USERNAME!;
+  let password = process.env.DB_PASSWORD!;
 
-  // 生产环境从 Secrets Manager 获取凭证
+  // 从 Secrets Manager 获取凭证
   if (process.env.DB_SECRET_ARN) {
     const credentials = await loadDbCredentials(process.env.DB_SECRET_ARN);
     username = credentials.username;
@@ -172,12 +132,12 @@ export async function getDb() {
   }
 
   const pool = new Pool({
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT) || 5432,
     database: process.env.DB_NAME,
     user: username,
     password: password,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    ssl: { rejectUnauthorized: false },
   });
 
   db = drizzle(pool, { schema });
@@ -189,14 +149,11 @@ export async function getDb() {
 
 ## 迁移管理
 
-### 本地开发
+### 生成迁移文件
 
 ```bash
 # 生成迁移文件
 npx drizzle-kit generate
-
-# 执行迁移
-npx drizzle-kit migrate
 
 # 查看迁移状态
 npx drizzle-kit status
