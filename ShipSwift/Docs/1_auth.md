@@ -48,7 +48,7 @@
 
 ## 匿名登录（访客模式）
 
-使用 Cognito Identity Pool 支持匿名用户，让用户无需注册即可使用核心功能。
+使用 Cognito Identity Pool 支持匿名用户，让用户无需注册即可使用核心功能。**这是默认的最佳实践架构**。
 
 ### 核心概念
 
@@ -57,28 +57,56 @@
 | **User Pool** | 管理已注册用户（邮箱、Apple、Google 登录） |
 | **Identity Pool** | 为所有用户（包括匿名访客）提供唯一 Identity ID 和 AWS 临时凭证 |
 | **Identity ID** | 每个用户的唯一标识，格式如 `us-east-1:abc123-def456-...` |
-| **临时凭证** | AWS AccessKey + SecretKey + Token，用于访问 S3、调用 API 等 |
+| **previousIdentityId** | 登录前保存的匿名 Identity ID，用于数据迁移 |
 
-### 工作流程
+### 完整工作流程
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        匿名用户流程                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  1. App 首次启动                                                 │
-│     └─▶ 调用 Identity Pool，获取 Identity ID + 临时凭证         │
-│                                                                  │
-│  2. 使用 App（聊天、扫描等）                                     │
-│     └─▶ 用 Identity ID 标识用户，数据存入后端                    │
-│                                                                  │
-│  3. 用户决定注册/登录                                            │
-│     └─▶ 使用 User Pool 登录（邮箱/Apple/Google）                │
-│     └─▶ Identity Pool 自动合并，Identity ID 保持不变            │
-│     └─▶ 历史数据无缝关联 ✅                                      │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+首次打开 App
+    │
+    ↓
+获取 Identity ID（Cognito Identity Pool）
+    │
+    ↓
+SessionState = .anonymous(identityId: "us-east-1:abc...")
+    │
+    ├─ 使用功能（扫描、查看历史等）
+    │   └─ API 请求携带 X-Identity-Id header
+    │   └─ 后端通过 identityId 创建/查找匿名用户
+    │
+    ↓
+用户点击登录
+    │
+    ↓
+⚠️ 保存 previousIdentityId = 当前 identityId
+    │
+    ↓
+Cognito 登录成功
+    │
+    ↓
+⚠️ Cognito 分配新的 identityId（已认证身份，与匿名时不同！）
+    │
+    ↓
+调用 POST /api/auth/sync
+    ├─ identityId: 新的已认证 identityId
+    └─ previousIdentityId: 匿名时的 identityId
+    │
+    ↓
+后端处理：
+    ├─ 查找/创建已登录用户
+    └─ 迁移匿名用户数据到已登录用户
+    │
+    ↓
+SessionState = .authenticated(identityId, tokens, profile)
 ```
+
+### ⚠️ 关键问题：Identity ID 变化
+
+**Cognito Identity Pool 在用户状态变化时会分配不同的 Identity ID：**
+- 匿名用户：`us-east-1:anonymous-xxx-xxx`
+- 已认证用户：`us-east-1:authenticated-xxx-xxx`（**不同！**）
+
+**解决方案**：在登录前保存 `previousIdentityId`，登录后传给后端进行数据迁移。
 
 ### ⚠️ 重要限制
 
@@ -253,48 +281,126 @@ func checkAndPromptSignUp() async {
 
 ### 后端 API 设计
 
-后端需要同时支持匿名用户（Identity ID）和已登录用户（JWT）：
+#### 中间件：支持匿名和已登录用户
 
 ```typescript
-// 获取用户标识
-function getUserIdentifier(c: Context): { type: 'guest' | 'authenticated', id: string } {
-  // 优先检查 JWT（已登录用户）
-  const authHeader = c.req.header('Authorization');
-  if (authHeader?.startsWith('Bearer ')) {
-    const claims = c.get('jwtPayload');
-    return { type: 'authenticated', id: claims.sub };
+// 匿名用户中间件（仅需 Identity ID）
+export const identityMiddleware = createMiddleware<IdentityContext>(async (c, next) => {
+  const identityId = c.req.header("x-identity-id");
+  if (!identityId) {
+    throw new HTTPException(401, { message: "Missing x-identity-id header" });
+  }
+  c.set("identityId", identityId);
+  await next();
+});
+
+// 已登录用户中间件（需要 JWT）
+export const jwtMiddleware = createMiddleware<JwtContext>(async (c, next) => {
+  // 验证 JWT 并设置 jwtPayload
+  await next();
+});
+```
+
+#### 用户同步 API（关键！处理数据迁移）
+
+```typescript
+// POST /api/auth/sync - 登录后同步用户身份
+const syncSchema = z.object({
+  identityId: z.string().min(1),
+  previousIdentityId: z.string().optional(),  // 匿名时的 identityId
+});
+
+r.post("/sync", jwtMiddleware, async (c) => {
+  const cognitoSub = getCognitoSub(c);
+  const { identityId, previousIdentityId } = syncSchema.parse(await c.req.json());
+
+  // 1. 查找现有用户（通过 cognitoSub）
+  let existingUser = await db.select().from(users)
+    .where(eq(users.cognitoSub, cognitoSub)).limit(1);
+
+  if (existingUser.length > 0) {
+    // 更新 identityId
+    await db.update(users)
+      .set({ identityId, updatedAt: new Date() })
+      .where(eq(users.id, existingUser[0].id));
+
+    // 迁移匿名用户数据
+    if (previousIdentityId && previousIdentityId !== identityId) {
+      await migrateGuestData(previousIdentityId, existingUser[0].id);
+    }
+    return c.json({ userId: existingUser[0].id });
   }
 
-  // 检查 Identity ID（匿名用户）
-  const identityId = c.req.header('X-Identity-Id');
-  if (identityId) {
-    return { type: 'guest', id: identityId };
+  // 2. 创建新用户
+  const [newUser] = await db.insert(users).values({
+    cognitoSub, identityId, isGuest: false,
+  }).returning();
+
+  // 迁移匿名用户数据
+  if (previousIdentityId && previousIdentityId !== identityId) {
+    await migrateGuestData(previousIdentityId, newUser.id);
   }
 
-  throw new HTTPException(401, { message: 'Unauthorized' });
+  return c.json({ userId: newUser.id });
+});
+
+// 数据迁移函数
+async function migrateGuestData(previousIdentityId: string, targetUserId: string) {
+  const guestUser = await db.select().from(users)
+    .where(and(eq(users.identityId, previousIdentityId), eq(users.isGuest, true)))
+    .limit(1);
+
+  if (guestUser.length === 0) return;
+
+  const guestUserId = guestUser[0].id;
+
+  // 迁移所有关联数据到目标用户
+  await db.update(reports).set({ userId: targetUserId }).where(eq(reports.userId, guestUserId));
+  await db.update(conversations).set({ userId: targetUserId }).where(eq(conversations.userId, guestUserId));
+  // ... 其他表
+
+  // 删除匿名用户记录
+  await db.delete(users).where(eq(users.id, guestUserId));
+  console.log(`Migrated guest data from ${guestUserId} to ${targetUserId}`);
 }
 ```
 
-### 数据库设计建议
+#### API Gateway 路由配置
 
-```typescript
-// 用户表
-interface User {
-  id: string;                    // 主键 (UUID)
-  identityId: string;            // Cognito Identity ID (匿名和正式用户都有)
-  cognitoSub?: string;           // User Pool sub (仅正式用户)
-  isGuest: boolean;              // 是否为访客
-  createdAt: Date;
-  lastActiveAt: Date;
-}
+匿名用户需要访问某些 API，但不需要 JWT 认证。通过 API Gateway 配置专用路由：
 
-// 当访客注册时，更新记录而非创建新记录
-async function linkGuestToAccount(identityId: string, cognitoSub: string) {
-  await db.update(users)
-    .set({ cognitoSub, isGuest: false })
-    .where(eq(users.identityId, identityId));
-}
+| 路由 | 授权类型 | 说明 |
+|------|---------|------|
+| `GET /api/scan` | NONE | 匿名用户获取历史 |
+| `POST /api/scan` | NONE | 匿名用户创建扫描 |
+| `GET /api/scan/{proxy+}` | NONE | 匿名用户获取详情 |
+| `{proxy+}` | JWT | 其他 API 需要登录 |
+
+### 数据库设计
+
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  cognito_sub VARCHAR(255) UNIQUE,          -- 仅已登录用户有
+  identity_id VARCHAR(255) NOT NULL UNIQUE, -- 所有用户都有
+  is_guest BOOLEAN NOT NULL DEFAULT true,   -- 是否匿名用户
+  email VARCHAR(255),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_users_identity_id ON users(identity_id);
+CREATE INDEX idx_users_cognito_sub ON users(cognito_sub);
 ```
+
+### 功能权限矩阵
+
+| 功能 | 匿名用户 | 已登录用户 |
+|------|---------|-----------|
+| 核心功能（扫描等） | ✅ | ✅ |
+| 查看历史 | ✅ | ✅ |
+| Chat 聊天 | ❌ 需登录 | ✅ |
+| 跨设备同步 | ❌ | ✅ |
 
 ---
 
@@ -506,6 +612,115 @@ actor AuthService {
 }
 ```
 
+### 6. UserManager.swift（状态管理）
+
+```swift
+/// 用户会话状态
+enum SessionState: Equatable {
+    case loading
+    case anonymous(identityId: String)
+    case authenticated(identityId: String, tokens: AuthTokens, profile: UserProfile)
+    case error(message: String)
+
+    var identityId: String? {
+        switch self {
+        case .anonymous(let id): return id
+        case .authenticated(let id, _, _): return id
+        default: return nil
+        }
+    }
+
+    var isAuthenticated: Bool {
+        if case .authenticated = self { return true }
+        return false
+    }
+}
+
+@MainActor
+@Observable
+class UserManager {
+    var sessionState: SessionState = .loading
+
+    private let authService = AuthService.shared
+    private let userProfileService = UserProfileService()
+
+    init() {
+        Task { await initializeSession() }
+    }
+
+    /// App 启动时初始化会话
+    func initializeSession() async {
+        do {
+            let identityId = try await authService.fetchIdentityId()
+            let isSignedIn = await authService.isSignedIn()
+
+            if isSignedIn {
+                let tokens = try await authService.fetchTokens()
+                try await userProfileService.syncUser(idToken: tokens.idToken, identityId: identityId)
+                let profile = try await userProfileService.getProfile(idToken: tokens.idToken)
+                sessionState = .authenticated(identityId: identityId, tokens: tokens, profile: profile)
+            } else {
+                sessionState = .anonymous(identityId: identityId)
+            }
+        } catch {
+            sessionState = .error(message: error.localizedDescription)
+        }
+    }
+
+    /// 社交登录（关键：保存 previousIdentityId）
+    func signInWithApple(window: UIWindow) async throws {
+        // ⚠️ 保存匿名时的 Identity ID
+        let previousIdentityId = sessionState.identityId
+
+        let tokens = try await authService.signInWithApple(presentationAnchor: window)
+        let identityId = try await authService.fetchIdentityId()
+
+        // ⚠️ 传入 previousIdentityId 以迁移匿名数据
+        try await userProfileService.syncUser(
+            idToken: tokens.idToken,
+            identityId: identityId,
+            previousIdentityId: previousIdentityId
+        )
+
+        let profile = try await userProfileService.getProfile(idToken: tokens.idToken)
+        sessionState = .authenticated(identityId: identityId, tokens: tokens, profile: profile)
+    }
+
+    /// 登出
+    func signOut() async {
+        await authService.signOut()
+        do {
+            let identityId = try await authService.fetchIdentityId()
+            sessionState = .anonymous(identityId: identityId)
+        } catch {
+            await initializeSession()
+        }
+    }
+}
+```
+
+### 7. App 状态变化处理
+
+```swift
+// App.swift
+.onChange(of: userManager.sessionState) { oldState, newState in
+    // 从已登录变成匿名时，清空所有缓存
+    if case .authenticated = oldState, case .anonymous = newState {
+        clearAllCaches()
+    }
+
+    // 从匿名变成已登录时，自动加载数据
+    if case .anonymous = oldState, case .authenticated = newState {
+        Task { await reloadAllData() }
+    }
+}
+
+private func clearAllCaches() {
+    dataManager.reset()
+    chatManager.reset()
+}
+```
+
 ---
 
 ## 删除账户流程
@@ -639,6 +854,150 @@ do {
 1. 引导用户在使用核心功能后尽早注册
 2. 在 App 中提示："未登录状态下，卸载 App 将丢失数据"
 3. 接受这个限制，将其视为产品设计的一部分
+
+### 8. 匿名用户登录后 Identity ID 变化
+
+**问题**：Cognito Identity Pool 在用户从匿名变为已认证时会分配新的 Identity ID，导致匿名期间的数据无法关联到登录后的账号。
+
+**原因**：
+- 匿名用户 Identity ID：`us-east-1:anonymous-xxx`
+- 已认证用户 Identity ID：`us-east-1:authenticated-xxx`（不同！）
+
+**解决方案**：在登录前保存 `previousIdentityId`，登录后传给后端进行数据迁移。
+
+```swift
+// UserManager.swift
+func signInWithApple() async throws {
+    // 1. 保存匿名时的 Identity ID
+    let previousIdentityId = sessionState.identityId
+
+    // 2. 执行登录
+    let tokens = try await authService.signInWithApple(presentationAnchor: window)
+    let identityId = try await authService.fetchIdentityId()
+
+    // 3. 同步用户（传入 previousIdentityId 以迁移数据）
+    try await userProfileService.syncUser(
+        idToken: tokens.idToken,
+        identityId: identityId,
+        previousIdentityId: previousIdentityId  // 关键！
+    )
+    // ...
+}
+```
+
+后端处理：
+```typescript
+// POST /api/auth/sync
+if (previousIdentityId && previousIdentityId !== identityId) {
+  // 查找匿名用户，迁移其数据到当前用户
+  const guestUser = await db.select().from(users)
+    .where(and(eq(users.identityId, previousIdentityId), eq(users.isGuest, true)));
+
+  if (guestUser.length > 0) {
+    // 迁移所有关联数据
+    await db.update(reports).set({ userId: currentUser.id }).where(eq(reports.userId, guestUser[0].id));
+    // 删除匿名用户记录
+    await db.delete(users).where(eq(users.id, guestUser[0].id));
+  }
+}
+```
+
+### 9. 登录后状态管理最佳实践
+
+**退出登录/删除账户后清空缓存**
+
+在 App 主入口监听 `sessionState` 变化，自动清空缓存和重新加载数据：
+
+```swift
+// App.swift
+.onChange(of: userManager.sessionState) { oldState, newState in
+    // 从已登录变成匿名时，清空所有缓存
+    if case .authenticated = oldState, case .anonymous = newState {
+        clearAllCaches()
+    }
+
+    // 从匿名变成已登录时，自动加载数据
+    if case .anonymous = oldState, case .authenticated = newState {
+        Task { await reloadAllData() }
+    }
+}
+
+private func clearAllCaches() {
+    dataManager.reset()
+    chatManager.reset()
+    // ... 其他 manager
+}
+```
+
+### 10. fullScreenCover 在登录后立即打开的时机问题
+
+**问题**：登录成功后立即打开 `fullScreenCover` 可能导致背景渲染异常（透明）。
+
+**原因**：登录 sheet 的关闭动画还没完成，就立即打开 fullScreenCover，导致动画冲突。
+
+**错误做法**：
+```swift
+AuthView(mode: .sheet) {
+    showAuthSheet = false
+    // ❌ 延迟太短，sheet 还没关闭
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        showFullScreenCover = true
+    }
+}
+```
+
+**正确做法**：使用 `onDismiss` 回调，确保 sheet 完全关闭后再操作：
+```swift
+@State private var shouldOpenCoverAfterAuth = false
+
+.sheet(isPresented: $showAuthSheet, onDismiss: {
+    // sheet 完全关闭后才触发
+    if shouldOpenCoverAfterAuth {
+        shouldOpenCoverAfterAuth = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            showFullScreenCover = true
+        }
+    }
+}) {
+    AuthView(mode: .sheet) {
+        shouldOpenCoverAfterAuth = true
+        showAuthSheet = false
+    }
+}
+```
+
+### 11. @Observable 类中使用 UserDefaults 存储的属性无法触发 UI 更新
+
+**问题**：在 `@Observable` 类中使用计算属性读取 `UserDefaults`，修改值后 UI 不更新。
+
+**原因**：计算属性不会被 `@Observable` 宏追踪，只有存储属性才会。
+
+**错误做法**：
+```swift
+@Observable
+class UserManager {
+    // ❌ 计算属性，修改后不会触发 UI 更新
+    var hasCompletedOnboarding: Bool {
+        get { UserDefaults.standard.bool(forKey: "hasCompletedOnboarding") }
+        set { UserDefaults.standard.set(newValue, forKey: "hasCompletedOnboarding") }
+    }
+}
+```
+
+**正确做法**：使用存储属性 + `didSet` 同步到 UserDefaults：
+```swift
+@Observable
+class UserManager {
+    // ✅ 存储属性，会触发 UI 更新
+    var hasCompletedOnboarding: Bool = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding") {
+        didSet {
+            UserDefaults.standard.set(hasCompletedOnboarding, forKey: "hasCompletedOnboarding")
+        }
+    }
+}
+```
+
+**注意**：`@AppStorage` 只能在 `View` 中使用，不能在 `@Observable` 类中使用。
 
 ### 7. 匿名用户无法获取 Identity ID
 
