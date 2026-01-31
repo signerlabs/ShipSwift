@@ -13,7 +13,13 @@ class slCameraManager: NSObject {
     let session = AVCaptureSession()
     private let photoOutput = AVCapturePhotoOutput()
     private var captureCompletion: ((UIImage?) -> Void)?
+    private var currentDevice: AVCaptureDevice?
     var isAuthorized = false
+
+    // 缩放相关
+    var currentZoom: CGFloat = 1.0
+    var minZoom: CGFloat = 1.0
+    var maxZoom: CGFloat = 5.0
 
     // 使用专用队列确保线程安全，所有 session 操作都在此队列上串行执行
     private let sessionQueue = DispatchQueue(label: "com.fullpack.camera.session")
@@ -80,6 +86,15 @@ class slCameraManager: NSObject {
                 self.session.commitConfiguration()
                 self.isConfiguring = false
                 return
+            }
+
+            self.currentDevice = camera
+
+            // 设置缩放范围
+            DispatchQueue.main.async {
+                self.minZoom = 1.0
+                self.maxZoom = min(camera.activeFormat.videoMaxZoomFactor, 5.0)
+                self.currentZoom = 1.0
             }
 
             do {
@@ -181,6 +196,30 @@ class slCameraManager: NSObject {
         }
 
         photoOutput.capturePhoto(with: settings, delegate: self)
+    }
+
+    // MARK: - 缩放控制
+
+    func setZoom(_ factor: CGFloat) {
+        guard let device = currentDevice else { return }
+
+        let zoomFactor = max(minZoom, min(factor, maxZoom))
+
+        do {
+            try device.lockForConfiguration()
+            device.videoZoomFactor = zoomFactor
+            device.unlockForConfiguration()
+
+            DispatchQueue.main.async {
+                self.currentZoom = zoomFactor
+            }
+        } catch {
+            // 缩放失败，静默处理
+        }
+    }
+
+    func zoom(by delta: CGFloat) {
+        setZoom(currentZoom * delta)
     }
 }
 

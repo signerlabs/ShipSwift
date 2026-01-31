@@ -15,6 +15,7 @@ struct slCameraView: View {
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var cameraManager = slCameraManager()
     @State private var isCapturing = false
+    @State private var lastScale: CGFloat = 1.0
 
     var body: some View {
         Group {
@@ -24,12 +25,14 @@ struct slCameraView: View {
                         .ignoresSafeArea()
                         .onAppear { cameraManager.startSession() }
                         .onDisappear { cameraManager.stopSession() }
+                        .gesture(pinchGesture)
 
                     // 取景框和提示文字
                     viewfinderOverlay
 
                     VStack {
                         Spacer()
+                        zoomControl
                         controlBar
                     }
                 }
@@ -43,6 +46,20 @@ struct slCameraView: View {
                 await loadSelectedPhoto()
             }
         }
+    }
+
+    // MARK: - 捏合缩放手势
+
+    private var pinchGesture: some Gesture {
+        MagnifyGesture()
+            .onChanged { value in
+                let delta = value.magnification / lastScale
+                lastScale = value.magnification
+                cameraManager.zoom(by: delta)
+            }
+            .onEnded { _ in
+                lastScale = 1.0
+            }
     }
 
     // MARK: - 未授权视图
@@ -138,6 +155,37 @@ struct slCameraView: View {
                 .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
             }
         }
+    }
+
+    // MARK: - 缩放控制
+
+    private var zoomControl: some View {
+        VStack(spacing: 8) {
+            // 当前倍数显示
+            Text(String(format: "%.1fx", cameraManager.currentZoom))
+                .font(.system(size: 14, weight: .medium, design: .monospaced))
+
+            // 缩放滑块
+            HStack(spacing: 12) {
+                Text("1x")
+                    .font(.caption)
+
+                Slider(
+                    value: Binding(
+                        get: { cameraManager.currentZoom },
+                        set: { cameraManager.setZoom($0) }
+                    ),
+                    in: cameraManager.minZoom...cameraManager.maxZoom
+                )
+                .tint(.accent)
+
+                Text(String(format: "%.0fx", cameraManager.maxZoom))
+                    .font(.caption)
+            }
+            .padding(.horizontal, 60)
+        }
+        .foregroundStyle(.white.opacity(0.7))
+        .padding()
     }
 
     // MARK: - 底部控制栏
