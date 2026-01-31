@@ -327,6 +327,24 @@ final class slUserManager {
     // MARK: - Token 管理
 
     /// 获取最新的 ID Token（自动刷新过期的 Token）
+    ///
+    /// ⚠️ 重要：在每次 API 调用前使用此方法获取 token，而不是直接使用缓存的 `sessionState.tokens?.idToken`
+    ///
+    /// 工作原理：
+    /// 1. 调用 `authService.fetchTokens()` → `Amplify.Auth.fetchAuthSession()`
+    /// 2. SDK 自动检查 ID Token 是否过期（默认 1 小时）
+    /// 3. 如果过期，SDK 使用 Refresh Token 获取新的 ID Token
+    /// 4. 同时更新缓存的 tokens
+    ///
+    /// 返回 nil 的情况：
+    /// - 用户未登录
+    /// - Refresh Token 过期（30 天不活跃），需要重新登录
+    ///
+    /// 使用示例：
+    /// ```swift
+    /// guard let idToken = await userManager.getFreshIdToken() else { return }
+    /// await apiService.fetchData(idToken: idToken)
+    /// ```
     func getFreshIdToken() async -> String? {
         guard sessionState.isSignedIn else {
             return nil

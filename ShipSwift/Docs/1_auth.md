@@ -828,19 +828,80 @@ supportedIdentityProviders: [
 - 创建新的 User Pool
 - 或者在初始配置时就包含所有可能需要的登录方式（email + phone）
 
-### 5. Token 过期处理
+### 5. Token 过期处理（重要）
 
-**问题**：API 请求返回 401
+**问题**：API 请求返回 401，提示"登录已过期"
 
-**解决**：
+**Token 生命周期**：
+| Token | 有效期 | 说明 |
+|-------|--------|------|
+| ID Token | 1 小时 | 用于 API 认证 |
+| Access Token | 1 小时 | 用于 Cognito API |
+| Refresh Token | 30 天 | 用于刷新上述 Token |
+
+**最佳实践：使用 `getFreshIdToken()` 主动刷新**
+
+⚠️ **关键**：不要直接使用缓存的 `sessionState.tokens?.idToken`，而是在每次 API 调用前使用 `getFreshIdToken()` 获取最新 token。
+
 ```swift
-// Amplify SDK 会自动刷新 token，但如果 refresh token 也过期了需要重新登录
-do {
-    let tokens = try await authService.refreshSession()
-    // 使用新 token 重试请求
-} catch {
-    // refresh token 过期，需要重新登录
+// ❌ 错误做法：直接使用缓存的 token（可能已过期）
+guard let idToken = userManager.sessionState.tokens?.idToken else { return }
+await apiService.fetchData(idToken: idToken)
+
+// ✅ 正确做法：每次 API 调用前获取新鲜 token
+guard let idToken = await userManager.getFreshIdToken() else { return }
+await apiService.fetchData(idToken: idToken)
+```
+
+**`getFreshIdToken()` 实现原理**（slUserManager.swift）：
+
+```swift
+/// 获取最新的 ID Token（自动刷新过期的 Token）
+func getFreshIdToken() async -> String? {
+    guard sessionState.isSignedIn else { return nil }
+
+    do {
+        // fetchTokens() 会自动检查 token 是否过期
+        // 如果过期，SDK 会使用 Refresh Token 获取新 token
+        let tokens = try await authService.fetchTokens()
+
+        // 同时更新缓存的 tokens
+        switch sessionState {
+        case .onboarding:
+            sessionState = .onboarding(tokens: tokens)
+        case .ready:
+            sessionState = .ready(tokens: tokens)
+        default:
+            break
+        }
+
+        return tokens.idToken
+    } catch {
+        debugLog("❌ [slUserManager] Failed to get fresh token:", error)
+        return nil
+    }
+}
+```
+
+**为什么这样做？**
+
+1. `authService.fetchTokens()` 调用 `Amplify.Auth.fetchAuthSession()`
+2. Amplify SDK 会自动检查 ID Token 是否过期
+3. 如果过期，SDK 使用 Refresh Token 获取新的 ID Token
+4. 如果 Refresh Token 也过期（30 天不活跃），才需要重新登录
+
+**效果**：
+- ✅ 活跃用户（每月至少打开一次 app）基本不会看到"登录已过期"
+- ✅ 只有 30 天不活跃的用户才需要重新登录
+
+**Refresh Token 过期的兜底处理**：
+
+```swift
+// 如果 getFreshIdToken() 返回 nil，可能是 Refresh Token 过期
+guard let idToken = await userManager.getFreshIdToken() else {
+    // 提示用户重新登录
     await userManager.signOut()
+    return
 }
 ```
 
