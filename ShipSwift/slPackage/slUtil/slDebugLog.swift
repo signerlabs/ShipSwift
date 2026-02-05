@@ -27,7 +27,7 @@ import Foundation
 /// debugLog("📊", "Count:", items.count)  // Output: 📊 Count: 10
 /// ```
 @inline(__always)
-func debugLog(_ items: Any..., separator: String = " ", terminator: String = "\n") {
+nonisolated func debugLog(_ items: Any..., separator: String = " ", terminator: String = "\n") {
     #if DEBUG
     let output = items.map { "\($0)" }.joined(separator: separator)
     print(output, terminator: terminator)
@@ -45,7 +45,7 @@ func debugLog(_ items: Any..., separator: String = " ", terminator: String = "\n
 /// debugLog("Loading complete")  // Output: [ViewModel.swift:42] Loading complete
 /// ```
 @inline(__always)
-func debugLog(_ message: @autoclosure () -> String, file: String = #file, line: Int = #line) {
+nonisolated func debugLog(_ message: @autoclosure () -> String, file: String = #file, line: Int = #line) {
     #if DEBUG
     let filename = (file as NSString).lastPathComponent
     print("[\(filename):\(line)] \(message())")
