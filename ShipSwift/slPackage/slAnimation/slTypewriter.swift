@@ -96,6 +96,7 @@ struct slTypewriter: View {
     @State private var currentIndex = 0
     @State private var isDeleting = false
     @State private var charStates: [slTypewriterCharState] = []
+    @State private var isActive = false
 
     var body: some View {
         HStack(spacing: 0) {
@@ -114,7 +115,16 @@ struct slTypewriter: View {
                 .foregroundStyle(.clear)
         }
         .onAppear {
+            // 重置状态并启动
+            isActive = true
+            displayedText = ""
+            charStates = []
+            currentIndex = 0
+            isDeleting = false
             startTyping()
+        }
+        .onDisappear {
+            isActive = false
         }
     }
 
@@ -184,11 +194,14 @@ struct slTypewriter: View {
     // MARK: - 打字逻辑
 
     private func startTyping() {
-        guard !texts.isEmpty else { return }
+        guard !texts.isEmpty, isActive else { return }
         typeNextCharacter()
     }
 
     private func typeNextCharacter() {
+        // 检查是否仍然激活
+        guard isActive else { return }
+
         let currentText = texts[currentIndex]
 
         if isDeleting {
@@ -197,12 +210,14 @@ struct slTypewriter: View {
                 isDeleting = false
                 displayedText = ""
                 currentIndex = (currentIndex + 1) % texts.count
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                    guard isActive else { return }
                     typeNextCharacter()
                 }
             } else {
                 // 移除最后一个字符
-                DispatchQueue.main.asyncAfter(deadline: .now() + deletingSpeed) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + deletingSpeed) { [self] in
+                    guard isActive else { return }
                     if !charStates.isEmpty {
                         _ = charStates.removeLast()
                         displayedText = String(displayedText.dropLast())
@@ -215,14 +230,16 @@ struct slTypewriter: View {
                 let charIndex = currentText.index(currentText.startIndex, offsetBy: displayedText.count)
                 let newChar = currentText[charIndex]
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + typingSpeed) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + typingSpeed) { [self] in
+                    guard isActive else { return }
                     displayedText.append(newChar)
                     charStates.append(slTypewriterCharState(character: String(newChar)))
                     typeNextCharacter()
                 }
             } else {
                 // 打字完成，等待后开始删除
-                DispatchQueue.main.asyncAfter(deadline: .now() + pauseDuration) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + pauseDuration) { [self] in
+                    guard isActive else { return }
                     isDeleting = true
                     typeNextCharacter()
                 }
