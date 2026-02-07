@@ -1,24 +1,24 @@
 # ShipSwift
 
-AI-native development reference library for iOS — let AI build production-quality apps with battle-tested recipes.
+面向 AI 的 iOS 开发参考库 — 让大模型基于实战验证的 Recipe 写出生产级代码。
 
-## Vision
+## 愿景
 
-ShipSwift is not a boilerplate you copy-paste. It's a **structured knowledge base** designed for LLMs (Claude, GPT, etc.) to reference when building iOS apps. When a solo developer says "help me add subscriptions", the AI gets production-grade context — architecture decisions, complete implementation, and known pitfalls — instead of generating incomplete code from generic training data.
+ShipSwift 不是让你复制粘贴的模板项目。它是一个**为大模型设计的结构化知识库**（Claude、GPT 等），当独立开发者说"帮我加订阅功能"时，AI 能拿到生产级的上下文 — 架构决策、完整实现、已知陷阱 — 而不是从通用训练数据里生成不完整的代码。
 
-## Product
+## 产品
 
-### Core: Recipe-based MCP Server
+### 核心：基于 Recipe 的 MCP Server
 
-Each feature is organized as a self-contained **Recipe** — a complete implementation guide optimized for AI consumption.
+每个功能以独立的 **Recipe** 组织 — 为 AI 消费优化的完整实现方案。
 
-The MCP Server is deployed as a **remote HTTP service** on AWS. All recipes (free and pro) are served from the server — no local installation needed.
+MCP Server 部署为 AWS 上的**远程 HTTP 服务**，所有 Recipe（免费和付费）从服务端返回，用户无需本地安装。
 
 ```
-Architecture:
+架构：
 
 ┌──────────────┐   HTTP (Streamable)   ┌──────────────────────────────┐
-│  AI Client   │ ◄──────────────────► │  AWS (CDK)                    │
+│  AI 客户端    │ ◄──────────────────► │  AWS (CDK)                    │
 │  Claude Code │                       │                                │
 │  Cursor      │                       │  App Runner (Hono)            │
 │  Windsurf    │                       │  ├── MCP transport layer      │
@@ -27,33 +27,33 @@ Architecture:
                                        │  └── searchRecipes            │
                                        │                                │
                                        │  Aurora Serverless v2         │
-                                       │  ├── recipes (content)        │
-                                       │  └── licenses (key validation)│
+                                       │  ├── recipes (内容)           │
+                                       │  └── licenses (密钥校验)      │
                                        └──────────────────────────────┘
 ```
 
-### User Installation
+### 用户安装
 
 ```bash
-# Free user — one command, no runtime needed
+# 免费用户 — 一条命令，无需安装运行时
 claude mcp add --transport http shipswift https://api.shipswift.dev/mcp
 
-# Pro user — add license key
+# 付费用户 — 带上 license key
 claude mcp add --transport http shipswift https://api.shipswift.dev/mcp \
   --header "Authorization: Bearer sk-xxxxx"
 ```
 
-### Why Remote HTTP
+### 为什么选择远程 HTTP
 
-- **Zero installation** — no Node.js, no Python, no downloads. One command pointing to a URL
-- **Instant updates** — change a recipe, all users get it immediately
-- **Content protection** — Pro recipes never leave the server without a valid license
-- **Single codebase** — one Lambda handles all clients (Claude Code, Cursor, Windsurf, etc.)
-- **Low cost** — App Runner + Aurora Serverless scales to zero when idle, minimal cost at early stage
+- **零安装** — 不需要 Node.js、Python、不需要下载任何东西，一条命令指向 URL 即可
+- **即时更新** — 修改 Recipe 后所有用户立即生效
+- **内容保护** — Pro Recipe 不经过有效 license 不会离开服务器
+- **统一服务** — 一个 App Runner 服务对接所有客户端（Claude Code、Cursor、Windsurf 等）
+- **低成本** — App Runner + Aurora Serverless 闲时自动缩容，早期成本极低
 
-### Recipe Format
+### Recipe 格式
 
-Every recipe follows a fixed structure for consistent AI parsing:
+每个 Recipe 遵循固定结构，确保 AI 解析一致：
 
 ```markdown
 ---
@@ -64,195 +64,266 @@ platform: ios + aws
 complexity: medium
 ---
 
-# Recipe Title
+# Recipe 标题
 
-## What This Solves
-[One sentence]
+## 解决什么问题
+[一句话说明]
 
-## Architecture Decisions
-[Why this approach, trade-offs vs alternatives]
+## 架构决策
+[为什么选这个方案，与替代方案的 trade-off]
 
-## Dependencies
-[Exact versions]
+## 依赖
+[精确到版本的依赖列表]
 
-## Implementation
+## 实现
 ### iOS
-[Complete Swift code with inline comments on key decisions]
+[完整 Swift 代码，关键决策点有内联注释]
 
-### Backend
-[CDK definitions + Lambda handlers]
+### 后端
+[CDK 定义 + Lambda handler]
 
-## Integration Checklist
-- [ ] Step 1: ...
-- [ ] Step 2: ...
+## 集成清单
+- [ ] 步骤 1: ...
+- [ ] 步骤 2: ...
 
-## Common Customizations
-- Want Google Sign-In? → Modify here
-- Want OTP login? → See variants/otp.md
+## 常见定制
+- 想加 Google 登录？→ 修改这里
+- 想改为验证码登录？→ 参考 variants/otp.md
 
-## Known Pitfalls
-[Real-world bugs and edge cases from production apps]
+## 已知陷阱
+[来自生产环境的真实 bug 和边界情况]
 ```
 
-Key design choices:
-- AI reads one `recipe.md` and has full context — no cross-file hunting
-- `pairs_with` tells AI which modules work together
-- `Common Customizations` lets AI handle user-specific requests
-- `Known Pitfalls` is the core moat — real-world experience you can't find on Stack Overflow
+关键设计：
+- AI 读一个 `recipe.md` 就有完整上下文，不需要跨文件查找
+- `pairs_with` 告诉 AI 模块间的搭配关系
+- `常见定制` 让 AI 能应对用户的个性化需求
+- `已知陷阱` 是核心壁垒 — 实战经验，Stack Overflow 上找不到
 
-## Distribution Channels
+## 分发渠道
 
-Same recipe content, adapted for different AI tools:
+同一套 Recipe 内容，适配不同 AI 工具：
 
-| Channel | Format | Use Case |
-|---------|--------|----------|
-| **MCP Server (HTTP)** | On-demand retrieval | Primary — all AI clients connect to the same endpoint |
-| **Docs website** | Rendered for humans | Developers browse, learn, and discover |
-| **Claude Project** | Uploaded to Project Knowledge | Alternative for users who prefer offline |
+| 渠道 | 形式 | 使用场景 |
+|------|------|---------|
+| **MCP Server (HTTP)** | 按需获取 | 主要渠道 — 所有 AI 客户端连接同一个端点 |
+| **文档网站** | 面向人类阅读 | 开发者浏览、学习、发现 |
+| **Claude Project** | 上传到 Project Knowledge | 偏好离线使用的用户 |
 
-MCP Server is the single source of truth — users install it in Claude Code, and when they say "add subscription", the MCP automatically feeds the right recipe to the AI.
+MCP Server 是唯一数据源 — 用户在 Claude Code 里安装后，说"加订阅功能"，MCP 自动把对应 Recipe 喂给 AI。
 
-## Business Model: Open-core + One-time Purchase
+## 商业模式：开放核心 + 一次性买断
 
-### Pricing
+### 定价
 
-| Tier | Price | Content |
-|------|-------|---------|
-| **Free** | $0 | MCP Server + 3-4 free recipes |
-| **Pro** | $79 one-time | All recipes (current + updates in this major version) |
-| **Upgrade** | $29 per major version | Future major recipe packs |
+| 层级 | 价格 | 内容 |
+|------|------|------|
+| **Free** | $0 | MCP Server + 3-4 个免费 Recipe |
+| **Pro** | $79 一次性 | 全部 Recipe（当前版本 + 后续更新） |
+| **升级** | $29 / 大版本 | 未来的新 Recipe 包 |
 
-### Why This Model
+### 为什么选这个模式
 
-1. **Free tier is the growth engine**
-   - No sign-up, one command to start using free recipes
-   - Early mover in MCP ecosystem (Anthropic is building an MCP directory)
-   - Free recipes on GitHub README / docs site drive organic traffic
+1. **免费层是增长引擎**
+   - 无需注册，一条命令即可使用免费 Recipe
+   - MCP 生态先发优势（Anthropic 正在建设 MCP 目录）
+   - 免费 Recipe 通过 GitHub README / 文档网站带来自然流量
 
-2. **Free recipes build trust**
-   - Users experience the quality difference: "AI with ShipSwift context writes dramatically better code"
-   - This aha moment is the conversion point
+2. **免费 Recipe 建立信任**
+   - 用户体验到质量差异："AI 有了 ShipSwift 上下文后写出的代码完全不一样"
+   - 这个 aha moment 就是转化点
 
-3. **One-time purchase fits the target user**
-   - Solo developers hate subscriptions for tools they don't use daily
-   - $79 for saving days of development time is a no-brainer
-   - No subscription fatigue, no churn problem
+3. **一次性买断符合目标用户**
+   - 独立开发者讨厌为不是每天都用的工具付订阅
+   - $79 换来省几天的开发时间，非常划算
+   - 没有订阅疲劳，没有流失问题
 
-4. **Upgrade pricing creates sustainable revenue**
-   - New recipe packs (CloudKit, Push Notifications, Widgets, etc.)
-   - Existing users pay $29, new users still pay $79 for everything
-   - Not a subscription, but has recurring revenue potential
+4. **升级价带来持续收入**
+   - 新 Recipe 包（CloudKit、Push Notifications、Widgets 等）
+   - 老用户 $29 升级，新用户仍然 $79 全包
+   - 不是订阅，但有持续收入
 
-### Free vs Pro Content
+### 免费 vs 付费内容
 
-**Free recipes** (demonstrate value):
-- UI Components (slComponent collection)
-- Animations (slAnimation collection)
-- Onboarding flow
+**免费 Recipe**（展示价值）：
+- UI 组件（slComponent 系列）
+- 动画组件（slAnimation 系列）
+- Onboarding 引导流程
 
-**Pro recipes** (solve painful problems every app needs):
-- Auth system (Cognito + Amplify)
-- Subscription system (StoreKit 2 + server validation)
-- AI streaming chat (Lambda Response Streaming + SSE)
-- Voice input (VolcEngine ASR)
-- Infrastructure (AWS CDK full stack)
-- Database (Aurora Serverless + Drizzle ORM)
-- Messaging (SES/SNS + Aliyun SMS)
+**付费 Recipe**（解决每个 App 都需要的痛点）：
+- 认证系统（Cognito + Amplify）
+- 订阅系统（StoreKit 2 + 服务端验证）
+- AI 流式对话（Lambda Response Streaming + SSE）
+- 语音输入（火山引擎 ASR）
+- 基础设施（AWS CDK 全栈）
+- 数据库（Aurora Serverless + Drizzle ORM）
+- 消息服务（SES/SNS + 阿里云短信）
 
-### Content Protection
+### License 访问控制
 
-All recipes are served via **remote HTTP** — Pro content never leaves the server without a valid license:
-- Free recipes: returned to any request, no auth needed
-- Pro recipes: require `Authorization: Bearer sk-xxxxx` header
-- License keys stored in Aurora Serverless, validated per request
-- No local files to crack or redistribute
+所有 Recipe 通过远程 HTTP 提供。付费内容通过简单的 License Key 机制控制。
 
-## User Journey
+**数据库 schema：**
+
+```sql
+-- recipes 表
+recipes
+├── id            -- 例如 "auth-cognito", "subscription-storekit"
+├── tier          -- "free" | "pro"
+├── content       -- recipe markdown 内容
+└── updated_at
+
+-- licenses 表
+licenses
+├── key           -- 例如 "sk-a1b2c3d4e5f6..."
+├── email
+├── tier          -- "pro"
+├── created_at
+└── expires_at    -- null = 终身有效
+```
+
+**服务端门控逻辑（Hono）：**
+
+```typescript
+app.tool("getRecipe", { recipeId: z.string() }, async ({ recipeId }, c) => {
+  const recipe = await db.query.recipes.findFirst({
+    where: eq(recipes.id, recipeId)
+  })
+
+  if (recipe.tier === "pro") {
+    const key = getAuthKey(c)  // 从 Authorization header 获取
+    const license = await db.query.licenses.findFirst({
+      where: eq(licenses.key, key)
+    })
+
+    if (!license) {
+      return { content: [{ type: "text", text:
+        "🔒 这是付费 Recipe。请在 https://shipswift.dev 获取 License"
+      }]}
+    }
+  }
+
+  return { content: [{ type: "text", text: recipe.content }] }
+})
+```
+
+**License Key 生成（用户付款后）：**
+
+```typescript
+import { randomBytes } from 'crypto'
+
+// 用户在 shipswift.dev 付款后生成，存入 Aurora
+function generateLicenseKey(): string {
+  return 'sk-' + randomBytes(24).toString('hex')
+  // 例如 sk-a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6
+}
+```
+
+**完整请求流程：**
 
 ```
-Discovery → Trial → Conversion → Retention
+用户："帮我加订阅功能"
 
-1. DISCOVER on GitHub / Twitter / MCP directory
-2. INSTALL one command:
+AI → listRecipes()
+服务端 → 返回所有 Recipe 列表（标注 free/pro）
+
+AI → getRecipe("subscription-storekit")
+
+服务端校验：
+├── recipe.tier == "free"  → 直接返回内容
+└── recipe.tier == "pro"
+    ├── header 中有有效 license key → 返回内容
+    └── 无 key 或 key 无效          → 返回购买提示
+```
+
+没有 OAuth，没有 token 刷新，没有复杂认证流程。Header 里一个 key，数据库查一次，完事。
+
+## 用户旅程
+
+```
+发现 → 试用 → 转化 → 留存
+
+1. 发现：通过 GitHub / Twitter / MCP 目录
+2. 安装：一条命令
    claude mcp add --transport http shipswift https://api.shipswift.dev/mcp
-3. TRY free recipes with Claude Code
-   "Help me build an onboarding page" → AI calls ShipSwift → perfect output
-4. CONVERT when hitting a paid recipe
-   "Add subscription" → MCP returns: "Pro recipe. Get your license at shipswift.dev"
-5. PAY $79, add license key, unlock all pro recipes
-6. RETAIN with future recipe pack upgrades ($29)
+3. 试用：使用免费 Recipe
+   "帮我做一个引导页" → AI 调用 ShipSwift → 完美输出
+4. 转化：遇到付费 Recipe
+   "加订阅功能" → MCP 返回："付费 Recipe，请在 shipswift.dev 获取 License"
+5. 付费：$79，配置 license key，解锁全部付费 Recipe
+6. 留存：后续新 Recipe 包升级（$29）
 ```
 
-## Current Recipe Inventory (from existing codebase)
+## 当前 Recipe 清单（基于现有代码库）
 
-| Recipe | Source | iOS | Backend | Completeness |
-|--------|--------|-----|---------|-------------|
-| Auth (Cognito) | slUserManager + 1_auth.md | ✅ | ✅ | High |
-| Subscription (StoreKit 2) | slStoreManager + 3_subscription.md | ✅ | ✅ | High |
-| AI Streaming Chat | slChat + 7_streaming.md | ✅ | Partial | Medium |
-| Voice Input (ASR) | slChat/ASR + 6_asr.md | ✅ | ✅ | High |
-| Paywall UI | slPaywallView | ✅ | — | Medium |
-| Onboarding | slOnboardingView | ✅ | — | Medium |
-| Infrastructure (CDK) | 0_cdk.md | — | ✅ | High |
-| Database (Aurora) | 2_database.md | — | ✅ | High |
-| Messaging | 5_messaging.md | — | ✅ | High |
-| Lambda | 4_lambda.md | — | ✅ | High |
+| Recipe | 来源 | iOS | 后端 | 完整度 |
+|--------|------|-----|------|-------|
+| 认证（Cognito） | slUserManager + 1_auth.md | ✅ | ✅ | 高 |
+| 订阅（StoreKit 2） | slStoreManager + 3_subscription.md | ✅ | ✅ | 高 |
+| AI 流式对话 | slChat + 7_streaming.md | ✅ | 部分 | 中 |
+| 语音输入（ASR） | slChat/ASR + 6_asr.md | ✅ | ✅ | 高 |
+| 付费墙 UI | slPaywallView | ✅ | — | 中 |
+| Onboarding | slOnboardingView | ✅ | — | 中 |
+| 基础设施（CDK） | 0_cdk.md | — | ✅ | 高 |
+| 数据库（Aurora） | 2_database.md | — | ✅ | 高 |
+| 消息服务 | 5_messaging.md | — | ✅ | 高 |
+| Lambda | 4_lambda.md | — | ✅ | 高 |
 
-**MVP scope: 3-4 free + 6-7 pro recipes, enough to validate the full pipeline.**
+**MVP 范围：3-4 个免费 + 6-7 个付费 Recipe，足够验证完整链路。**
 
-## Tech Stack
+## 技术栈
 
-### Existing (iOS app templates)
+### 现有（iOS 应用模板）
 
 - SwiftUI + Swift
-- StoreKit 2 (In-app purchases)
-- Amplify SDK (AWS integration)
-- SpriteKit (animations)
-- VolcEngine (ASR)
+- StoreKit 2（App 内购买）
+- Amplify SDK（AWS 集成）
+- SpriteKit（动画）
+- 火山引擎（ASR）
 
-### Backend (covered in docs)
+### 后端（文档覆盖）
 
-- AWS CDK (Infrastructure as Code)
-- AWS Cognito (Authentication)
-- Aurora Serverless v2 (Database)
-- Lambda (Serverless functions)
-- App Runner + Hono (API server)
-- Drizzle ORM (Database operations)
+- AWS CDK（基础设施即代码）
+- AWS Cognito（认证）
+- Aurora Serverless v2（数据库）
+- Lambda（无服务器函数）
+- App Runner + Hono（API 服务）
+- Drizzle ORM（数据库操作）
 
-### MCP Server (to build)
+### MCP Server（待开发）
 
-- TypeScript + Hono (App Runner)
-- MCP SDK (@modelcontextprotocol/sdk)
-- AWS App Runner (HTTP service)
-- AWS Aurora Serverless v2 (recipes + license keys)
-- AWS CDK (infrastructure as code, reuse existing CDK knowledge)
-- Drizzle ORM (database operations, reuse existing patterns)
+- TypeScript + Hono（App Runner）
+- MCP SDK（@modelcontextprotocol/sdk）
+- AWS App Runner（HTTP 服务）
+- AWS Aurora Serverless v2（Recipe 内容 + License 密钥）
+- AWS CDK（基础设施即代码，复用现有 CDK 经验）
+- Drizzle ORM（数据库操作，复用现有模式）
 
-## Design Principles
+## 设计原则
 
-1. **AI-first** — content structured for LLM consumption, not just human reading
-2. **Battle-tested** — every recipe comes from production apps (Fullpack, Truvet, etc.)
-3. **Self-contained** — one recipe = complete context, no cross-file dependencies
-4. **Always up-to-date** — remote delivery means every user always gets the latest recipes
-5. **Full-stack** — iOS + backend in each recipe, because solo developers ship both
+1. **AI 优先** — 内容为大模型消费而结构化，不仅仅是给人看的
+2. **实战验证** — 每个 Recipe 来自生产应用（Fullpack、Truvet 等）
+3. **自包含** — 一个 Recipe = 完整上下文，无跨文件依赖
+4. **始终最新** — 远程分发意味着用户永远拿到最新版本
+5. **全栈** — 每个 Recipe 包含 iOS + 后端，因为独立开发者两端都要做
 
-## Roadmap
+## 路线图
 
-### Phase 1: MVP
-- [ ] Restructure existing content into recipe format
-- [ ] Build MCP Server on AWS (App Runner + Aurora Serverless + CDK)
-- [ ] Implement license key validation
-- [ ] Ship 3 free + 6 pro recipes
-- [ ] Deploy to api.shipswift.dev
+### 第一阶段：MVP
+- [ ] 将现有内容重组为 Recipe 格式
+- [ ] 在 AWS 上构建 MCP Server（App Runner + Aurora Serverless + CDK）
+- [ ] 实现 License Key 校验
+- [ ] 上线 3 个免费 + 6 个付费 Recipe
+- [ ] 部署到 api.shipswift.dev
 
-### Phase 2: Launch
-- [ ] Landing page / docs website
-- [ ] Payment integration (Gumroad / LemonSqueezy)
-- [ ] Submit to MCP directories
-- [ ] Twitter / indie hacker community launch
+### 第二阶段：发布
+- [ ] Landing Page / 文档网站
+- [ ] 接入支付（Gumroad / LemonSqueezy）
+- [ ] 提交到 MCP 目录
+- [ ] Twitter / 独立开发者社区推广
 
-### Phase 3: Expand
-- [ ] New recipe packs (CloudKit, Push Notifications, Widgets, SwiftData)
-- [ ] Claude Project pre-configured template
-- [ ] Video walkthroughs for human learners
-- [ ] Community recipe contributions
+### 第三阶段：扩展
+- [ ] 新 Recipe 包（CloudKit、Push Notifications、Widgets、SwiftData）
+- [ ] Claude Project 预配置模板
+- [ ] 面向人类的视频教程
+- [ ] 社区 Recipe 贡献
