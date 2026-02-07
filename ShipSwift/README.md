@@ -1,127 +1,238 @@
 # ShipSwift
 
-快速构建 iOS 应用的代码模板库和开发指南。
+AI-native development reference library for iOS — let AI build production-quality apps with battle-tested recipes.
 
-## 核心内容
+## Vision
 
-ShipSwift 包含两个核心部分：
+ShipSwift is not a boilerplate you copy-paste. It's a **structured knowledge base** designed for LLMs (Claude, GPT, etc.) to reference when building iOS apps. When a solo developer says "help me add subscriptions", the AI gets production-grade context — architecture decisions, complete implementation, and known pitfalls — instead of generating incomplete code from generic training data.
 
-### 1. 代码模板 (`slPackage/`)
+## Product
 
-可直接复制使用的 SwiftUI/Swift 代码组件，所有组件以 `sl` 前缀命名：
+### Core: Recipe-based MCP Server
 
-| 目录 | 说明 |
-|------|------|
-| `slAnimation/` | 动画组件（扫描动画、渐变、Rive加载器、摇晃效果等） |
-| `slComponent/` | UI组件（活动热力图、旋转引用、图表、Loading等） |
-| `slChat/` | 聊天组件（语音识别、消息列表等） |
-| `slManager/` | 管理类（状态管理、数据管理等） |
-| `slConfig/` | 配置相关 |
-| `slUtil/` | 工具类 |
-| `slView/` | 视图组件（Auth、Onboarding、Setting等） |
-
-### 常用组件
-
-- **slImageScanOverlay** - 图片扫描动画，AI 处理、图片分析场景
-- **slRotatingQuote** - 旋转引用文本，设置页底部展示名人名言
-- **slActivityHeatmap** - 活动热力图，展示连续打卡和活动记录
-
-### 2. 开发文档 (`docs/`)
-
-新项目快速开发指南，涵盖后端服务搭建和功能集成：
-
-| 文档 | 说明 |
-|------|------|
-| [0_cdk.md](docs/0_cdk.md) | AWS CDK 基础设施配置 (VPC, Aurora, App Runner, Lambda, Cognito, SES/SNS) |
-| [1_auth.md](docs/1_auth.md) | 认证系统 (iOS Amplify SDK 集成、登录/登出/删除账户流程) |
-| [2_database.md](docs/2_database.md) | 数据库 (Drizzle ORM 配置、本地开发、迁移管理) |
-| [3_subscription.md](docs/3_subscription.md) | iOS 订阅系统 (StoreKit 2 客户端 + 后端验证实现) |
-| [4_lambda.md](docs/4_lambda.md) | Lambda 开发 (handler 代码写法、性能优化、错误处理) |
-| [5_messaging.md](docs/5_messaging.md) | 消息服务 (AWS SES/SNS + 阿里云短信/邮件，工厂模式切换) |
-| [6_asr.md](docs/6_asr.md) | 语音识别 (火山引擎流式ASR、聊天输入框集成) |
-| [7_streaming.md](docs/7_streaming.md) | 流式传输 (Lambda Response Streaming、AI 聊天、SSE 最佳实践) |
-
----
-
-## 快速开始
-
-### 使用代码模板
-
-1. 浏览 `slPackage/` 找到需要的组件
-2. 将整个目录或单个文件复制到你的项目中
-3. 根据需要修改配置和样式
-
-示例：集成语音识别聊天输入框
-
-```swift
-// 复制 slASR/ 目录到项目后
-
-import SwiftUI
-
-struct ChatView: View {
-    @State private var text = ""
-
-    let asrConfig = SLASRConfig(
-        appId: "你的AppID",
-        accessToken: "你的AccessToken"
-    )
-
-    var body: some View {
-        VStack {
-            // 消息列表...
-
-            SLChatInputView(text: $text, asrConfig: asrConfig) {
-                sendMessage()
-            }
-        }
-    }
-}
-```
-
-### 使用开发文档
-
-1. 阅读 `docs/` 下的文档了解最佳实践
-2. 按照文档步骤搭建后端服务
-3. 参考代码示例进行集成
-
----
-
-## 目录结构
+Each feature is organized as a self-contained **Recipe** — a complete implementation guide optimized for AI consumption.
 
 ```
-ShipSwift/
-├── README.md                   # 本文件
-├── docs/                       # 开发文档
-│   ├── 0_cdk.md               # AWS CDK
-│   ├── 1_auth.md              # 认证
-│   ├── 2_database.md          # 数据库
-│   ├── 3_subscription.md      # 订阅
-│   ├── 4_lambda.md            # Lambda
-│   ├── 5_messaging.md         # 消息
-│   ├── 6_asr.md               # 语音识别
-│   └── 7_streaming.md         # 流式传输
-├── slPackage/                  # 代码模板
-│   ├── slAnimation/           # 动画
-│   ├── slASR/                 # 语音识别
-│   ├── slComponent/           # UI组件
-│   ├── slConfig/              # 配置
-│   ├── slManager/             # 管理类
-│   ├── slUtil/                # 工具
-│   └── slView/                # 视图
-└── ...
+shipswift-mcp/
+├── src/
+│   ├── server.ts              # MCP Server entry
+│   ├── tools/
+│   │   ├── listRecipes.ts     # List available recipes
+│   │   ├── getRecipe.ts       # Get full recipe content
+│   │   └── searchRecipes.ts   # Search by keyword
+│   └── license.ts             # Local license validation
+├── recipes/
+│   ├── free/                  # Free recipes (shipped with repo)
+│   │   ├── ui-components/
+│   │   ├── animations/
+│   │   └── onboarding/
+│   └── pro/                   # Paid recipes (encrypted, unlocked by license key)
+│       ├── auth-cognito/
+│       ├── subscription-storekit/
+│       ├── ai-chat-streaming/
+│       ├── voice-input-asr/
+│       ├── infra-cdk/
+│       └── database-aurora/
+└── package.json
 ```
 
+### Recipe Format
+
+Every recipe follows a fixed structure for consistent AI parsing:
+
+```markdown
+---
+id: auth-cognito
+requires: []
+pairs_with: [subscription-storekit, ai-chat-streaming]
+platform: ios + aws
+complexity: medium
 ---
 
-## 设计原则
+# Recipe Title
 
-1. **即插即用**：组件独立，复制即可使用
-2. **最小依赖**：尽量使用系统框架，减少第三方依赖
-3. **文档驱动**：每个功能模块都有详细的集成文档
-4. **实战验证**：所有代码来自真实项目，经过验证
+## What This Solves
+[One sentence]
 
-## 文档维护
+## Architecture Decisions
+[Why this approach, trade-offs vs alternatives]
 
-- 在任意项目中发现新的最佳实践，及时更新并 push
-- 使用前先 pull 获取最新内容
-- Claude Code 工作时可直接参考 workspace 内的文档
+## Dependencies
+[Exact versions]
+
+## Implementation
+### iOS
+[Complete Swift code with inline comments on key decisions]
+
+### Backend
+[CDK definitions + Lambda handlers]
+
+## Integration Checklist
+- [ ] Step 1: ...
+- [ ] Step 2: ...
+
+## Common Customizations
+- Want Google Sign-In? → Modify here
+- Want OTP login? → See variants/otp.md
+
+## Known Pitfalls
+[Real-world bugs and edge cases from production apps]
+```
+
+Key design choices:
+- AI reads one `recipe.md` and has full context — no cross-file hunting
+- `pairs_with` tells AI which modules work together
+- `Common Customizations` lets AI handle user-specific requests
+- `Known Pitfalls` is the core moat — real-world experience you can't find on Stack Overflow
+
+## Distribution Channels
+
+Same recipe content, adapted for different AI tools:
+
+| Channel | Format | Use Case |
+|---------|--------|----------|
+| **GitHub repo** | Raw files | Claude Code / Cursor reads local files |
+| **MCP Server** | On-demand retrieval | Fetch only the relevant recipe, saves context window |
+| **Claude Project** | Uploaded to Project Knowledge | "Build me an app based on ShipSwift" |
+| **Docs website** | Rendered for humans | Developers browse and learn |
+
+MCP Server is the primary distribution — users install it in Claude Code, and when they say "add subscription", the MCP automatically feeds the right recipe to the AI.
+
+## Business Model: Open-core + One-time Purchase
+
+### Pricing
+
+| Tier | Price | Content |
+|------|-------|---------|
+| **Free** | $0 | MCP Server + 3-4 free recipes |
+| **Pro** | $79 one-time | All recipes (current + updates in this major version) |
+| **Upgrade** | $29 per major version | Future major recipe packs |
+
+### Why This Model
+
+1. **Open-source MCP Server is the growth engine**
+   - GitHub stars and forks = free distribution
+   - Early mover in MCP ecosystem (Anthropic is building an MCP directory)
+   - Developers trust open-source tools
+
+2. **Free recipes build trust**
+   - Users experience the quality difference: "AI with ShipSwift context writes dramatically better code"
+   - This aha moment is the conversion point
+
+3. **One-time purchase fits the target user**
+   - Solo developers hate subscriptions for tools they don't use daily
+   - $79 for saving days of development time is a no-brainer
+   - No subscription fatigue, no churn problem
+
+4. **Upgrade pricing creates sustainable revenue**
+   - New recipe packs (CloudKit, Push Notifications, Widgets, etc.)
+   - Existing users pay $29, new users still pay $79 for everything
+   - Not a subscription, but has recurring revenue potential
+
+### Free vs Pro Content
+
+**Free recipes** (demonstrate value):
+- UI Components (slComponent collection)
+- Animations (slAnimation collection)
+- Onboarding flow
+
+**Pro recipes** (solve painful problems every app needs):
+- Auth system (Cognito + Amplify)
+- Subscription system (StoreKit 2 + server validation)
+- AI streaming chat (Lambda Response Streaming + SSE)
+- Voice input (VolcEngine ASR)
+- Infrastructure (AWS CDK full stack)
+- Database (Aurora Serverless + Drizzle ORM)
+- Messaging (SES/SNS + Aliyun SMS)
+
+### Content Protection
+
+Pro recipes use **local encryption** (not a remote API):
+- Encrypted recipe files ship with the repo
+- License key decrypts locally — no server dependency
+- Solo developers prefer tools that work offline
+
+## User Journey
+
+```
+Discovery → Trial → Conversion → Retention
+
+1. DISCOVER on GitHub / Twitter / MCP directory
+2. INSTALL free MCP Server, try with Claude Code
+   "Help me build an onboarding page" → AI calls ShipSwift → perfect output
+3. CONVERT when hitting a paid recipe
+   "Add subscription" → MCP returns: "This is a Pro recipe. Purchase to unlock."
+4. PAY $79, unlock everything locally
+5. RETAIN with future recipe pack upgrades ($29)
+```
+
+## Current Recipe Inventory (from existing codebase)
+
+| Recipe | Source | iOS | Backend | Completeness |
+|--------|--------|-----|---------|-------------|
+| Auth (Cognito) | slUserManager + 1_auth.md | ✅ | ✅ | High |
+| Subscription (StoreKit 2) | slStoreManager + 3_subscription.md | ✅ | ✅ | High |
+| AI Streaming Chat | slChat + 7_streaming.md | ✅ | Partial | Medium |
+| Voice Input (ASR) | slChat/ASR + 6_asr.md | ✅ | ✅ | High |
+| Paywall UI | slPaywallView | ✅ | — | Medium |
+| Onboarding | slOnboardingView | ✅ | — | Medium |
+| Infrastructure (CDK) | 0_cdk.md | — | ✅ | High |
+| Database (Aurora) | 2_database.md | — | ✅ | High |
+| Messaging | 5_messaging.md | — | ✅ | High |
+| Lambda | 4_lambda.md | — | ✅ | High |
+
+**MVP scope: 3-4 free + 6-7 pro recipes, enough to validate the full pipeline.**
+
+## Tech Stack
+
+### Existing (iOS app templates)
+
+- SwiftUI + Swift
+- StoreKit 2 (In-app purchases)
+- Amplify SDK (AWS integration)
+- SpriteKit (animations)
+- VolcEngine (ASR)
+
+### Backend (covered in docs)
+
+- AWS CDK (Infrastructure as Code)
+- AWS Cognito (Authentication)
+- Aurora Serverless v2 (Database)
+- Lambda (Serverless functions)
+- App Runner + Hono (API server)
+- Drizzle ORM (Database operations)
+
+### MCP Server (to build)
+
+- TypeScript
+- MCP SDK (@modelcontextprotocol/sdk)
+- Local license validation (no server dependency)
+
+## Design Principles
+
+1. **AI-first** — content structured for LLM consumption, not just human reading
+2. **Battle-tested** — every recipe comes from production apps (Fullpack, Truvet, etc.)
+3. **Self-contained** — one recipe = complete context, no cross-file dependencies
+4. **Offline-first** — everything works locally, no external service required
+5. **Full-stack** — iOS + backend in each recipe, because solo developers ship both
+
+## Roadmap
+
+### Phase 1: MVP
+- [ ] Restructure existing content into recipe format
+- [ ] Build MCP Server with free/pro gating
+- [ ] Implement local license validation
+- [ ] Ship 3 free + 6 pro recipes
+- [ ] Open-source the MCP Server on GitHub
+
+### Phase 2: Launch
+- [ ] Landing page / docs website
+- [ ] Payment integration (Gumroad / LemonSqueezy)
+- [ ] Submit to MCP directories
+- [ ] Twitter / indie hacker community launch
+
+### Phase 3: Expand
+- [ ] New recipe packs (CloudKit, Push Notifications, Widgets, SwiftData)
+- [ ] Claude Project pre-configured template
+- [ ] Video walkthroughs for human learners
+- [ ] Community recipe contributions
