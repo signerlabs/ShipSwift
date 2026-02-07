@@ -12,29 +12,44 @@ ShipSwift is not a boilerplate you copy-paste. It's a **structured knowledge bas
 
 Each feature is organized as a self-contained **Recipe** — a complete implementation guide optimized for AI consumption.
 
+The MCP Server is deployed as a **remote HTTP service** on AWS. All recipes (free and pro) are served from the server — no local installation needed.
+
 ```
-shipswift-mcp/
-├── src/
-│   ├── server.ts              # MCP Server entry
-│   ├── tools/
-│   │   ├── listRecipes.ts     # List available recipes
-│   │   ├── getRecipe.ts       # Get full recipe content
-│   │   └── searchRecipes.ts   # Search by keyword
-│   └── license.ts             # Local license validation
-├── recipes/
-│   ├── free/                  # Free recipes (shipped with repo)
-│   │   ├── ui-components/
-│   │   ├── animations/
-│   │   └── onboarding/
-│   └── pro/                   # Paid recipes (encrypted, unlocked by license key)
-│       ├── auth-cognito/
-│       ├── subscription-storekit/
-│       ├── ai-chat-streaming/
-│       ├── voice-input-asr/
-│       ├── infra-cdk/
-│       └── database-aurora/
-└── package.json
+Architecture:
+
+┌──────────────┐   HTTP (Streamable)   ┌──────────────────────────────┐
+│  AI Client   │ ◄──────────────────► │  AWS (CDK)                    │
+│  Claude Code │                       │                                │
+│  Cursor      │                       │  App Runner (Hono)            │
+│  Windsurf    │                       │  ├── MCP transport layer      │
+│  ...         │                       │  ├── listRecipes              │
+└──────────────┘                       │  ├── getRecipe (free/pro)     │
+                                       │  └── searchRecipes            │
+                                       │                                │
+                                       │  Aurora Serverless v2         │
+                                       │  ├── recipes (content)        │
+                                       │  └── licenses (key validation)│
+                                       └──────────────────────────────┘
 ```
+
+### User Installation
+
+```bash
+# Free user — one command, no runtime needed
+claude mcp add --transport http shipswift https://api.shipswift.dev/mcp
+
+# Pro user — add license key
+claude mcp add --transport http shipswift https://api.shipswift.dev/mcp \
+  --header "Authorization: Bearer sk-xxxxx"
+```
+
+### Why Remote HTTP
+
+- **Zero installation** — no Node.js, no Python, no downloads. One command pointing to a URL
+- **Instant updates** — change a recipe, all users get it immediately
+- **Content protection** — Pro recipes never leave the server without a valid license
+- **Single codebase** — one Lambda handles all clients (Claude Code, Cursor, Windsurf, etc.)
+- **Low cost** — App Runner + Aurora Serverless scales to zero when idle, minimal cost at early stage
 
 ### Recipe Format
 
@@ -91,12 +106,11 @@ Same recipe content, adapted for different AI tools:
 
 | Channel | Format | Use Case |
 |---------|--------|----------|
-| **GitHub repo** | Raw files | Claude Code / Cursor reads local files |
-| **MCP Server** | On-demand retrieval | Fetch only the relevant recipe, saves context window |
-| **Claude Project** | Uploaded to Project Knowledge | "Build me an app based on ShipSwift" |
-| **Docs website** | Rendered for humans | Developers browse and learn |
+| **MCP Server (HTTP)** | On-demand retrieval | Primary — all AI clients connect to the same endpoint |
+| **Docs website** | Rendered for humans | Developers browse, learn, and discover |
+| **Claude Project** | Uploaded to Project Knowledge | Alternative for users who prefer offline |
 
-MCP Server is the primary distribution — users install it in Claude Code, and when they say "add subscription", the MCP automatically feeds the right recipe to the AI.
+MCP Server is the single source of truth — users install it in Claude Code, and when they say "add subscription", the MCP automatically feeds the right recipe to the AI.
 
 ## Business Model: Open-core + One-time Purchase
 
@@ -110,10 +124,10 @@ MCP Server is the primary distribution — users install it in Claude Code, and 
 
 ### Why This Model
 
-1. **Open-source MCP Server is the growth engine**
-   - GitHub stars and forks = free distribution
+1. **Free tier is the growth engine**
+   - No sign-up, one command to start using free recipes
    - Early mover in MCP ecosystem (Anthropic is building an MCP directory)
-   - Developers trust open-source tools
+   - Free recipes on GitHub README / docs site drive organic traffic
 
 2. **Free recipes build trust**
    - Users experience the quality difference: "AI with ShipSwift context writes dramatically better code"
@@ -147,10 +161,11 @@ MCP Server is the primary distribution — users install it in Claude Code, and 
 
 ### Content Protection
 
-Pro recipes use **local encryption** (not a remote API):
-- Encrypted recipe files ship with the repo
-- License key decrypts locally — no server dependency
-- Solo developers prefer tools that work offline
+All recipes are served via **remote HTTP** — Pro content never leaves the server without a valid license:
+- Free recipes: returned to any request, no auth needed
+- Pro recipes: require `Authorization: Bearer sk-xxxxx` header
+- License keys stored in Aurora Serverless, validated per request
+- No local files to crack or redistribute
 
 ## User Journey
 
@@ -158,12 +173,14 @@ Pro recipes use **local encryption** (not a remote API):
 Discovery → Trial → Conversion → Retention
 
 1. DISCOVER on GitHub / Twitter / MCP directory
-2. INSTALL free MCP Server, try with Claude Code
+2. INSTALL one command:
+   claude mcp add --transport http shipswift https://api.shipswift.dev/mcp
+3. TRY free recipes with Claude Code
    "Help me build an onboarding page" → AI calls ShipSwift → perfect output
-3. CONVERT when hitting a paid recipe
-   "Add subscription" → MCP returns: "This is a Pro recipe. Purchase to unlock."
-4. PAY $79, unlock everything locally
-5. RETAIN with future recipe pack upgrades ($29)
+4. CONVERT when hitting a paid recipe
+   "Add subscription" → MCP returns: "Pro recipe. Get your license at shipswift.dev"
+5. PAY $79, add license key, unlock all pro recipes
+6. RETAIN with future recipe pack upgrades ($29)
 ```
 
 ## Current Recipe Inventory (from existing codebase)
@@ -204,26 +221,29 @@ Discovery → Trial → Conversion → Retention
 
 ### MCP Server (to build)
 
-- TypeScript
+- TypeScript + Hono (App Runner)
 - MCP SDK (@modelcontextprotocol/sdk)
-- Local license validation (no server dependency)
+- AWS App Runner (HTTP service)
+- AWS Aurora Serverless v2 (recipes + license keys)
+- AWS CDK (infrastructure as code, reuse existing CDK knowledge)
+- Drizzle ORM (database operations, reuse existing patterns)
 
 ## Design Principles
 
 1. **AI-first** — content structured for LLM consumption, not just human reading
 2. **Battle-tested** — every recipe comes from production apps (Fullpack, Truvet, etc.)
 3. **Self-contained** — one recipe = complete context, no cross-file dependencies
-4. **Offline-first** — everything works locally, no external service required
+4. **Always up-to-date** — remote delivery means every user always gets the latest recipes
 5. **Full-stack** — iOS + backend in each recipe, because solo developers ship both
 
 ## Roadmap
 
 ### Phase 1: MVP
 - [ ] Restructure existing content into recipe format
-- [ ] Build MCP Server with free/pro gating
-- [ ] Implement local license validation
+- [ ] Build MCP Server on AWS (App Runner + Aurora Serverless + CDK)
+- [ ] Implement license key validation
 - [ ] Ship 3 free + 6 pro recipes
-- [ ] Open-source the MCP Server on GitHub
+- [ ] Deploy to api.shipswift.dev
 
 ### Phase 2: Launch
 - [ ] Landing page / docs website
