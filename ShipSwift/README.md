@@ -51,6 +51,58 @@ claude mcp add --transport http shipswift https://api.shipswift.dev/mcp \
 - **统一服务** — 一个 App Runner 服务对接所有客户端（Claude Code、Cursor、Windsurf 等）
 - **低成本** — App Runner + Aurora Serverless 闲时自动缩容，早期成本极低
 
+### 工具发现机制
+
+AI 客户端通过 MCP 协议的两层机制发现和使用 Recipe：
+
+**第一层：工具发现（连接时自动完成）**
+
+客户端连接 MCP Server 时，协议自动调用 `tools/list`，AI 获取所有可用工具：
+
+```json
+{
+  "tools": [
+    {
+      "name": "listRecipes",
+      "description": "列出所有可用的 ShipSwift iOS 开发 Recipe。当用户需要实现以下功能时调用：认证、订阅、AI 对话、语音输入、UI 组件、动画、Onboarding、付费墙、基础设施部署、数据库配置。返回每个 Recipe 的 id、标题、tier(free/pro) 和简介。"
+    },
+    {
+      "name": "getRecipe",
+      "description": "获取指定 Recipe 的完整内容，包含架构决策、完整代码实现、集成清单和已知陷阱。",
+      "inputSchema": { "recipeId": "string" }
+    },
+    {
+      "name": "searchRecipes",
+      "description": "按关键词搜索 Recipe。当用户需求不能直接匹配到具体 Recipe 时使用。",
+      "inputSchema": { "query": "string" }
+    }
+  ]
+}
+```
+
+**第二层：Recipe 发现（AI 按需调用）**
+
+```
+用户："帮我加订阅功能"
+
+1. AI 看到自己有 listRecipes 工具
+2. AI 调用 listRecipes() → 服务端返回：
+   [
+     { "id": "ui-components",         "title": "UI 组件集",  "tier": "free", "summary": "20+ SwiftUI 组件..." },
+     { "id": "animations",            "title": "动画组件集",  "tier": "free", "summary": "9 个即用动画..." },
+     { "id": "onboarding",            "title": "Onboarding", "tier": "free", "summary": "完整引导页流程..." },
+     { "id": "auth-cognito",          "title": "认证系统",    "tier": "pro",  "summary": "Cognito 全套..." },
+     { "id": "subscription-storekit", "title": "订阅系统",    "tier": "pro",  "summary": "StoreKit 2 全套..." },
+     ...
+   ]
+3. AI 匹配到 subscription-storekit 与用户需求相关
+4. AI 调用 getRecipe("subscription-storekit")
+5. 服务端校验 license → 返回完整内容（或购买提示）
+6. AI 基于 Recipe 内容生成生产级代码
+```
+
+**关键：tool description 决定 AI 是否主动调用。** description 需要明确列出覆盖的功能场景，AI 才能在正确的时机自动调用，让用户体验无缝。
+
 ### Recipe 格式
 
 每个 Recipe 遵循固定结构，确保 AI 解析一致：
