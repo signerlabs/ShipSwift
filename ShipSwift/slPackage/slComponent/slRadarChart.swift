@@ -22,14 +22,6 @@ struct slRadarChart: View {
             self.label = label
             self.value = value
         }
-
-        var remark: String {
-            switch value {
-            case 80...: return "很好"
-            case 60..<80: return "较好"
-            default: return "一般"
-            }
-        }
     }
 
     /// 雷达图形状
@@ -73,13 +65,13 @@ struct slRadarChart: View {
         @ViewBuilder var content: Content
 
         var body: some View {
-            HStack(spacing: 6) {
+            HStack(spacing: 4) {
                 Capsule()
                     .fill(bulletColor)
-                    .frame(width: 4, height: 12)
+                    .frame(width: 3, height: 10)
 
                 content
-                    .font(.subheadline)
+                    .font(.caption)
             }
         }
     }
@@ -88,14 +80,16 @@ struct slRadarChart: View {
 
     let data: [DataPoint]
     let maxValue: Double
+    let showLabels: Bool
 
     @State private var progress: Double = 0
 
     // MARK: - Initializer
 
-    init(data: [DataPoint], maxValue: Double = 100) {
+    init(data: [DataPoint], maxValue: Double = 100, showLabels: Bool = true) {
         self.data = data
         self.maxValue = maxValue
+        self.showLabels = showLabels
     }
 
     // MARK: - Body
@@ -104,7 +98,10 @@ struct slRadarChart: View {
         GeometryReader { geo in
             let size = min(geo.size.width, geo.size.height)
             let center = CGPoint(x: geo.size.width / 2, y: geo.size.height / 2)
-            let radius = size / 2 * 0.8
+            // showLabels 时缩小图形，让标签(1.3x)不超出边界:
+            // 0.55 * 1.3 = 0.715，在半径范围内留出文字空间
+            let radiusFactor: CGFloat = showLabels ? 0.55 : 0.8
+            let radius = size / 2 * radiusFactor
             let step = 2 * .pi / Double(data.count)
 
             ZStack {
@@ -155,25 +152,23 @@ struct slRadarChart: View {
                     .fill(Color.accentColor.opacity(0.2))
 
                 // 标签
-                ForEach(Array(data.enumerated()), id: \.element.id) { index, point in
-                    let angle = step * Double(index) - .pi / 2
-                    let x = center.x + cos(angle) * radius * 1.3
-                    let y = center.y + sin(angle) * radius * 1.3
+                if showLabels {
+                    ForEach(Array(data.enumerated()), id: \.element.id) { index, point in
+                        let angle = step * Double(index) - .pi / 2
+                        let x = center.x + cos(angle) * radius * 1.3
+                        let y = center.y + sin(angle) * radius * 1.3
 
-                    VStack {
-                        BulletPointText(bulletColor: .secondary) {
-                            Text(point.label)
-                        }
+                        VStack {
+                            BulletPointText(bulletColor: .secondary) {
+                                Text(point.label)
+                            }
 
-                        HStack(spacing: 4) {
-                            Text(point.remark)
-                                .foregroundStyle(.secondary)
                             Text(point.value, format: .number.precision(.fractionLength(0)))
                                 .fontWeight(.semibold)
+                                .font(.footnote)
                         }
-                        .font(.footnote)
+                        .position(x: x, y: y)
                     }
-                    .position(x: x, y: y)
                 }
             }
             .frame(width: geo.size.width, height: geo.size.height)
