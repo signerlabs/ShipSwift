@@ -3,8 +3,8 @@
 //  ShipSwift
 //
 //  Root TabView template using the iOS 18+ Tab API, with selected/unselected icon
-//  switching and haptic feedback. Uses .environment(\.symbolVariants, .none) to
-//  prevent the system from auto-filling icons.
+//  switching, native search tab, and haptic feedback. Uses
+//  .environment(\.symbolVariants, .none) to prevent the system from auto-filling icons.
 //
 //  Usage:
 //    // 1. Use directly as the app root view:
@@ -29,7 +29,10 @@
 //    // 3. Add or remove tabs: simply add or delete Tab entries in the TabView closure.
 //    //    Set the selectedTab default value to the first tab's value string.
 //
-//    // 4. Haptic feedback: built in via .sensoryFeedback(.increase, trigger: selectedTab),
+//    // 4. Search tab: uses .searchable() on NavigationStack for native search bar.
+//    //    Replace ContentUnavailableView with your search results view.
+//
+//    // 5. Haptic feedback: built in via .sensoryFeedback(.increase, trigger: selectedTab),
 //    //    triggered automatically on tab switch.
 //
 //  Created by Wei Zhong on 3/1/26.
@@ -39,11 +42,17 @@ import SwiftUI
 
 struct SWRootTabView: View {
     @State private var selectedTab = "home"
+    @State private var searchText = ""
 
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab(value: "home") {
-                Text("Home View")
+                NavigationStack {
+                    ScrollView {
+                        Text("Home View")
+                    }
+                    .navigationTitle("Home")
+                }
             } label: {
                 Label {
                     Text("Home")
@@ -54,7 +63,12 @@ struct SWRootTabView: View {
             }
 
             Tab(value: "outfit") {
-                Text("Outfit View")
+                NavigationStack {
+                    ScrollView {
+                        Text("Outfit View")
+                    }
+                    .navigationTitle("Outfit")
+                }
             } label: {
                 Label {
                     Text("Outfit")
@@ -65,12 +79,34 @@ struct SWRootTabView: View {
             }
 
             Tab(value: "setting") {
-                Text("Setting View")
+                NavigationStack {
+                    ScrollView {
+                        Text("Setting View")
+                    }
+                    .navigationTitle("Setting")
+                }
             } label: {
                 Label {
                     Text("Setting")
                 } icon: {
                     Image(systemName: selectedTab == "setting" ? "gearshape.fill" : "gearshape")
+                }
+                .environment(\.symbolVariants, .none)
+            }
+
+            Tab(value: "search") {
+                NavigationStack {
+                    ScrollView {
+                        ContentUnavailableView.search(text: searchText)
+                    }
+                    .navigationTitle("Search")
+                }
+                .searchable(text: $searchText, prompt: "Search...")
+            } label: {
+                Label {
+                    Text("Search")
+                } icon: {
+                    Image(systemName: "magnifyingglass")
                 }
                 .environment(\.symbolVariants, .none)
             }

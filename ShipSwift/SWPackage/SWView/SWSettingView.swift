@@ -116,16 +116,16 @@ struct SWSettingView: View {
                 // MARK: - Recommended Apps
                 Section("Apps Built with ShipSwift") {
                     Link(destination: URL(string: appStoreSmileMax)!) {
-                        SWLabelWithImage(image: .smileMaxLogo, name: "SmileMax - Glow Up Coach")
+                        labelWithImage(.smileMaxLogo, name: "SmileMax - Glow Up Coach")
                     }
                     Link(destination: URL(string: appStoreFullpack)!) {
-                        SWLabelWithImage(image: .fullpackLogo, name: "Fullpack - Packing & Outfit")
+                        labelWithImage(.fullpackLogo, name: "Fullpack - Packing & Outfit")
                     }
                     Link(destination: URL(string: appStoreBrushmo)!) {
-                        SWLabelWithImage(image: .brushmoLogo, name: "Brushmo - Oral Health Companion")
+                        labelWithImage(.brushmoLogo, name: "Brushmo - Oral Health Companion")
                     }
                     Link(destination: URL(string: appStoreJourney)!) {
-                        SWLabelWithImage(image: .journeyLogo, name: "Journey - Goal Tracker & Diary")
+                        labelWithImage(.journeyLogo, name: "Journey - Goal Tracker & Diary")
                     }
                 }
                 
@@ -185,6 +185,21 @@ struct SWSettingView: View {
         }
     }
     
+    // MARK: - Label With Image
+
+    @ViewBuilder
+    private func labelWithImage(_ image: ImageResource, name: LocalizedStringResource) -> some View {
+        HStack {
+            Image(image)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 32, height: 32)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .padding(5)
+            Text(name)
+        }
+    }
+
     // MARK: - Actions (replace with actual logic)
     
     private func signOut() {
