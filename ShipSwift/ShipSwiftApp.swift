@@ -9,13 +9,13 @@ import SwiftUI
 
 @main
 struct ShipSwiftApp: App {
-    @State private var storeManager = slStoreManager.shared
+    @State private var storeManager = SWStoreManager.shared
 
     var body: some Scene {
         WindowGroup {
-            slRootTabView()
+            SWRootTabView()
                 .environment(storeManager)
-                .slAlert()
+                .swAlert()
         }
     }
 }

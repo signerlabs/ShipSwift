@@ -1,0 +1,232 @@
+//
+//  SWScatterChart.swift
+//  ShipSwift
+//
+//  Copyright © 2026 Signer Labs. All rights reserved.
+//
+//  Scrollable scatter chart component supporting multiple data point types,
+//  time axis scrolling, and custom styling.
+//  Suitable for scenarios with multiple records per day (e.g., scan records, exercise data, etc.)
+//
+
+import SwiftUI
+import Charts
+
+// MARK: - SWScatterChart
+
+struct SWScatterChart<CategoryType: Hashable & Plottable>: View {
+    // MARK: - Built-in Data Model
+
+    /// Data point model
+    struct DataPoint: Identifiable {
+        let id: UUID
+        let date: Date
+        let value: Double
+        let category: CategoryType
+
+        init(id: UUID = UUID(), date: Date, value: Double, category: CategoryType) {
+            self.id = id
+            self.date = date
+            self.value = value
+            self.category = category
+        }
+    }
+
+    // MARK: - Properties
+
+    /// Array of data points
+    let dataPoints: [DataPoint]
+
+    /// Color mapping for categories
+    let colorMapping: [CategoryType: Color]
+
+    /// Y-axis range
+    var yDomain: ClosedRange<Double> = 0...100
+
+    /// X-axis scrollable total range (days back from today)
+    var scrollableDaysBack: Int = 30
+
+    /// X-axis scrollable total range (days forward from today)
+    var scrollableDaysForward: Int = 7
+
+    /// Visible range (days)
+    var visibleDays: Int = 7
+
+    /// Chart height
+    var chartHeight: CGFloat = 180
+
+    /// Title (optional)
+    var title: String? = nil
+
+    // MARK: - Computed Properties
+
+    /// X-axis scrollable total range
+    private var chartXDomain: ClosedRange<Date> {
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: Date())
+        let startDate = calendar.date(byAdding: .day, value: -scrollableDaysBack, to: startOfToday)!
+        let endDate = calendar.date(byAdding: .day, value: scrollableDaysForward, to: startOfToday)!
+        return startDate...endDate
+    }
+
+    /// Chart initial scroll position: center today in the visible range
+    private var chartInitialScrollDate: Date {
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: Date())
+        // Visible range is N days; to center today, start N/2 days back
+        let offset = visibleDays / 2
+        return calendar.date(byAdding: .day, value: -offset, to: startOfToday)!
+    }
+
+    /// Visible range time length (seconds)
+    private var visibleDomainLength: Int {
+        visibleDays * 24 * 60 * 60
+    }
+
+    // MARK: - Body
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Title
+            if let title = title {
+                Text(title)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+            }
+
+            // Chart
+            Chart(dataPoints) { point in
+                PointMark(
+                    x: .value("Date", point.date),
+                    y: .value("Value", point.value)
+                )
+                .foregroundStyle(by: .value("Category", point.category))
+            }
+            .chartForegroundStyleScale(
+                domain: Array(colorMapping.keys),
+                range: Array(colorMapping.values)
+            )
+            .chartXScale(domain: chartXDomain)
+            .chartYScale(domain: yDomain)
+            .chartScrollableAxes(.horizontal)
+            .chartXVisibleDomain(length: visibleDomainLength)
+            .chartScrollPosition(initialX: chartInitialScrollDate)
+            .chartYAxis {
+                AxisMarks(position: .leading, values: .automatic(desiredCount: 5)) { value in
+                    AxisGridLine()
+                    AxisValueLabel()
+                }
+            }
+            .chartXAxis {
+                AxisMarks(values: .stride(by: .day, count: 1)) { value in
+                    AxisGridLine()
+                    AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                }
+            }
+            .chartLegend(position: .top, alignment: .trailing)
+            .frame(height: chartHeight)
+        }
+    }
+}
+
+// MARK: - Convenience Initializer for String Category
+
+extension SWScatterChart where CategoryType == String {
+    /// Convenience initializer (using String as category type)
+    init(
+        dataPoints: [DataPoint],
+        colorMapping: [String: Color],
+        yDomain: ClosedRange<Double> = 0...100,
+        scrollableDaysBack: Int = 30,
+        scrollableDaysForward: Int = 7,
+        visibleDays: Int = 7,
+        chartHeight: CGFloat = 180,
+        title: String? = nil
+    ) {
+        self.dataPoints = dataPoints
+        self.colorMapping = colorMapping
+        self.yDomain = yDomain
+        self.scrollableDaysBack = scrollableDaysBack
+        self.scrollableDaysForward = scrollableDaysForward
+        self.visibleDays = visibleDays
+        self.chartHeight = chartHeight
+        self.title = title
+    }
+}
+
+// MARK: - Preview
+
+#Preview("Basic Scatter Chart") {
+    // Sample data: simulated teeth and food scan records
+    let calendar = Calendar.current
+    let today = calendar.startOfDay(for: Date())
+
+    let sampleData: [SWScatterChart<String>.DataPoint] = [
+        // Today's data
+        .init(date: calendar.date(byAdding: .hour, value: 8, to: today)!, value: 85, category: "Teeth"),
+        .init(date: calendar.date(byAdding: .hour, value: 12, to: today)!, value: 52, category: "Food"),
+        .init(date: calendar.date(byAdding: .hour, value: 18, to: today)!, value: 78, category: "Food"),
+        // Yesterday's data
+        .init(date: calendar.date(byAdding: .day, value: -1, to: today)!, value: 72, category: "Teeth"),
+        .init(date: calendar.date(byAdding: .hour, value: -18, to: today)!, value: 65, category: "Food"),
+        // Day before yesterday's data
+        .init(date: calendar.date(byAdding: .day, value: -2, to: today)!, value: 90, category: "Teeth"),
+        // 3 days ago
+        .init(date: calendar.date(byAdding: .day, value: -3, to: today)!, value: 45, category: "Food"),
+        .init(date: calendar.date(byAdding: .day, value: -3, to: today)!, value: 88, category: "Teeth"),
+    ]
+
+    let colorMapping: [String: Color] = [
+        "Teeth": .blue,
+        "Food": .orange
+    ]
+
+    SWScatterChart(
+        dataPoints: sampleData,
+        colorMapping: colorMapping,
+        title: "Scan Trends"
+    )
+    .padding()
+}
+
+#Preview("Custom Y Domain") {
+    let calendar = Calendar.current
+    let today = calendar.startOfDay(for: Date())
+
+    let temperatureData: [SWScatterChart<String>.DataPoint] = [
+        .init(date: calendar.date(byAdding: .hour, value: 6, to: today)!, value: 36.2, category: "Morning"),
+        .init(date: calendar.date(byAdding: .hour, value: 12, to: today)!, value: 36.8, category: "Noon"),
+        .init(date: calendar.date(byAdding: .hour, value: 20, to: today)!, value: 37.1, category: "Evening"),
+        .init(date: calendar.date(byAdding: .day, value: -1, to: today)!, value: 36.5, category: "Morning"),
+    ]
+
+    let colorMapping: [String: Color] = [
+        "Morning": .cyan,
+        "Noon": .yellow,
+        "Evening": .purple
+    ]
+
+    SWScatterChart(
+        dataPoints: temperatureData,
+        colorMapping: colorMapping,
+        yDomain: 35...40,
+        visibleDays: 5,
+        chartHeight: 200,
+        title: "Body Temperature"
+    )
+    .padding()
+}
+
+#Preview("Empty State") {
+    let colorMapping: [String: Color] = [
+        "Type A": .blue,
+        "Type B": .green
+    ]
+
+    SWScatterChart<String>(
+        dataPoints: [],
+        colorMapping: colorMapping,
+        title: "No Data Yet"
+    )
+    .padding()
+}
