@@ -2,11 +2,56 @@
 //  SWScatterChart.swift
 //  ShipSwift
 //
-//  Copyright © 2026 Signer Labs. All rights reserved.
+//  Horizontally scrollable scatter chart built on Swift Charts. Supports generic
+//  category types (must conform to Hashable & Plottable) with color mapping.
+//  Includes a convenience initializer for String categories.
 //
-//  Scrollable scatter chart component supporting multiple data point types,
-//  time axis scrolling, and custom styling.
-//  Suitable for scenarios with multiple records per day (e.g., scan records, exercise data, etc.)
+//  Usage:
+//    // Convenience initializer with String categories
+//    let sampleData: [SWScatterChart<String>.DataPoint] = [
+//        .init(date: Date(), value: 85, category: "Teeth"),
+//        .init(date: Date(), value: 52, category: "Food"),
+//    ]
+//
+//    let colorMapping: [String: Color] = [
+//        "Teeth": .blue,
+//        "Food": .orange
+//    ]
+//
+//    SWScatterChart(
+//        dataPoints: sampleData,
+//        colorMapping: colorMapping,
+//        title: "Scan Trends"
+//    )
+//    .padding()
+//
+//    // Custom Y-axis range and visible days
+//    SWScatterChart(
+//        dataPoints: temperatureData,
+//        colorMapping: tempColorMapping,
+//        yDomain: 35...40,
+//        visibleDays: 5,
+//        chartHeight: 200,
+//        title: "Body Temperature"
+//    )
+//
+//  Data Model (built-in):
+//    SWScatterChart<CategoryType>.DataPoint
+//      - date: Date
+//      - value: Double
+//      - category: CategoryType
+//
+//  Parameters:
+//    - dataPoints: [DataPoint]              — Array of data points
+//    - colorMapping: [CategoryType: Color]  — Category to color mapping
+//    - yDomain: ClosedRange<Double>         — Y-axis range (default 0...100)
+//    - scrollableDaysBack: Int              — Scrollable days backward (default 30)
+//    - scrollableDaysForward: Int           — Scrollable days forward (default 7)
+//    - visibleDays: Int                     — Visible days range (default 7)
+//    - chartHeight: CGFloat                 — Chart height (default 180)
+//    - title: String?                       — Optional title
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

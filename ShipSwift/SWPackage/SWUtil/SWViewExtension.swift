@@ -2,15 +2,32 @@
 //  SWViewExtension.swift
 //  ShipSwift
 //
-//  View style extensions
+//  SwiftUI view extensions including SWButtonStyle (primary/secondary button styles) and
+//  the swCardStyle card modifier. Button styles are full-width rounded rectangles with
+//  automatic pressed/disabled state handling; card style features a gradient stroke.
 //
-//  Button Style:
-//    Button("Confirm") { }.buttonStyle(.swPrimary)
-//    Button("Cancel") { }.buttonStyle(.swSecondary)
+//  Usage:
+//    // Primary button (accent background + white text, for confirm/save main actions):
+//    Button("Save") { save() }
+//        .buttonStyle(.swPrimary)
 //
-//  Card Style:
-//    content.swCardStyle()
-//    content.swCardStyle(strokeColor: .cyan, cornerRadius: 20, padding: 16)
+//    // Secondary button (light background, for cancel/close secondary actions):
+//    Button("Cancel") { dismiss() }
+//        .buttonStyle(.swSecondary)
+//
+//    // Custom border and corner radius:
+//    Button("Submit") { submit() }
+//        .buttonStyle(.swPrimary(showBorder: true, cornerRadius: 12))
+//
+//    // Card style modifier (gradient stroke + translucent background):
+//    VStack { content }
+//        .swCardStyle()
+//
+//    // Custom card parameters:
+//    VStack { content }
+//        .swCardStyle(strokeColor: .cyan, cornerRadius: 24, padding: 24, strokeWidth: 1.0)
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

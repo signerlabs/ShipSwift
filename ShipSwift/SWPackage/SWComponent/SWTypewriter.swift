@@ -2,7 +2,41 @@
 //  SWTypewriter.swift
 //  ShipSwift
 //
-//  Typewriter text component - supports cycling through multiple texts with character-level animations
+//  Typewriter text animation that cycles through an array of strings,
+//  typing and deleting characters one by one with configurable animation
+//  styles. Ideal for landing page headlines, onboarding prompts, and
+//  AI chat UIs.
+//
+//  Usage:
+//    // Basic — cycles through texts with default spring animation
+//    SWTypewriter(texts: ["Hello World", "Welcome Back", "Let's Go"])
+//
+//    // Choose an animation style (SWTypewriterStyle):
+//    //   .none, .spring, .blur, .fade, .scale, .wave
+//    SWTypewriter(texts: ["Line 1", "Line 2"], animationStyle: .blur)
+//
+//    // Convenience factory methods
+//    SWTypewriter.spring(texts: ["A", "B"])
+//    SWTypewriter.blur(texts: ["A", "B"])
+//    SWTypewriter.fade(texts: ["A", "B"])
+//    SWTypewriter.scale(texts: ["A", "B"])
+//
+//    // Custom gradient and timing
+//    SWTypewriter(
+//        texts: ["Message 1", "Message 2"],
+//        typingSpeed: 0.05,       // seconds per character typed
+//        deletingSpeed: 0.03,     // seconds per character deleted
+//        pauseDuration: 3.0,      // seconds to hold completed text
+//        animationStyle: .spring,
+//        gradient: LinearGradient(
+//            colors: [.pink, .orange],
+//            startPoint: .leading,
+//            endPoint: .trailing
+//        )
+//    )
+//    .font(.title3.weight(.semibold))
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

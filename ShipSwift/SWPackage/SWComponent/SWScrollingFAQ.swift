@@ -2,8 +2,23 @@
 //  SWScrollingFAQ.swift
 //  ShipSwift
 //
-//  Horizontally scrolling FAQ suggestion component
-//  Displays rows of infinitely scrolling question buttons that users can tap.
+//  Auto-scrolling horizontal FAQ carousel that displays three rows of
+//  question pills scrolling in alternating directions (left, right, left).
+//  Uses UIScrollView with a CADisplayLink for smooth infinite looping.
+//  Tapping a pill triggers the onTap callback with the question text.
+//
+//  Usage:
+//    SWScrollingFAQ { question in
+//        print("User tapped: \(question)")
+//        // e.g. navigate to a chat with this question pre-filled
+//    }
+//
+//  Notes:
+//    - FAQ data is currently hardcoded inside the component (faqData array).
+//      Customize the array to fit your app's topics.
+//    - Includes leading/trailing gradient fade overlays for a polished look.
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

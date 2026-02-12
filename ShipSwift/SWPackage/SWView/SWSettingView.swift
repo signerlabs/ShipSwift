@@ -2,9 +2,34 @@
 //  SWSettingView.swift
 //  ShipSwift
 //
-//  Generic settings page template. Copy to your project and modify as needed.
+//  Generic settings page template with language switching, share app, legal links,
+//  recommended apps, and sign out / delete account sections.
+//  Use directly as a NavigationStack page — no additional wrapping needed.
 //
-//  Created by Claude on 2026/1/12.
+//  Usage:
+//    // 1. Basic usage — embed directly in TabView or NavigationStack:
+//    SWSettingView()
+//
+//    // 2. Customization points (modify the constants in this file):
+//    //    - appStoreURL      → App Store URL for the share link
+//    //    - termsURL         → Terms of Service URL
+//    //    - privacyURL       → Privacy Policy URL
+//    //    - appStoreFullpack / appStoreBrushmo / ...  → Recommended app links
+//
+//    // 3. Replace sign-out and delete-account logic:
+//    //    Find the signOut() and deleteAccount() methods and replace the TODO comments with real implementations:
+//    private func signOut() {
+//        isSigningOut = true
+//        Task {
+//            await userManager.signOut()
+//            isSigningOut = false
+//        }
+//    }
+//
+//    // 4. Language switching is based on @AppStorage("appLanguage"),
+//    //    pair with SWDateExtension and similar utilities for global English/Chinese switching.
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

@@ -2,8 +2,23 @@
 //  SWShakingIcon.swift
 //  ShipSwift
 //
-//  Shaking icon animation component using PhaseAnimator
-//  The icon periodically zooms in, shakes side to side, then zooms back out.
+//  Animated icon that periodically zooms in and shakes side-to-side,
+//  mimicking the iOS home-screen jiggle/notification effect. Uses
+//  PhaseAnimator with a multi-step ShakePhase sequence: idle -> zoom in
+//  -> three shake pairs (left/right) -> zoom out, then repeats.
+//
+//  Usage:
+//    // Default size (80pt)
+//    SWShakingIcon()
+//
+//    // Custom height
+//    SWShakingIcon(height: 120)
+//
+//  Note:
+//    The icon defaults to "apple.logo" SF Symbol. To use a different icon,
+//    modify the Image(systemName:) call inside the view body.
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

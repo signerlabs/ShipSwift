@@ -2,9 +2,41 @@
 //  SWAuthView.swift
 //  ShipSwift
 //
-//  Generic authentication view template, copy into your project and customize.
-//  Supports email/password sign-in, email verification code confirmation,
-//  forgot password, and social sign-in.
+//  Authentication view with email, Apple, and Google sign-in.
+//  Provides a complete auth flow: sign in, sign up, email verification,
+//  forgot password, and reset password — all in a single view.
+//
+//  Usage:
+//    // 1. Present when user is signed out (requires SWUserManager in environment)
+//    @State private var userManager = SWUserManager()
+//
+//    switch userManager.sessionState {
+//    case .signedOut:
+//        SWAuthView()
+//            .environment(userManager)
+//    case .ready:
+//        MainView()
+//    default:
+//        LoadingView()
+//    }
+//
+//    // 2. The view handles all auth flows internally:
+//    //    - Email/password sign in and sign up
+//    //    - 6-digit email verification code confirmation
+//    //    - Forgot password / reset password flow
+//    //    - Apple and Google social sign-in buttons
+//    //    - Terms of Service agreement checkbox
+//
+//    // 3. Error messages are displayed via SWAlertManager.shared
+//    //    Make sure to attach .swAlert() modifier in your root view.
+//
+//    // 4. Preview usage
+//    #Preview {
+//        SWAuthView()
+//            .environment(SWUserManager())
+//    }
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

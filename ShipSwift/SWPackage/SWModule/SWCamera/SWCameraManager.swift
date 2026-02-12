@@ -2,8 +2,42 @@
 //  SWCameraManager.swift
 //  ShipSwift
 //
-//  Camera manager with AVCaptureSession management, photo capture, and zoom control.
-//  Uses onError closure instead of direct alert calls for decoupled error handling.
+//  AVCaptureSession manager with photo capture and zoom control.
+//  Handles camera permissions, session lifecycle, photo capture,
+//  and pinch-to-zoom with configurable zoom range.
+//
+//  Usage:
+//    // 1. Create manager (automatically checks camera permission)
+//    @State private var cameraManager = SWCameraManager()
+//
+//    // 2. Wire up error callback for UI alerts
+//    cameraManager.onError = { message in
+//        SWAlertManager.shared.show(.error, message: message)
+//    }
+//
+//    // 3. Start/stop session (call in onAppear/onDisappear)
+//    cameraManager.startSession()
+//    cameraManager.stopSession()
+//
+//    // 4. Capture a photo
+//    cameraManager.capturePhoto { image in
+//        guard let image else { return }
+//        // use captured UIImage
+//    }
+//
+//    // 5. Zoom control
+//    cameraManager.setZoom(2.0)               // set absolute zoom
+//    cameraManager.zoom(by: 1.5)              // multiply current zoom
+//    let current = cameraManager.currentZoom  // read current zoom level
+//    // zoom range: cameraManager.minZoom ... cameraManager.maxZoom
+//
+//    // 6. Check authorization
+//    if cameraManager.isAuthorized { /* show camera preview */ }
+//
+//    // 7. Access the AVCaptureSession for SWCameraPreview
+//    SWCameraPreview(session: cameraManager.session)
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

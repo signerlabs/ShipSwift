@@ -2,11 +2,23 @@
 //  SWDebugLog.swift
 //  ShipSwift
 //
-//  Debug logging utility with zero overhead in Release builds.
+//  Debug logging utility functions that only print in DEBUG mode, with zero overhead
+//  in Release builds (#if DEBUG + @inline(__always)). Provides two overloads:
+//  simple print and print with file name/line number.
 //
 //  Usage:
-//    swDebugLog("📊 Data loaded:", count)
-//    swDebugLog("Processing complete")
+//    // Overload 1 — multi-argument print (similar to print, supports custom separator and terminator):
+//    swDebugLog("UserID:", userId, "Status:", status)
+//    swDebugLog("A", "B", "C", separator: "-")
+//    // Output: A-B-C
+//
+//    // Overload 2 — print with file name and line number (automatically captures call site):
+//    swDebugLog("Network request failed")
+//    // Output: [ViewModel.swift:42] Network request failed
+//
+//    // In Release mode, all swDebugLog calls are completely removed by the compiler with no performance impact.
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import Foundation

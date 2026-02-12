@@ -2,7 +2,45 @@
 //  SWRadarChart.swift
 //  ShipSwift
 //
-//  Copyright © 2025 Signer Labs. All rights reserved.
+//  Animated radar (spider) chart with axis labels, background grid rings, and
+//  radial lines. The data polygon animates from center to full size on appear.
+//  Supports 3+ axes with customizable max value.
+//
+//  Usage:
+//    SWRadarChart(data: [
+//        .init(label: "Tolerance", value: 75),
+//        .init(label: "Ambition", value: 50),
+//        .init(label: "Acuity", value: 50),
+//        .init(label: "Creativity", value: 85),
+//        .init(label: "Stability", value: 85)
+//    ])
+//    .frame(width: 300, height: 300)
+//
+//    // Custom max value with hidden labels
+//    SWRadarChart(
+//        data: [
+//            .init(label: "Speed", value: 200),
+//            .init(label: "Power", value: 150),
+//            .init(label: "Defense", value: 180)
+//        ],
+//        maxValue: 250,
+//        showLabels: false
+//    )
+//
+//  Data Model (built-in):
+//    SWRadarChart.DataPoint(label: String, value: Double)
+//
+//  Parameters:
+//    - data: [DataPoint]     — Array of data points, each corresponding to one axis
+//    - maxValue: Double      — Maximum value, determines grid scale (default 100)
+//    - showLabels: Bool      — Whether to show axis labels (default true)
+//
+//  Notes:
+//    - Grid lines are drawn at 20/40/60/80/100 scale marks
+//    - Data polygon uses accentColor for fill and stroke
+//    - Appear animation is easeOut 1.2 seconds
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

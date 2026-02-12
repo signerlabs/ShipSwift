@@ -2,6 +2,40 @@
 //  SWLocationManager.swift
 //  ShipSwift
 //
+//  CoreLocation-based location manager (@Observable) that encapsulates authorization
+//  requests, location updates, and reverse geocoding. Automatically stops updates after
+//  obtaining a location to conserve battery. Results are stored in currentLocation
+//  (SWLocationManager.Location).
+//
+//  Usage:
+//    // 1. Initialize (recommended at the App level or in a ViewModel):
+//    @State private var locationManager = SWLocationManager()
+//
+//    // 2. Request location (automatically handles authorization status: requests authorization
+//    //    if not determined, starts updates directly if already authorized):
+//    locationManager.startLocationServices()
+//
+//    // 3. Read location results (@Observable drives automatic UI refresh):
+//    if let location = locationManager.currentLocation {
+//        Text(location.name)                    // City name (reverse geocoding)
+//        Text("\(location.latitude), \(location.longitude)")
+//        let coord = location.coordinate        // CLLocationCoordinate2D
+//    }
+//
+//    // 4. Check authorization status:
+//    locationManager.isAuthorized               // Whether authorized
+//    locationManager.isAuthorizationDetermined  // Whether the user has made a choice
+//
+//    // 5. Guide the user to system Settings (when authorization is denied):
+//    locationManager.openSettings()
+//
+//    // 6. Built-in Location data model (Identifiable, Equatable, Codable):
+//    let saved = SWLocationManager.Location(
+//        name: "Beijing", latitude: 39.9042, longitude: 116.4074
+//    )
+//
+//  Created by Wei Zhong on 3/1/26.
+//
 
 import CoreLocation
 import UIKit

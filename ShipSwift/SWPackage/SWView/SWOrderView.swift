@@ -1,7 +1,35 @@
+//
+//  SWOrderView.swift
+//  ShipSwift
+//
+//  Animated drink customization demo page showcasing SwiftUI animation capabilities:
+//  flavor selection, cup size switching, gradient background animation,
+//  matchedGeometryEffect selector, and cup scale/offset animation.
+//  Can be used as a reference template for product customization pages.
+//
+//  Usage:
+//    // 1. Present the view directly (best used full-screen; includes built-in gradient background):
+//    SWOrderView()
+//
+//    // 2. Internal components can be reused independently:
+//    //    - SWOrderSelector: Capsule-shaped selector with matchedGeometryEffect
+//    SWOrderSelector(items: ["S", "M", "L"], sel: $size, ns: sizeNS, label: "Cup Size")
+//
+//    //    - SWOrderButton: Circular translucent icon button
+//    SWOrderButton(icon: "plus") { qty += 1 }
+//
+//    //    - SWCupView: Animated SF Symbol cup display
+//    SWCupView(idx: 0, count: 1, img: "Matcha")
+//
+//    // 3. Customize flavors/cup sizes: modify the flavors and sizes arrays,
+//    //    and add corresponding mappings in SWCupView.sfSymbol and SWOrderView.bg.
+//
+//  Created by Wei Zhong on 3/1/26.
+//
+
 import SwiftUI
 
 // MARK: - SWOrderView
-// Core logic: color changes, layout, state
 
 struct SWOrderView: View {
     @State private var qty: Int = 1

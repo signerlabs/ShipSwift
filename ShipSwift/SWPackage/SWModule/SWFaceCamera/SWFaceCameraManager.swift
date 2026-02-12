@@ -2,15 +2,47 @@
 //  SWFaceCameraManager.swift
 //  ShipSwift
 //
-//  Face recognition camera manager
-//  Supports front/rear camera switching + Vision real-time face landmark detection + photo capture
+//  Face detection camera manager with Vision landmark tracking.
+//  Extends camera functionality with real-time face landmark detection,
+//  front/back camera switching, per-camera zoom, and photo capture.
 //
 //  Usage:
-//    @State private var camera = SWFaceCameraManager(position: .front)
+//    // 1. Create manager with initial camera position and zoom
+//    @State private var cameraManager = SWFaceCameraManager(
+//        position: .front,
+//        frontZoom: 1.0,
+//        backZoom: 1.0
+//    )
 //
-//    camera.faceTrackingEnabled = true   // Enable real-time face tracking
-//    camera.startSession()
-//    camera.faceLandmarks                // Get real-time face landmark data
+//    // 2. Enable face tracking and start session
+//    cameraManager.faceTrackingEnabled = true
+//    cameraManager.startSession()
+//
+//    // 3. Access real-time face landmarks (updated every frame)
+//    for group in cameraManager.faceLandmarks {
+//        // group.region: SWFaceLandmarkRegion (.leftEye, .outerLips, etc.)
+//        // group.points: [CGPoint] in normalized coordinates (0...1)
+//        // group.isClosed: Bool (true if > 2 points)
+//    }
+//
+//    // 4. Switch between front and back cameras
+//    cameraManager.switchCamera()
+//    let position = cameraManager.cameraPosition  // .front or .back
+//
+//    // 5. Capture a photo
+//    cameraManager.capturePhoto { image in
+//        guard let image else { return }
+//        // use captured UIImage
+//    }
+//
+//    // 6. Stop session and disable tracking (in onDisappear)
+//    cameraManager.faceTrackingEnabled = false
+//    cameraManager.stopSession()
+//
+//    // 7. Access the AVCaptureSession for preview
+//    SWFaceCameraPreview(session: cameraManager.session)
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

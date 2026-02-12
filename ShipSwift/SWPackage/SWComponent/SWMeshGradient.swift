@@ -2,8 +2,25 @@
 //  SWMeshGradient.swift
 //  ShipSwift
 //
-//  Animated mesh gradient background using indigo/blue/cyan color palette.
-//  The gradient smoothly transitions between two color states in a 5-second loop.
+//  Animated 3x3 mesh gradient background that smoothly transitions between
+//  two indigo/blue/cyan color palettes using a repeating easeInOut animation.
+//  Designed as a full-screen or section background layer.
+//
+//  Usage:
+//    // As a full-screen background
+//    ZStack {
+//        SWMeshGradient()
+//            .ignoresSafeArea()
+//        // Your content here
+//    }
+//
+//    // As a section background
+//    myContent
+//        .background {
+//            SWMeshGradient()
+//        }
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

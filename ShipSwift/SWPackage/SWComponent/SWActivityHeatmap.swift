@@ -2,45 +2,59 @@
 //  SWActivityHeatmap.swift
 //  ShipSwift
 //
-//  Activity heatmap component - displays consecutive streak days and activity records for the past N days.
-//  Use cases: habit tracking, check-in apps, journaling apps, etc.
+//  GitHub-style activity heatmap with streak tracking. Contains three sub-components
+//  under the SWActivityHeatmap enum: StreakCard, HeatmapGrid, and HeatmapLegend.
+//  Also provides a static calculateStreak(from:) method and StreakInfo model.
 //
 //  Usage:
-//  ```swift
-//  // In a List
-//  Form {
-//      // Streak card
-//      SWActivityHeatmap.StreakCard(
-//          streaks: timestamps,
-//          currentStreakTitle: "Current Streak",
-//          dayText: "Day",
-//          daysText: "Days",
-//          noRecordsText: "No records yet. Start today!",
-//          colors: [.blue, .purple]
-//      )
+//    // 1. Prepare timestamp data
+//    let timestamps: [Date] = [Date(), /* ... historical check-in dates ... */]
 //
-//      // Heatmap
-//      Section {
-//          SWActivityHeatmap.HeatmapGrid(
-//              timestamps: timestamps,
-//              days: 60,
-//              baseColor: .green,
-//              itemSize: 20,
-//              spacing: 3
-//          )
-//      } header: {
-//          Text("Past 60 days")
-//      } footer: {
-//          SWActivityHeatmap.HeatmapLegend(
-//              baseColor: .green,
-//              lessText: "Less",
-//              moreText: "More"
-//          )
-//      }
-//  }
-//  ```
+//    // 2. Combine three sub-components in a Form/List
+//    Form {
+//        // Consecutive check-in days card
+//        Section {
+//            SWActivityHeatmap.StreakCard(
+//                streaks: timestamps,
+//                currentStreakTitle: "Current Streak",
+//                colors: [.blue, .purple]
+//            )
+//        }
+//        .listRowInsets(EdgeInsets())
 //
-//  Created by Claude on 2026/1/26.
+//        // Heatmap grid
+//        Section {
+//            SWActivityHeatmap.HeatmapGrid(
+//                timestamps: timestamps,
+//                days: 60,
+//                baseColor: .green,
+//                itemSize: 20,
+//                spacing: 3
+//            )
+//        } header: {
+//            Text("Past 60 days")
+//        } footer: {
+//            // Legend
+//            SWActivityHeatmap.HeatmapLegend(
+//                baseColor: .green,
+//                lessText: "Less",
+//                moreText: "More"
+//            )
+//        }
+//    }
+//
+//    // 3. Calculate streak independently
+//    let info = SWActivityHeatmap.calculateStreak(from: timestamps)
+//    print(info.currentStreak)    // Consecutive days
+//    print(info.displayText())    // Description text
+//
+//  Sub-components:
+//    - StreakCard    — Gradient background streak display card
+//    - HeatmapGrid  — Flow-layout activity heatmap grid
+//    - HeatmapLegend — Less/More color legend
+//    - StreakInfo    — Streak info model (currentStreak, startDate, displayText())
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

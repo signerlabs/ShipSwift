@@ -2,8 +2,46 @@
 //  SWStoreManager.swift
 //  ShipSwift
 //
-//  StoreKit manager for in-app purchases and subscriptions.
-//  Product IDs and feature config are inlined (no external constants dependency).
+//  StoreKit 2 subscription and in-app purchase manager.
+//  Manages monthly/yearly subscriptions and lifetime purchases,
+//  tracks pro status, and enforces free-user resource limits.
+//
+//  Usage:
+//    // 1. Configure before showing the paywall (e.g. in App init)
+//    let store = SWStoreManager.shared
+//    store.config.monthlyProductID = "com.myapp.monthly"
+//    store.config.yearlyProductID  = "com.myapp.yearly"
+//    store.config.lifetimeProductID = "com.myapp.lifetime"
+//    store.config.tripLimitForFreeUser = 3
+//    store.config.itemLimitForFreeUser = 20
+//    store.config.privacyPolicyURL = "https://example.com/privacy"
+//    store.config.termsOfServiceURL = "https://example.com/terms"
+//    store.config.title = "Go Pro"
+//    store.config.features = [
+//        .init(icon: "star.fill", text: "Unlimited trips"),
+//        .init(icon: "bolt.fill", text: "Priority support"),
+//    ]
+//
+//    // 2. Inject into SwiftUI environment
+//    ContentView()
+//        .environment(SWStoreManager.shared)
+//
+//    // 3. Check pro status anywhere
+//    if SWStoreManager.shared.isPro { /* unlock premium features */ }
+//    // isPro == hasLifetimePurchase || hasActiveSubscription
+//
+//    // 4. Enforce free-user limits
+//    if store.canCreateNewTrip(currentTripCount: trips.count) {
+//        createTrip()
+//    } else {
+//        showPaywall()
+//    }
+//    let remaining = store.remainingItemsForFreeUser(currentItemCount: items.count)
+//
+//    // 5. Manually refresh purchase status
+//    await store.updatePurchaseStatus()
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import StoreKit

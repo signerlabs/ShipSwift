@@ -2,30 +2,38 @@
 //  SWGlowScan.swift
 //  ShipSwift
 //
-//  Glow scan effect modifier.
-//  Adds a glowing light band animation sweeping from left to right across the view.
-//  Unlike shimmer, this effect is more pronounced and suitable for emphasized text or icons.
+//  View modifier that replaces the view's appearance with a base color and sweeps
+//  a glowing highlight band across it. The original view shape is used as a mask,
+//  making it ideal for text, icons, and SF Symbols.
 //
 //  Usage:
-//  ```
-//  // Basic usage
-//  Text("Start Scan")
-//      .glowScan()
+//    // Default gray base with white glow scan effect
+//    Text("Start Scan Today")
+//        .font(.largeTitle.bold())
+//        .glowScan()
 //
-//  // Custom parameters
-//  Text("Analyzing...")
-//      .glowScan(baseColor: .blue, duration: 1.5, bandWidth: 100)
+//    // Custom colors and speed
+//    Image(systemName: "waveform.circle.fill")
+//        .font(.system(size: 80))
+//        .glowScan(baseColor: .blue.opacity(0.6), glowColor: .cyan)
 //
-//  // Apply to images
-//  Image(systemName: "waveform")
-//      .glowScan()
-//  ```
+//    // Fully custom parameters
+//    Text("Analyzing...")
+//        .font(.title2.bold())
+//        .glowScan(
+//            baseColor: .accentColor,
+//            glowColor: .white,
+//            duration: 1.5,
+//            bandWidth: 200
+//        )
 //
-//  Parameters:
-//  - baseColor: Base color (non-highlight portion), default `.gray`
-//  - glowColor: Highlight color, default `.white`
-//  - duration: Time for the light band to sweep across (seconds), default 2.0
-//  - bandWidth: Light band width, default 150
+//  Modifier Parameters:
+//    - baseColor: Color     — Base fill color (default .gray)
+//    - glowColor: Color     — Highlight glow color (default .white)
+//    - duration: Double     — Single scan cycle in seconds (default 2.0)
+//    - bandWidth: CGFloat   — Light band width (default 150)
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

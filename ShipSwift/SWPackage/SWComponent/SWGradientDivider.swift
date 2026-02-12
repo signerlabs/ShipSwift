@@ -2,14 +2,14 @@
 //  SWGradientDivider.swift
 //  ShipSwift
 //
-//  Gradient divider component - a divider that is bright in the center and fades at both ends
+//  Horizontal divider with a center-fade gradient (clear -> color -> clear).
 //
 //  Usage:
-//  ```
-//  SWGradientDivider()
-//  SWGradientDivider(color: .purple, opacity: 0.5)
-//  SWGradientDivider(color: .mint, height: 2)
-//  ```
+//    SWGradientDivider()                                  // cyan, 0.3 opacity, 1pt
+//    SWGradientDivider(color: .purple, opacity: 0.5)      // purple variant
+//    SWGradientDivider(color: .mint, height: 2)            // thicker mint line
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

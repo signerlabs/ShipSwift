@@ -2,7 +2,19 @@
 //  SWStepper.swift
 //  ShipSwift
 //
-//  Created by Wei on 2025/5/29.
+//  Compact numeric stepper with chevron-style increment/decrement buttons,
+//  animated numeric text transitions, and haptic feedback on value change.
+//  The decrement button is disabled when the value reaches 0.
+//
+//  Usage:
+//    @State private var quantity = 1
+//
+//    SWStepper(quantity: $quantity)
+//
+//  Parameters:
+//    quantity — Binding<Int> for the current value (minimum 0)
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

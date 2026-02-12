@@ -2,17 +2,31 @@
 //  SWImageScanOverlay.swift
 //  ShipSwift
 //
-//  Scan animation overlay - can be placed on top of any image
+//  Animated scan-line overlay that renders a flowing grid, a top-to-bottom
+//  sweeping scan band, and a subtle noise layer. Designed to be placed as
+//  an .overlay() on images or views to convey an "analyzing / processing"
+//  visual effect. Uses Canvas for high-performance grid rendering.
 //
 //  Usage:
-//  ```swift
-//  Image(uiImage: someImage)
-//      .resizable()
-//      .scaledToFit()
-//      .overlay {
-//          SWImageScanOverlay()
-//      }
-//  ```
+//    // As an overlay on any view
+//    Image("myPhoto")
+//        .resizable()
+//        .scaledToFit()
+//        .overlay {
+//            SWImageScanOverlay()
+//        }
+//        .clipShape(RoundedRectangle(cornerRadius: 12))
+//
+//    // With custom parameters
+//    SWImageScanOverlay(
+//        gridOpacity: 0.3,        // grid line opacity (0-1), default 0.2
+//        bandOpacity: 0.5,        // scan band opacity (0-1), default 0.3
+//        bandHeightRatio: 0.25,   // band height relative to view, default 0.2
+//        gridSpacing: 20,         // grid spacing in points, default 16
+//        speed: 3.0               // scan speed multiplier, default 2.0
+//    )
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

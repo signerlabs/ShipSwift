@@ -2,7 +2,30 @@
 //  SWCountryData.swift
 //  ShipSwift
 //
-//  Country/region data for phone number country code selection.
+//  Phone country code and flag data for international auth.
+//  Provides the SWCountry model and a static list of 200+ countries with
+//  dial codes, flag emojis, names, and phone number length ranges.
+//
+//  Usage:
+//    // 1. Access the full country list
+//    let countries = SWCountryData.allCountries  // [SWCountry]
+//
+//    // 2. Each SWCountry has: code, flag, name, phoneLength
+//    let us = SWCountryData.allCountries.first { $0.name == "United States" }
+//    // us?.code == "+1", us?.flag == "...", us?.phoneLength == 10...10
+//
+//    // 3. Look up flag emoji by phone code
+//    let flag = SWCountryData.flag(for: "+86")    // returns China flag
+//
+//    // 4. Get valid phone number length range by country code
+//    let range = SWCountryData.phoneLength(for: "+44")  // 10...10 (UK)
+//
+//    // 5. Use in a country picker
+//    ForEach(SWCountryData.allCountries, id: \.code) { country in
+//        Text("\(country.flag) \(country.name) (\(country.code))")
+//    }
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import Foundation

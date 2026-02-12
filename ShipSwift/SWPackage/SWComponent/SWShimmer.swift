@@ -2,29 +2,26 @@
 //  SWShimmer.swift
 //  ShipSwift
 //
-//  Shimmer highlight effect modifier
-//  Adds a left-to-right sweeping white light band animation.
-//  Commonly used on buttons, cards, or other elements to draw user attention.
+//  Shimmer highlight modifier that sweeps a translucent light band across
+//  a view in a continuous loop. Commonly used on buttons, skeleton loaders,
+//  or cards to draw attention or indicate a loading state.
 //
 //  Usage:
-//  ```swift
-//  // Basic usage
-//  Button("Scan Today") { }
-//      .shimmer()
+//    // Apply with default timing (2s sweep, 1s pause)
+//    Text("Upgrade Now")
+//        .padding()
+//        .background(.blue)
+//        .clipShape(.capsule)
+//        .shimmer()
 //
-//  // Custom parameters
-//  Button("Scan Today") { }
-//      .shimmer(duration: 1.5, delay: 2.0)
-//  ```
+//    // Custom duration and delay
+//    myView.shimmer(duration: 1.5, delay: 2.0)
 //
 //  Parameters:
-//  - duration: Time for the band to sweep across (seconds), default 2.0
-//  - delay: Interval between sweeps (seconds), default 1.0
+//    duration — time for the band to sweep across (seconds), default 2.0
+//    delay    — pause between sweeps (seconds), default 1.0
 //
-//  Notes:
-//  - Best used after `.clipShape()` to ensure the band is properly clipped
-//  - The band automatically adapts to the view's width
-//  - The animation loops infinitely
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

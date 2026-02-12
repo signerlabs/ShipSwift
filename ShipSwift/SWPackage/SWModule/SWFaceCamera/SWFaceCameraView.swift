@@ -2,17 +2,44 @@
 //  SWFaceCameraView.swift
 //  ShipSwift
 //
-//  Face recognition camera view
-//  Real-time rendering of Vision face landmarks (eyes, eyebrows, nose, lips, face contour, pupils)
-//  Supports front/rear camera switching + landmark display toggle + photo capture
+//  Face camera view with real-time landmark overlay.
+//  Full camera UI with face landmark visualization, photo capture,
+//  camera switching, and landmark display toggle.
 //
 //  Usage:
+//    // 1. Basic usage with onCapture callback
+//    SWFaceCameraView { capturedImage in
+//        // handle the captured UIImage
+//        processPhoto(capturedImage)
+//    }
+//
+//    // 2. Custom landmark color scheme
 //    SWFaceCameraView(
-//        onCapture: { image in
-//            // Handle captured photo
-//        },
-//        landmarkColors: .default   // Customizable color scheme
+//        onCapture: { image in handlePhoto(image) },
+//        landmarkColors: .mono   // tech-feel cyan monochrome
 //    )
+//
+//    // 3. Available color schemes
+//    //    .default — multi-color (cyan lips, green eyes, purple brows, yellow nose)
+//    //    .mono    — all cyan with varying opacity (tech feel)
+//    //    .warm    — pink lips, orange eyes, red brows, yellow nose
+//
+//    // 4. Custom color scheme
+//    let colors = SWFaceLandmarkColors(
+//        lips: .pink.opacity(0.6),
+//        eyes: .green.opacity(0.6),
+//        eyebrows: .purple.opacity(0.6),
+//        nose: .yellow.opacity(0.6),
+//        faceContour: .white.opacity(0.2)
+//    )
+//    SWFaceCameraView(onCapture: { _ in }, landmarkColors: colors)
+//
+//    // 5. Controls provided:
+//    //    - Camera switch button (front/back)
+//    //    - Shutter button for photo capture
+//    //    - Landmark overlay toggle button
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

@@ -2,62 +2,56 @@
 //  SWAlert.swift
 //  ShipSwift
 //
-//  Global alert manager + view component (self-contained)
-//
-//  ============================================================
-//  Global Alert Manager
-//  ============================================================
+//  Global alert overlay that displays toast-style notifications at the top of
+//  the screen. Supports four preset styles (info, success, warning, error)
+//  and fully custom styling. Auto-dismisses after a configurable duration.
 //
 //  Usage:
-//  1. Add .swAlert() modifier at the App entry point:
+//    1. Attach the modifier at your App entry point (once):
 //
-//     @main
-//     struct MyApp: App {
-//         var body: some Scene {
-//             WindowGroup {
-//                 ContentView()
-//                     .swAlert()
-//             }
-//         }
-//     }
+//       @main
+//       struct MyApp: App {
+//           var body: some Scene {
+//               WindowGroup {
+//                   ContentView()
+//                       .swAlert()
+//               }
+//           }
+//       }
 //
-//  2. Show alerts from anywhere:
+//    2. Show an alert from anywhere using the singleton:
 //
-//     // Preset types (recommended)
-//     SWAlertManager.shared.show(.success, message: "Saved successfully")
-//     SWAlertManager.shared.show(.error, message: "Operation failed")
+//       // Preset types: .info, .success, .warning, .error
+//       SWAlertManager.shared.show(.success, message: "Saved!")
+//       SWAlertManager.shared.show(.error, message: "Something went wrong")
 //
-//     // LocalizedStringKey (recommended for static text, auto-extracted to String Catalog)
-//     SWAlertManager.shared.show(.success, message: MyAlertMessage.saveSuccess)
+//       // With custom duration
+//       SWAlertManager.shared.show(.warning, message: "Slow connection", duration: .seconds(5))
 //
-//     // Custom style
-//     SWAlertManager.shared.show(
-//         icon: "star.fill",
-//         message: "Custom message",
-//         textColor: .yellow,
-//         duration: .seconds(3)
-//     )
+//       // Dynamic string (e.g. from API error)
+//       SWAlertManager.shared.show(.error, message: errorString)
 //
-//     // Manual dismiss
-//     SWAlertManager.shared.dismiss()
+//       // Fully custom style
+//       SWAlertManager.shared.show(
+//           icon: "star.fill",
+//           message: "Custom alert",
+//           textColor: .yellow,
+//           backgroundStyle: AnyShapeStyle(.black),
+//           borderColor: .yellow
+//       )
 //
-//  Preset types:
-//  - .info    : Informational (primary color)
-//  - .success : Green success
-//  - .warning : Orange warning
-//  - .error   : Red error
+//    3. Dismiss programmatically (optional — alerts auto-dismiss):
 //
-//  Localization best practice:
-//  Create a message enum in your project for Xcode String Catalog auto-extraction:
+//       SWAlertManager.shared.dismiss()
 //
-//     enum MyAlertMessage {
-//         static let saveSuccess: LocalizedStringKey = "Saved successfully"
-//         static let saveFailed: LocalizedStringKey = "Save failed"
-//     }
+//  SWAlertType cases:
+//    .info    — blue info circle icon, primary text color
+//    .success — green checkmark icon, green text color
+//    .warning — orange triangle icon, orange text color
+//    .error   — red x-mark icon, red text color
 //
-//     SWAlertManager.shared.show(.success, message: MyAlertMessage.saveSuccess)
+//  Created by Wei Zhong on 3/1/26.
 //
-//  ============================================================
 
 import SwiftUI
 

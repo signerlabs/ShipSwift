@@ -2,7 +2,26 @@
 //  SWThinkingIndicator.swift
 //  ShipSwift
 //
-//  Created by Wei Zhong on 5/1/26.
+//  Animated thinking/typing indicator with three bouncing dots.
+//  Commonly used in chat interfaces to show that the AI or remote user is typing.
+//
+//  Usage:
+//    // Show "typing" state in a chat bubble
+//    if isThinking {
+//        SWThinkingIndicator()
+//    }
+//
+//    // Place in an HStack alongside text
+//    HStack {
+//        Text("AI is thinking")
+//        SWThinkingIndicator()
+//    }
+//
+//  Notes:
+//    - No parameters required, animation starts automatically on appear
+//    - Three dots bounce up and down sequentially at 0.3 second intervals
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

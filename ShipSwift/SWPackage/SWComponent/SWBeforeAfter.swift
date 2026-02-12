@@ -2,35 +2,29 @@
 //  SWBeforeAfter.swift
 //  ShipSwift
 //
-//  Before/after comparison slider component
-//  Automatically slides back and forth to show a comparison between two images.
-//  Ideal for beauty filters, photo editing, retouching previews, etc.
+//  Before/after image comparison view with an auto-oscillating slider
+//  divider. The slider sweeps back and forth to reveal the "before" and
+//  "after" images, with optional Before/After labels.
 //
 //  Usage:
-//  ```
-//  SWBeforeAfter(
-//      before: Image(.photoBefore),
-//      after: Image(.photoAfter)
-//  )
+//    // Basic usage with two images
+//    SWBeforeAfter(
+//        before: Image("photo_before"),
+//        after: Image("photo_after")
+//    )
 //
-//  SWBeforeAfter(
-//      before: Image(.photoBefore),
-//      after: Image(.photoAfter),
-//      width: 300,
-//      aspectRatio: 16/9,
-//      cornerRadius: 16,
-//      speed: 1.0
-//  )
-//  ```
+//    // Customized size, aspect ratio, and animation speed
+//    SWBeforeAfter(
+//        before: Image("old"),
+//        after: Image("new"),
+//        width: 300,               // default 360
+//        aspectRatio: 16.0 / 9.0,  // default 4/3
+//        cornerRadius: 16,         // default 24
+//        speed: 1.2,               // oscillation speed, default 0.8
+//        showLabels: false          // hide Before/After labels
+//    )
 //
-//  Parameters:
-//  - before: Original image (bottom layer)
-//  - after: Effect image (top layer, masked)
-//  - width: Image width, default 360
-//  - aspectRatio: Width/height ratio, default 4/3
-//  - cornerRadius: Corner radius, default 24
-//  - speed: Sliding speed, default 0.8
-//  - showLabels: Whether to show Before/After labels, default true
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

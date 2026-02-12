@@ -2,7 +2,28 @@
 //  SWBulletPointText.swift
 //  ShipSwift
 //
-//  Copyright © 2025 Signer Labs. All rights reserved.
+//  Text label with a colored capsule bullet point indicator.
+//  Accepts any View content via @ViewBuilder, displayed to the right of the bullet.
+//
+//  Usage:
+//    // Simple text
+//    SWBulletPointText(bulletColor: .blue) {
+//        Text("Wealth")
+//    }
+//
+//    // Custom content (HStack, Image, etc.)
+//    SWBulletPointText(bulletColor: .green) {
+//        HStack {
+//            Text("Health")
+//            Image(systemName: "heart.fill")
+//        }
+//    }
+//
+//  Parameters:
+//    - bulletColor: Color  — Bullet point color
+//    - content: @ViewBuilder — Any view displayed to the right of the bullet
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

@@ -2,6 +2,29 @@
 //  SWOnboardingView.swift
 //  ShipSwift
 //
+//  Multi-page onboarding view with swipe-to-navigate support, a "Continue / Get Started"
+//  button and a "Skip" button at the bottom. Page content is defined by the OnboardingPage
+//  enum (icon / title / description) — add or remove cases freely.
+//
+//  Usage:
+//    // 1. Present the onboarding at app launch or first run; handle completion/skip via onComplete:
+//    SWOnboardingView(onComplete: {
+//        hasSeenOnboarding = true
+//    })
+//
+//    // 2. Customize pages: modify the OnboardingPage enum, add/remove cases and provide icon / title / description:
+//    enum OnboardingPage: CaseIterable {
+//        case welcome
+//        case trackProgress
+//        case stayConnected
+//        // To add a new page, simply add a case and implement the three computed properties
+//    }
+//
+//    // 3. Use with fullScreenCover:
+//    .fullScreenCover(isPresented: $showOnboarding) {
+//        SWOnboardingView(onComplete: { showOnboarding = false })
+//    }
+//
 //  Created by Wei Zhong on 3/1/26.
 //
 

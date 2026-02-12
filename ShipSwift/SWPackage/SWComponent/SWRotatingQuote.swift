@@ -2,10 +2,51 @@
 //  SWRotatingQuote.swift
 //  ShipSwift
 //
-//  A generic rotating quote text component.
-//  Uses hidden placeholder text to ensure stable height and prevent layout jumps during text transitions.
+//  Auto-rotating quote display that cycles through an array of quotes with animated
+//  transitions. Shows the quote text and an author name aligned to the bottom-right.
+//  Uses a hidden placeholder of the longest quote to maintain stable layout height.
 //
-//  Created by Claude on 2026/1/26.
+//  Usage:
+//    // Basic usage — multiple quotes rotation
+//    SWRotatingQuote(
+//        quotes: [
+//            "Stay hungry, stay foolish.",
+//            "The only way to do great work is to love what you do.",
+//            "Innovation distinguishes between a leader and a follower."
+//        ],
+//        author: "Steve Jobs"
+//    )
+//
+//    // Custom font, interval, and color
+//    SWRotatingQuote(
+//        quotes: [
+//            "Those times when you get up early...",
+//            "That is actually the dream."
+//        ],
+//        author: "Kobe Bryant",
+//        interval: 3.0,
+//        quoteFont: .body,
+//        authorFont: .callout,
+//        fontDesign: .serif,
+//        foregroundStyle: .primary
+//    )
+//
+//    // Single quote (no rotation, displayed statically)
+//    SWRotatingQuote(
+//        quotes: ["Stay hungry, stay foolish."],
+//        author: "Steve Jobs"
+//    )
+//
+//  Parameters:
+//    - quotes: [LocalizedStringResource]  — Array of quotes (at least 1)
+//    - author: LocalizedStringResource    — Author name
+//    - interval: TimeInterval             — Rotation interval in seconds (default 5.0)
+//    - quoteFont: Font                    — Quote font (default .subheadline)
+//    - authorFont: Font                   — Author font (default .headline)
+//    - fontDesign: Font.Design            — Font design (default .rounded)
+//    - foregroundStyle: Color             — Text color (default .secondary)
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

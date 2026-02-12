@@ -2,28 +2,31 @@
 //  SWScanImage.swift
 //  ShipSwift
 //
-//  Image component with scan line animation effect.
-//  Suitable for image analysis, loading, and similar scenarios.
-//  Displays a light band sweeping from left to right.
+//  Animated scan-line overlay that sweeps a gradient light band across any content.
+//  The content is clipped to a rounded rectangle and the light band loops indefinitely.
 //
 //  Usage:
-//  ```
-//  SWScanImage {
-//      Image(.myImage)
-//          .resizable()
-//          .scaledToFit()
-//  }
+//    // Add scan glow effect to any view
+//    SWScanImage {
+//        Image("photo")
+//            .resizable()
+//            .frame(width: 300, height: 200)
+//    }
 //
-//  SWScanImage(lineWidth: 100, duration: 2.0) {
-//      AsyncImage(url: imageURL)
-//  }
-//  ```
+//    // Custom light band width, speed, and color
+//    SWScanImage(lineWidth: 120, duration: 2.0, lineColor: .blue.opacity(0.4)) {
+//        Rectangle()
+//            .fill(.gray)
+//            .frame(width: 300, height: 200)
+//    }
 //
 //  Parameters:
-//  - content: The image view to display
-//  - lineWidth: Scan line width, default 80
-//  - duration: Scan cycle (seconds), default 1.5
-//  - lineColor: Scan line color, default .white.opacity(0.6)
+//    - lineWidth: CGFloat  — Scan light band width (default 80)
+//    - duration: Double    — Single scan duration in seconds (default 1.5)
+//    - lineColor: Color    — Light band color (default white semi-transparent)
+//    - content: @ViewBuilder — View content to be scanned
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

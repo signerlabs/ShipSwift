@@ -2,7 +2,38 @@
 //  SWAddSheet.swift
 //  ShipSwift
 //
-//  Created by Wei on 2025/12/15.
+//  Bottom sheet with a text input field, Cancel and Continue buttons.
+//  Presented as a .medium detent sheet for collecting user input (e.g. purpose, wish, notes).
+//
+//  Usage:
+//    @State private var showSheet = false
+//
+//    Button("Add Item") { showSheet = true }
+//    .sheet(isPresented: $showSheet) {
+//        SWAddSheet(isPresented: $showSheet) { text in
+//            // text is the user input content
+//            print("User entered: \(text)")
+//        }
+//    }
+//
+//    // Custom title and placeholder text
+//    SWAddSheet(
+//        isPresented: $showSheet,
+//        title: "Your Wish",
+//        placeHolderText: "Enter your wish...",
+//        minLines: 3
+//    ) { text in
+//        handleInput(text)
+//    }
+//
+//  Parameters:
+//    - isPresented: Binding<Bool>          — Controls sheet show/hide
+//    - title: LocalizedStringKey           — Top title (default "Your Generation Purpose")
+//    - placeHolderText: LocalizedStringKey — Input field placeholder text
+//    - minLines: Int                       — Input field minimum lines (default 5)
+//    - onConfirm: ((String) -> Void)?      — Callback when user taps Continue
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

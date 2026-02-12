@@ -2,7 +2,37 @@
 //  SWRootTabView.swift
 //  ShipSwift
 //
-//  Created by Wei on 2025/12/15.
+//  Root TabView template using the iOS 18+ Tab API, with selected/unselected icon
+//  switching and haptic feedback. Uses .environment(\.symbolVariants, .none) to
+//  prevent the system from auto-filling icons.
+//
+//  Usage:
+//    // 1. Use directly as the app root view:
+//    @main struct MyApp: App {
+//        var body: some Scene {
+//            WindowGroup { SWRootTabView() }
+//        }
+//    }
+//
+//    // 2. Customize tabs: modify the Tab entries inside the TabView. Each tab follows this pattern:
+//    Tab(value: "tabID") {
+//        YourContentView()           // Replace with your page
+//    } label: {
+//        Label {
+//            Text("Tab Name")
+//        } icon: {
+//            Image(systemName: selectedTab == "tabID" ? "icon.fill" : "icon")
+//        }
+//        .environment(\.symbolVariants, .none)
+//    }
+//
+//    // 3. Add or remove tabs: simply add or delete Tab entries in the TabView closure.
+//    //    Set the selectedTab default value to the first tab's value string.
+//
+//    // 4. Haptic feedback: built in via .sensoryFeedback(.increase, trigger: selectedTab),
+//    //    triggered automatically on tab switch.
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

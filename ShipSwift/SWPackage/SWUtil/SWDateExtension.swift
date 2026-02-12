@@ -2,18 +2,41 @@
 //  SWDateExtension.swift
 //  ShipSwift
 //
-//  Date formatting utility with automatic Chinese/English support (reads appLanguage).
+//  Date extension providing English/Chinese date formatting, relative time descriptions,
+//  date comparison, date arithmetic, and daily reset helper methods.
+//  Language follows the "appLanguage" key in UserDefaults ("en" / "zh-Hans").
 //
 //  Usage:
-//    date.formatMonthDay()    // "Jan 15" / "1月15日"
-//    date.formatFullDate()    // "Jan 15, 2025" / "2025年1月15日"
-//    date.timeAgo()           // "3 min ago" / "3分钟前"
-//    date.isToday             // Bool
-//    date.isSameDay(as: other)
-//    date.adding(days: 7)
+//    // Formatted output (automatically adapts to English/Chinese):
+//    Date().formatMonth()       // "Jan" or "1月"
+//    Date().formatDay()         // "15"
+//    Date().formatMonthDay()    // "Jan 15" or "1月15日"
+//    Date().formatFullDate()    // "Jan 15, 2025" or "2025年1月15日"
+//    Date().formatTime()        // "14:30"
+//    Date().formatDateTime()    // "Jan 15, 14:30" or "1月15日 14:30"
 //
-//  Daily reset:
-//    if Date.shouldResetDaily(dateKey: "lastDate") { ... }
+//    // Relative time:
+//    someDate.timeAgo()         // "Just now" / "3 min ago" / "Yesterday" / "Jan 15"
+//
+//    // Date comparison:
+//    date.isToday               // Bool
+//    date.isYesterday           // Bool
+//    date.isSameDay(as: other)  // Bool
+//    date.startOfDay            // Start of the day 00:00:00
+//    date.endOfDay              // End of the day 23:59:59
+//
+//    // Date arithmetic:
+//    date.adding(days: 7)       // 7 days later
+//    date.adding(months: -1)    // 1 month ago
+//    date.days(from: earlier)   // Number of days between two dates
+//
+//    // Daily reset detection (suitable for check-in / quota scenarios):
+//    if Date.shouldResetDaily(dateKey: "lastCheckIn") {
+//        resetCounter()
+//        Date.updateDailyResetDate(dateKey: "lastCheckIn")
+//    }
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import Foundation

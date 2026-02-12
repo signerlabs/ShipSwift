@@ -2,7 +2,42 @@
 //  SWDonutChart.swift
 //  ShipSwift
 //
-//  Copyright © 2025 Signer Labs. All rights reserved.
+//  Interactive donut chart built on Swift Charts. Groups data by category and renders
+//  a SectorMark chart with tap-to-select interaction. The selected category expands
+//  outward and dims the rest. Center overlay shows the count and category name.
+//
+//  Usage:
+//    @State private var selectedCategory: String? = nil
+//
+//    // 1. Define categories
+//    let work = SWDonutChart.Category(name: "Work")
+//    let personal = SWDonutChart.Category(name: "Personal")
+//    let health = SWDonutChart.Category(name: "Health")
+//
+//    // 2. Build data items (when category is nil, grouped into "No Category")
+//    let subjects: [SWDonutChart.Subject] = [
+//        .init(name: "Meeting", category: work),
+//        .init(name: "Report", category: work),
+//        .init(name: "Shopping", category: personal),
+//        .init(name: "Exercise", category: health),
+//        .init(name: "Random Task", category: nil),
+//    ]
+//
+//    // 3. Use the component, bind selected state
+//    SWDonutChart(
+//        subjects: subjects,
+//        selectedCategory: $selectedCategory
+//    )
+//
+//  Data Models:
+//    - SWDonutChart.Category — Category (id: UUID, name: String)
+//    - SWDonutChart.Subject  — Data item (id: UUID, name: String, category: Category?)
+//
+//  Parameters:
+//    - subjects: [Subject]                — Array of data items
+//    - selectedCategory: Binding<String?> — Currently selected category name (nil means all)
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

@@ -2,7 +2,37 @@
 //  SWPaywallView.swift
 //  ShipSwift
 //
-//  Paywall subscription view using StoreKit SubscriptionStoreView.
+//  Subscription paywall view using SubscriptionStoreView.
+//  Displays subscription options, feature list, and handles purchase
+//  completion with automatic pro status update and dismiss.
+//
+//  Usage:
+//    // 1. Configure SWStoreManager before presenting (see SWStoreManager.swift)
+//    //    Make sure product IDs, features, and policy URLs are set.
+//
+//    // 2. Present as a sheet with SWStoreManager in environment
+//    @State private var showPaywall = false
+//
+//    Button("Upgrade") { showPaywall = true }
+//    .sheet(isPresented: $showPaywall) {
+//        SWPaywallView()
+//            .environment(SWStoreManager.shared)
+//    }
+//
+//    // 3. The view automatically:
+//    //    - Shows monthly and yearly subscription options
+//    //    - Displays configurable feature list with icons
+//    //    - Shows Restore Purchases, Redeem Code, and policy buttons
+//    //    - Dismisses on successful purchase
+//    //    - Updates SWStoreManager.shared.isPro status
+//
+//    // 4. Preview usage
+//    #Preview {
+//        SWPaywallView()
+//            .environment(SWStoreManager.shared)
+//    }
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

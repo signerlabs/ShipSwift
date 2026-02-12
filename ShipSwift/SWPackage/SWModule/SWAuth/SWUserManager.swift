@@ -2,8 +2,57 @@
 //  SWUserManager.swift
 //  ShipSwift
 //
-//  User Manager - includes authentication and app review request functionality
-//  Referenced from brushmo project's UserManager implementation
+//  User authentication manager with Amplify/Cognito integration.
+//  Manages session state, email/password auth, Apple/Google social sign-in,
+//  token refresh, guest mode, onboarding flow, and App Store review requests.
+//
+//  Usage:
+//    // 1. Create and inject into SwiftUI environment
+//    @State private var userManager = SWUserManager()
+//    ContentView()
+//        .environment(userManager)
+//
+//    // 2. Observe session state to control navigation
+//    switch userManager.sessionState {
+//    case .loading:       LoadingView()
+//    case .signedOut:     SWAuthView()
+//    case .guest:         MainView()
+//    case .onboarding:    OnboardingView()
+//    case .ready:         MainView()
+//    }
+//
+//    // 3. Email sign-in / sign-up
+//    try await userManager.signUp(email: email, password: password)
+//    try await userManager.confirmSignUp(email: email, code: "123456")
+//    try await userManager.signIn(email: email, password: password)
+//
+//    // 4. Social sign-in
+//    try await userManager.signInWithApple()
+//    try await userManager.signInWithGoogle()
+//
+//    // 5. Get fresh ID token for API calls (auto-refreshes expired tokens)
+//    guard let idToken = await userManager.getFreshIdToken() else { return }
+//    await apiService.fetchData(idToken: idToken)
+//
+//    // 6. Sign out / delete account
+//    await userManager.signOut()
+//    try await userManager.deleteAccount()
+//
+//    // 7. Guest mode
+//    userManager.skipSignIn()     // enter guest mode
+//    userManager.requireSignIn()  // switch back to sign-in page
+//
+//    // 8. Password reset
+//    try await userManager.forgotPassword(email: email)
+//    try await userManager.confirmResetPassword(email: email, newPassword: "newPass", code: "123456")
+//
+//    // 9. Check pro status (requires SWStoreManager)
+//    if SWStoreManager.shared.isPro { /* unlock features */ }
+//
+//    // 10. App Store review request (call after positive user actions)
+//    userManager.incrementActionCompletedCount()
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import Foundation

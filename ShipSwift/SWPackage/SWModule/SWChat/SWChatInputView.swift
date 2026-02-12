@@ -2,7 +2,52 @@
 //  SWChatInputView.swift
 //  ShipSwift
 //
-//  Chat input view with integrated speech recognition
+//  Chat text input bar with optional voice recognition (ASR).
+//  Provides a text field, microphone button for speech-to-text,
+//  audio waveform animation during recording, and a send button.
+//
+//  Usage:
+//    // 1. Basic usage with onSend callback and ASR config
+//    @State private var text = ""
+//
+//    let asrConfig = SWASRConfig(
+//        appId: "YourVolcEngineAppID",
+//        accessToken: "YourAccessToken"
+//    )
+//
+//    SWChatInputView(text: $text, asrConfig: asrConfig) {
+//        sendMessage(text)
+//        text = ""
+//    }
+//
+//    // 2. Full chat interface with SWMessageList
+//    VStack(spacing: 0) {
+//        SWMessageList(messages: messages) { message in
+//            SWMessageBubble(isFromUser: message.isUser) {
+//                Text(message.content)
+//            }
+//        }
+//        SWChatInputView(text: $text, asrConfig: asrConfig) {
+//            sendMessage(text)
+//            text = ""
+//        }
+//    }
+//
+//    // 3. Customization options
+//    SWChatInputView(
+//        text: $text,
+//        asrConfig: asrConfig,
+//        isDisabled: isLoading,                    // disable during AI response
+//        placeHolderText: "Ask anything...",        // custom placeholder
+//        minLines: 2                                // minimum text field height
+//    ) {
+//        onSend()
+//    }
+//
+//    // 4. Voice flow: tap mic -> recording + waveform -> tap stop ->
+//    //    transcribing -> text appears in field -> tap send
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

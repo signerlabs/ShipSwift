@@ -2,7 +2,25 @@
 //  SWLabel.swift
 //  ShipSwift
 //
-//  Created by Wei on 2025/5/12.
+//  Reusable label components that pair a leading visual (SF Symbol or image
+//  resource) with a localized text name. Commonly used in List rows,
+//  settings screens, or menu items.
+//
+//  Usage:
+//    // Label with an SF Symbol icon on a colored circle
+//    SWLabelWithIcon(
+//        icon: "gearshape",          // SF Symbol name, default "pencil"
+//        bg: .orange,                // circle background color, default .blue
+//        name: "Settings"            // LocalizedStringResource
+//    )
+//
+//    // Label with a custom image resource
+//    SWLabelWithImage(
+//        image: .appIcon,            // ImageResource from asset catalog
+//        name: "My App"              // LocalizedStringResource
+//    )
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

@@ -2,10 +2,42 @@
 //  SWLogoOrbit.swift
 //  ShipSwift
 //
-//  Logo display component with orbit animation
-//  - Parameters:
-//    - images: Array of images on the orbit (up to 8)
-//    - center: Custom view displayed at the center
+//  SpriteKit-powered animated orbit component. Displays multiple concentric rings
+//  of colored dots that rotate continuously. Icons from the images array are placed
+//  on the outermost ring and periodically pop out with a scale animation. A custom
+//  center view is rendered on top using SwiftUI.
+//
+//  Usage:
+//    // Basic usage — array of image names + center view
+//    SWLogoOrbit(
+//        images: ["icon1", "icon2", "icon3", "icon4",
+//                 "icon5", "icon6", "icon7", "icon8"]
+//    ) {
+//        Image("AppLogo")
+//            .resizable()
+//            .aspectRatio(contentMode: .fill)
+//            .frame(width: 60, height: 60)
+//    }
+//
+//    // Control size (via frame constraint, component auto-scales)
+//    SWLogoOrbit(images: imageArray) {
+//        Circle()
+//            .fill(.blue)
+//            .frame(width: 50, height: 50)
+//    }
+//    .frame(width: 150)
+//
+//  Parameters:
+//    - images: [String]          — Array of asset image names (up to 8, evenly distributed on outer ring)
+//    - center: @ViewBuilder      — SwiftUI view displayed at the center
+//
+//  Notes:
+//    - Component maintains 1:1 aspect ratio, auto-scales via GeometryReader
+//    - Base design size is 300pt, can be scaled down or up via frame
+//    - 4 concentric dot rings, outer ring largest, inner ring smallest
+//    - Icons take turns showing a pop-out animation then shrink back
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

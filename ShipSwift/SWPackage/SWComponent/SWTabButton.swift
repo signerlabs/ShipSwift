@@ -2,7 +2,28 @@
 //  SWTabButton.swift
 //  ShipSwift
 //
-//  Created by Wei on 2025/12/7.
+//  Capsule-shaped tab button that toggles between selected (accent color)
+//  and unselected (gray) states. Suitable for building custom segmented
+//  controls or horizontal filter bars.
+//
+//  Usage:
+//    @State private var selectedTab = 0
+//
+//    HStack {
+//        SWTabButton(title: "All", isSelected: selectedTab == 0) {
+//            selectedTab = 0
+//        }
+//        SWTabButton(title: "Favorites", isSelected: selectedTab == 1) {
+//            selectedTab = 1
+//        }
+//    }
+//
+//  Parameters:
+//    title      — LocalizedStringKey displayed on the button
+//    isSelected — drives the visual state (accent bg vs gray bg)
+//    action     — closure called on tap
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

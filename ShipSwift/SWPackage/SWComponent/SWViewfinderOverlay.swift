@@ -2,22 +2,44 @@
 //  SWViewfinderOverlay.swift
 //  ShipSwift
 //
-//  Viewfinder overlay component - used for camera capture, scanning, and similar scenarios.
-//  Displays a rounded crop frame with a semi-transparent mask around it.
+//  Camera viewfinder overlay that draws a rounded crop frame with a semi-transparent mask.
+//  The mask covers the full screen and cuts out a transparent window for the scan area.
 //
 //  Usage:
-//  ```
-//  SWViewfinderOverlay()  // Use default parameters
+//    // Default size (300x180) overlaid on camera preview
+//    ZStack {
+//        CameraPreviewView()
+//        SWViewfinderOverlay()
+//    }
 //
-//  SWViewfinderOverlay(
-//      width: 280,
-//      height: 280,
-//      cornerRadius: 20,
-//      borderColor: .yellow,
-//      maskColor: .black.opacity(0.6),
-//      verticalOffset: -40  // Shift upward
-//  )
-//  ```
+//    // Custom square viewfinder frame
+//    SWViewfinderOverlay(
+//        width: 280,
+//        height: 280,
+//        cornerRadius: 16
+//    )
+//
+//    // Fully custom style
+//    SWViewfinderOverlay(
+//        width: 250,
+//        height: 250,
+//        cornerRadius: 20,
+//        borderColor: .yellow,
+//        borderWidth: 4,
+//        maskColor: .black.opacity(0.6),
+//        verticalOffset: -50  // Offset upward
+//    )
+//
+//  Parameters:
+//    - width: CGFloat           — Viewfinder frame width (default 300)
+//    - height: CGFloat          — Viewfinder frame height (default 180)
+//    - cornerRadius: CGFloat    — Corner radius (default 40)
+//    - borderColor: Color       — Border color (default white semi-transparent)
+//    - borderWidth: CGFloat     — Border width (default 3)
+//    - maskColor: Color         — Mask color (default black 0.8 opacity)
+//    - verticalOffset: CGFloat  — Vertical offset, negative moves up (default 0)
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

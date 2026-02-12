@@ -2,8 +2,46 @@
 //  SWVolcEngineASRService.swift
 //  ShipSwift
 //
-//  VolcEngine streaming speech recognition service
-//  Documentation: https://www.volcengine.com/docs/6561/80818
+//  VolcEngine automatic speech recognition service client.
+//  Streams audio over WebSocket to ByteDance's VolcEngine ASR API,
+//  providing real-time and final transcription callbacks.
+//
+//  Usage:
+//    // 1. Create config with VolcEngine credentials
+//    let config = SWASRConfig(
+//        appId: "your-app-id",
+//        accessToken: "your-access-token",
+//        cluster: "volcengine_streaming_common",  // default
+//        language: "zh-CN"                         // default, or "en-US"
+//    )
+//
+//    // 2. Create service and set callbacks
+//    let asr = SWVolcEngineASRService(config: config)
+//
+//    asr.onTranscriptionUpdate = { text in
+//        print("Real-time: \(text)")  // partial results while speaking
+//    }
+//    asr.onTranscriptionComplete = { text in
+//        print("Final: \(text)")      // final result after stop
+//    }
+//    asr.onError = { error in
+//        print("Error: \(error.localizedDescription)")
+//    }
+//
+//    // 3. Start/stop recording
+//    try await asr.startRecording()   // requests mic permission, connects WebSocket
+//    // ... user speaks ...
+//    await asr.stopRecording()        // sends end-of-audio, triggers completion
+//
+//    // 4. Cancel recording (discards results)
+//    asr.cancelRecording()
+//
+//    // 5. Observable state properties
+//    asr.isRecording      // Bool
+//    asr.transcribedText  // current transcription text
+//    asr.error            // last error, if any
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import AVFoundation

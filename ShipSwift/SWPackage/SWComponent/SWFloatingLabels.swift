@@ -2,35 +2,29 @@
 //  SWFloatingLabels.swift
 //  ShipSwift
 //
-//  Floating labels overlay for images
-//  Cycles through labels appearing over an image with gradient border animation.
-//  Ideal for AI analysis results, scan results display, etc.
+//  Displays an image with animated floating capsule labels that fade in
+//  and out at specified positions around the image. Useful for showcasing
+//  feature callouts, AI analysis results, or point-of-interest annotations.
 //
 //  Usage:
-//  ```
-//  SWFloatingLabels(
-//      image: Image(.photo),
-//      labels: [
-//          ("Teeth mapping", CGPoint(x: 0.3, y: 0.5)),
-//          ("Plaque detection", CGPoint(x: 0.7, y: 0.6))
-//      ]
-//  )
+//    SWFloatingLabels(
+//        image: Image("myPhoto"),
+//        size: 360,               // image frame size, default 360
+//        cornerRadius: 24,        // default 24
+//        cycleDuration: 3.0,      // animation cycle in seconds, default 3.0
+//        labels: [
+//            // (text, normalized position 0-1 where 0.5 is center)
+//            ("Teeth mapping",   CGPoint(x: 0.3, y: 0.5)),
+//            ("Plaque detection", CGPoint(x: 0.9, y: 0.6)),
+//            ("Shape & balance", CGPoint(x: 0.5, y: 0.8))
+//        ]
+//    )
 //
-//  SWFloatingLabels(
-//      image: Image(.photo),
-//      size: 300,
-//      cornerRadius: 16,
-//      cycleDuration: 4.0,
-//      labels: [("Label", CGPoint(x: 0.5, y: 0.5))]
-//  )
-//  ```
+//  The individual SWFloatingLabel view can also be used standalone:
 //
-//  Parameters:
-//  - image: The image to display
-//  - size: Image size, default 360
-//  - cornerRadius: Corner radius, default 24
-//  - cycleDuration: Animation cycle duration (seconds), default 3.0
-//  - labels: Array of labels, each with text and relative position (0-1)
+//    SWFloatingLabel(text: "Feature A")
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

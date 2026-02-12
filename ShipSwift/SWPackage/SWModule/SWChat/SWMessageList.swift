@@ -2,15 +2,42 @@
 //  SWMessageList.swift
 //  ShipSwift
 //
-//  Message list component - SwiftUI best practices
+//  Scrollable chat message list with bubble styling.
+//  Uses the flip technique (industry standard for chat apps) to anchor
+//  scroll position at the bottom. Avoids ScrollView + LazyVStack which
+//  causes 100% CPU from infinite layout loops during streaming updates.
 //
-//  Important:
-//  1. Uses List instead of ScrollView + LazyVStack
-//     Reason: LazyVStack causes infinite layout calculation loops during frequent updates, CPU 100%
+//  Usage:
+//    // 1. Basic message list (messages in chronological order, oldest first)
+//    SWMessageList(messages: messages) { message in
+//        SWMessageBubble(isFromUser: message.isUser) {
+//            Text(message.content)
+//                .padding(12)
+//                .background(message.isUser ? Color.accentColor : Color(.systemGray6))
+//                .foregroundStyle(message.isUser ? .white : .primary)
+//                .clipShape(RoundedRectangle(cornerRadius: 16))
+//        }
+//    }
 //
-//  2. Uses flip technique to display from the bottom
-//     Reason: defaultScrollAnchor(.bottom) is unreliable with List's lazy rendering
-//     Reference: https://www.swiftwithvincent.com/blog/building-the-inverted-scroll-of-a-messaging-app
+//    // 2. Message model must conform to Identifiable
+//    struct ChatMessage: Identifiable {
+//        let id = UUID()
+//        let content: String
+//        let isUser: Bool
+//    }
+//
+//    // 3. SWMessageBubble aligns user messages to trailing, others to leading
+//    SWMessageBubble(isFromUser: true) {
+//        Text("Hello!")  // right-aligned bubble
+//    }
+//    SWMessageBubble(isFromUser: false) {
+//        Text("Hi!")     // left-aligned bubble
+//    }
+//
+//    // 4. The .swFlipped() modifier is available for manual implementations
+//    //    if you need custom List behavior (see doc comments in source).
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI

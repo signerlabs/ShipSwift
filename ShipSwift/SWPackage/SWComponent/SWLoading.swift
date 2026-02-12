@@ -2,39 +2,47 @@
 //  SWLoading.swift
 //  ShipSwift
 //
-//  Page-level loading manager + view component (self-contained)
-//
-//  ============================================================
-//  Page-level Loading Manager
-//  ============================================================
+//  Page-level fullscreen loading overlay with blur material background,
+//  customizable message text, optional SF Symbol icon with pulse animation,
+//  and a progress indicator. Each page has independent loading state managed
+//  through the SWLoadingPage enum.
 //
 //  Usage:
-//  1. Add .swPageLoading(.home) modifier to your view
-//  2. Show: SWLoadingManager.shared.show(page: .home, message: "Loading...")
-//  3. Hide: SWLoadingManager.shared.hide(page: .home)
+//    1. Register your pages in the SWLoadingPage enum:
 //
-//  Example:
+//       enum SWLoadingPage: String {
+//           case home
+//           case settings
+//           case profile
+//       }
 //
-//     struct HomeView: View {
-//         var body: some View {
-//             content
-//                 .swPageLoading(.home)
-//         }
+//    2. Attach the modifier to the view that should show the overlay:
 //
-//         func fetchData() async {
-//             SWLoadingManager.shared.show(page: .home, message: "Loading...")
-//             defer { SWLoadingManager.shared.hide(page: .home) }
+//       var body: some View {
+//           MyPageContent()
+//               .swPageLoading(.home)
+//       }
 //
-//             do {
-//                 let data = try await api.fetchData()
-//                 // handle data...
-//             } catch {
-//                 // handle error...
-//             }
-//         }
-//     }
+//    3. Show / update / hide from anywhere via the singleton:
 //
-//  ============================================================
+//       // Show with default message
+//       SWLoadingManager.shared.show(page: .home)
+//
+//       // Show with custom message and icon
+//       SWLoadingManager.shared.show(
+//           page: .home,
+//           message: "Syncing data...",
+//           systemImage: "arrow.triangle.2.circlepath"
+//       )
+//
+//       // Update the message while loading
+//       SWLoadingManager.shared.updateMessage(page: .home, message: "Almost done...")
+//
+//       // Hide the overlay
+//       SWLoadingManager.shared.hide(page: .home)
+//
+//  Created by Wei Zhong on 3/1/26.
+//
 
 import SwiftUI
 

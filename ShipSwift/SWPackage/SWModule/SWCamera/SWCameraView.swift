@@ -2,7 +2,35 @@
 //  SWCameraView.swift
 //  ShipSwift
 //
-//  Camera capture view with viewfinder overlay, zoom control, and photo picker.
+//  Camera capture view with viewfinder overlay and photo picker.
+//  Full-screen camera UI with shutter button, photo library picker,
+//  pinch-to-zoom gesture, zoom slider, and viewfinder guide overlay.
+//
+//  Usage:
+//    // 1. Present as a sheet with a @Binding UIImage
+//    @State private var capturedImage: UIImage?
+//    @State private var showCamera = false
+//
+//    Button("Take Photo") { showCamera = true }
+//    .fullScreenCover(isPresented: $showCamera) {
+//        SWCameraView(image: $capturedImage)
+//    }
+//
+//    // 2. The view auto-dismisses after capture or photo selection.
+//    //    The captured/selected image is written to the binding.
+//
+//    // 3. Features included:
+//    //    - Live camera preview with viewfinder frame
+//    //    - Shutter button for photo capture
+//    //    - PhotosPicker for selecting from photo library
+//    //    - Pinch-to-zoom gesture and zoom slider
+//    //    - Close button to dismiss without capture
+//    //    - Unauthorized state with "Open Settings" button
+//
+//    // 4. Errors are shown via SWAlertManager.shared
+//    //    Attach .swAlert() in your root view.
+//
+//  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI
