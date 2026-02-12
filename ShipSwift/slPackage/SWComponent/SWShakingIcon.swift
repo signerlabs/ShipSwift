@@ -1,16 +1,16 @@
 //
-//  slShakingIcon.swift
-//  full-pack
+//  SWShakingIcon.swift
+//  ShipSwift
 //
-//  Created by Wei on 2025/12/10.
-//  Copyright © 2025 Signer Labs. All rights reserved.
+//  Shaking icon animation component using PhaseAnimator
+//  The icon periodically zooms in, shakes side to side, then zooms back out.
 //
 
 import SwiftUI
 
-struct slShakingIcon: View {
+struct SWShakingIcon: View {
     var height: CGFloat = 80
-    
+
     enum ShakePhase: CaseIterable {
         case idle
         case zoomIn
@@ -18,14 +18,14 @@ struct slShakingIcon: View {
         case shake2L, shake2R
         case shake3L, shake3R
         case zoomOut
-        
+
         var scale: Double {
             switch self {
             case .idle, .zoomOut: 1.0
             case .zoomIn, .shake1L, .shake1R, .shake2L, .shake2R, .shake3L, .shake3R: 1.1
             }
         }
-        
+
         var rotation: Double {
             switch self {
             case .idle, .zoomIn, .zoomOut: 10
@@ -38,7 +38,7 @@ struct slShakingIcon: View {
             }
         }
     }
-    
+
     var body: some View {
         PhaseAnimator(ShakePhase.allCases) { phase in
             Image(systemName: "apple.logo")
@@ -49,16 +49,16 @@ struct slShakingIcon: View {
                 .rotationEffect(.degrees(phase.rotation))
         } animation: { phase in
             switch phase {
-            case .idle: .easeInOut(duration: 0.01) // 快速回到 idle
-            case .zoomIn: .easeInOut(duration: 0.2).delay(1.5) // 停顿 1.5 秒后放大
+            case .idle: .easeInOut(duration: 0.01)
+            case .zoomIn: .easeInOut(duration: 0.2).delay(1.5)
             case .shake1L, .shake1R, .shake2L, .shake2R, .shake3L, .shake3R:
-                    .easeInOut(duration: 0.08) // 每次摇晃
-            case .zoomOut: .easeInOut(duration: 0.2) // 缩回
+                    .easeInOut(duration: 0.08)
+            case .zoomOut: .easeInOut(duration: 0.2)
             }
         }
     }
 }
 
 #Preview {
-    slShakingIcon()
+    SWShakingIcon()
 }

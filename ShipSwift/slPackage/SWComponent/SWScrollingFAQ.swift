@@ -1,23 +1,24 @@
 //
-//  slScrollingFAQ.swift
-//  Ling
+//  SWScrollingFAQ.swift
+//  ShipSwift
 //
-//  Created by 仲炜 on 2025/11/11.
+//  Horizontally scrolling FAQ suggestion component
+//  Displays rows of infinitely scrolling question buttons that users can tap.
 //
 
 import SwiftUI
 
-struct slScrollingFAQ: View {
+struct SWScrollingFAQ: View {
     var onTap: (String) -> Void
-    
+
     private enum Direction { case left, right }
-    
+
     var body: some View {
         VStack(spacing: 8) {
             Text("Let's talk about new topics")
                 .padding(8)
                 .font(.headline)
-            
+
             Group {
                 InfiniteScrollView(questions: Array(faqData[0..<8]),
                                    direction: .left,
@@ -51,26 +52,27 @@ struct slScrollingFAQ: View {
         }
         .padding(.vertical)
     }
-    
+
     // MARK: - Infinite Scroll
+
     private struct InfiniteScrollView: UIViewRepresentable {
         let questions: [String]
         let direction: Direction
         var onTap: (String) -> Void
-        
+
         func makeUIView(context: Context) -> UIScrollView {
             let scrollView = UIScrollView()
             scrollView.showsHorizontalScrollIndicator = false
             scrollView.showsVerticalScrollIndicator = false
             scrollView.isScrollEnabled = false
-            
+
             let stackView = UIStackView()
             stackView.axis = .horizontal
             stackView.spacing = 0
             stackView.alignment = .center
             stackView.distribution = .equalSpacing
-            
-            // 创建 3 份内容实现无缝循环
+
+            // Create 3 copies for seamless looping
             for _ in 0..<3 {
                 for question in questions {
                     let button = Button(question) { onTap(question) }
@@ -79,7 +81,6 @@ struct slScrollingFAQ: View {
                     let host = UIHostingController(rootView: button)
                     host.view.backgroundColor = .clear
                     host.safeAreaRegions = []
-                    // 让 view 根据内容自适应大小
                     host.view.setContentHuggingPriority(.required, for: .horizontal)
                     host.view.setContentCompressionResistancePriority(.required, for: .horizontal)
                     let size = host.sizeThatFits(in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 34))
@@ -87,7 +88,7 @@ struct slScrollingFAQ: View {
                     stackView.addArrangedSubview(host.view)
                 }
             }
-            
+
             scrollView.addSubview(stackView)
             stackView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
@@ -97,79 +98,78 @@ struct slScrollingFAQ: View {
                 stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
                 stackView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
             ])
-            
+
             context.coordinator.scrollView = scrollView
             context.coordinator.stackView = stackView
             context.coordinator.direction = direction
-            
+
             return scrollView
         }
-        
+
         func updateUIView(_ uiView: UIScrollView, context: Context) {
             DispatchQueue.main.async {
                 context.coordinator.startIfNeeded()
             }
         }
-        
+
         func makeCoordinator() -> Coordinator { Coordinator() }
-        
+
         class Coordinator {
             weak var scrollView: UIScrollView?
             weak var stackView: UIStackView?
             var direction: Direction = .left
-            
+
             private var displayLink: CADisplayLink?
             private var unitWidth: CGFloat = 0
             private var started = false
-            
+
             func startIfNeeded() {
                 guard !started, let scrollView, let stackView else { return }
-                
+
                 stackView.layoutIfNeeded()
                 let totalWidth = stackView.bounds.width
                 guard totalWidth > 0 else { return }
-                
+
                 unitWidth = totalWidth / 3
                 scrollView.contentSize = CGSize(width: totalWidth, height: stackView.bounds.height)
-                
-                // 从中间份开始，这样向左向右都有空间
+
+                // Start from the middle copy so there's room in both directions
                 scrollView.contentOffset.x = unitWidth
-                
+
                 started = true
                 displayLink = CADisplayLink(target: self, selector: #selector(tick))
                 displayLink?.add(to: .main, forMode: .common)
             }
-            
+
             @objc private func tick() {
                 guard let scrollView, unitWidth > 0 else { return }
-                
+
                 let speed: CGFloat = 30 / 60.0
                 var x = scrollView.contentOffset.x
-                
+
                 if direction == .left {
                     x += speed
-                    // 滚动到第二份末尾时，跳回第一份对应位置
                     if x >= unitWidth * 2 {
                         x -= unitWidth
                     }
                 } else {
                     x -= speed
-                    // 滚动到第一份开头之前时，跳到第二份对应位置
                     if x <= 0 {
                         x += unitWidth
                     }
                 }
-                
+
                 scrollView.contentOffset.x = x
             }
-            
+
             deinit {
                 displayLink?.invalidate()
             }
         }
     }
-    
+
     // MARK: - FAQ Data
+
     private let faqData: [String] = [
         // Row 1 (0-7)
         "How does AI assistance work?", "What can I ask you?", "How accurate are the answers?", "Can you help with coding?",
@@ -184,7 +184,7 @@ struct slScrollingFAQ: View {
 }
 
 #Preview {
-    slScrollingFAQ { question in
+    SWScrollingFAQ { question in
         print("Tapped: \(question)")
     }
 }

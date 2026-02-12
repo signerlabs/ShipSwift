@@ -1,27 +1,26 @@
 //
-//  slMeshGradient.swift
-//  full-pack
+//  SWMeshGradient.swift
+//  ShipSwift
 //
-//  Created by Wei on 2025/5/17.
+//  Animated mesh gradient background using indigo/blue/cyan color palette.
+//  The gradient smoothly transitions between two color states in a 5-second loop.
 //
 
 import SwiftUI
 
-struct slMeshGradient: View {
+struct SWMeshGradient: View {
     @State private var appear = false
-    
+
     var body: some View {
         MeshGradient(width: 3, height: 3, points: [
             .init(0, 0), .init(0.5, 0), .init(1, 0),
             .init(0, 0.5), .init(0.5, 0.5), .init(1, 0.5),
             .init(0, 1), .init(0.5, 1), .init(1, 1)
         ], colors: appear ? [
-            // appear = true 时的颜色（indigo/blue/cyan）
             .indigo.opacity(0.9),  .blue.opacity(0.85),   .cyan.opacity(0.8),
             .blue.opacity(0.85),   .indigo.opacity(0.9),  .blue.opacity(0.85),
             .cyan.opacity(0.8),    .blue.opacity(0.85),   .indigo.opacity(0.9)
         ] : [
-            // appear = false 时的颜色（indigo/blue/cyan）
             .cyan.opacity(0.8),    .indigo.opacity(0.9),  .blue.opacity(0.85),
             .indigo.opacity(0.85), .blue.opacity(0.9),    .cyan.opacity(0.85),
             .blue.opacity(0.85),   .cyan.opacity(0.8),    .indigo.opacity(0.9)
@@ -35,6 +34,6 @@ struct slMeshGradient: View {
 }
 
 #Preview {
-    slMeshGradient()
+    SWMeshGradient()
         .ignoresSafeArea()
 }

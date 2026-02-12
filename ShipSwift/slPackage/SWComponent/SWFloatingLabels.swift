@@ -1,13 +1,14 @@
 //
-//  slFloatingLabels.swift
+//  SWFloatingLabels.swift
 //  ShipSwift
 //
-//  图片浮动标签组件
-//  在图片上循环浮现标签，带渐变边框动效，适用于 AI 分析、扫描结果展示等场景
+//  Floating labels overlay for images
+//  Cycles through labels appearing over an image with gradient border animation.
+//  Ideal for AI analysis results, scan results display, etc.
 //
-//  使用示例:
+//  Usage:
 //  ```
-//  slFloatingLabels(
+//  SWFloatingLabels(
 //      image: Image(.photo),
 //      labels: [
 //          ("Teeth mapping", CGPoint(x: 0.3, y: 0.5)),
@@ -15,7 +16,7 @@
 //      ]
 //  )
 //
-//  slFloatingLabels(
+//  SWFloatingLabels(
 //      image: Image(.photo),
 //      size: 300,
 //      cornerRadius: 16,
@@ -24,17 +25,17 @@
 //  )
 //  ```
 //
-//  参数说明:
-//  - image: 要显示的图片
-//  - size: 图片尺寸，默认 360
-//  - cornerRadius: 圆角半径，默认 24
-//  - cycleDuration: 动画循环周期（秒），默认 3.0
-//  - labels: 标签数组，每个标签包含文字和相对位置 (0-1)
+//  Parameters:
+//  - image: The image to display
+//  - size: Image size, default 360
+//  - cornerRadius: Corner radius, default 24
+//  - cycleDuration: Animation cycle duration (seconds), default 3.0
+//  - labels: Array of labels, each with text and relative position (0-1)
 //
 
 import SwiftUI
 
-struct slFloatingLabels: View {
+struct SWFloatingLabels: View {
     let image: Image
     var size: CGFloat = 360
     var cornerRadius: CGFloat = 24
@@ -47,7 +48,7 @@ struct slFloatingLabels: View {
             let cycle = t.truncatingRemainder(dividingBy: cycleDuration)
 
             ZStack {
-                // 图片 + 渐变边框
+                // Image with gradient border
                 image
                     .resizable()
                     .scaledToFill()
@@ -66,13 +67,13 @@ struct slFloatingLabels: View {
                             .opacity(cycle < 0.5 ? cycle * 2 : 1)
                     )
 
-                // 循环显示标签
+                // Cycle through labels
                 ForEach(Array(labels.enumerated()), id: \.offset) { index, label in
                     let delay = Double(index) * 0.3
                     let labelCycle = (cycle - delay).truncatingRemainder(dividingBy: cycleDuration)
                     let opacity = labelCycle > 0.5 && labelCycle < (cycleDuration - 0.5) ? 1.0 : 0.0
 
-                    slFloatingLabel(text: label.0)
+                    SWFloatingLabel(text: label.0)
                         .offset(
                             x: (label.1.x - 0.5) * (size * 0.78),
                             y: (label.1.y - 0.5) * (size * 0.78)
@@ -86,9 +87,9 @@ struct slFloatingLabels: View {
     }
 }
 
-// MARK: - 浮动标签
+// MARK: - Floating Label
 
-struct slFloatingLabel: View {
+struct SWFloatingLabel: View {
     let text: String
 
     var body: some View {
@@ -107,7 +108,7 @@ struct slFloatingLabel: View {
 // MARK: - Preview
 
 #Preview {
-    slFloatingLabels(
+    SWFloatingLabels(
         image: Image(systemName: "face.smiling"),
         labels: [
             ("Teeth mapping", CGPoint(x: 0.3, y: 0.5)),

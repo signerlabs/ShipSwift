@@ -1,18 +1,19 @@
 //
-//  slBeforeAfter.swift
+//  SWBeforeAfter.swift
 //  ShipSwift
 //
-//  前后对比滑动组件
-//  自动来回滑动展示两张图片的对比效果，适用于美颜、滤镜、修图等前后对比场景
+//  Before/after comparison slider component
+//  Automatically slides back and forth to show a comparison between two images.
+//  Ideal for beauty filters, photo editing, retouching previews, etc.
 //
-//  使用示例:
+//  Usage:
 //  ```
-//  slBeforeAfter(
+//  SWBeforeAfter(
 //      before: Image(.photoBefore),
 //      after: Image(.photoAfter)
 //  )
 //
-//  slBeforeAfter(
+//  SWBeforeAfter(
 //      before: Image(.photoBefore),
 //      after: Image(.photoAfter),
 //      width: 300,
@@ -22,19 +23,19 @@
 //  )
 //  ```
 //
-//  参数说明:
-//  - before: 原图 (底层)
-//  - after: 效果图 (顶层，被 mask 裁切)
-//  - width: 图片宽度，默认 360
-//  - aspectRatio: 宽高比 (宽/高)，默认 4/3
-//  - cornerRadius: 圆角半径，默认 24
-//  - speed: 滑动速度，默认 0.8
-//  - showLabels: 是否显示 Before/After 标签，默认 true
+//  Parameters:
+//  - before: Original image (bottom layer)
+//  - after: Effect image (top layer, masked)
+//  - width: Image width, default 360
+//  - aspectRatio: Width/height ratio, default 4/3
+//  - cornerRadius: Corner radius, default 24
+//  - speed: Sliding speed, default 0.8
+//  - showLabels: Whether to show Before/After labels, default true
 //
 
 import SwiftUI
 
-struct slBeforeAfter: View {
+struct SWBeforeAfter: View {
     let before: Image
     let after: Image
     var width: CGFloat = 360
@@ -48,19 +49,19 @@ struct slBeforeAfter: View {
     var body: some View {
         TimelineView(.animation) { timeline in
             let t = timeline.date.timeIntervalSinceReferenceDate
-            // 滑块来回移动：0.2 到 0.8 之间
+            // Slider oscillates between 0.2 and 0.8
             let sliderPos = 0.5 + sin(t * speed) * 0.3
             let sliderX = sliderPos * width
 
             ZStack {
-                // 底层图片 (Before)
+                // Bottom layer (Before)
                 before
                     .resizable()
                     .scaledToFit()
                     .frame(width: width, height: height)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
 
-                // 顶层图片 (After) - 用 mask 控制显示区域
+                // Top layer (After) - clipped by mask
                 after
                     .resizable()
                     .scaledToFit()
@@ -75,13 +76,13 @@ struct slBeforeAfter: View {
                         .frame(width: width)
                     )
 
-                // 滑动分割线
+                // Divider line
                 Rectangle()
                     .fill(.ultraThinMaterial)
                     .frame(width: 3, height: height)
                     .offset(x: sliderX - width / 2)
 
-                // 滑块手柄
+                // Slider handle
                 Image(systemName: "arrow.left.and.right.circle.fill")
                     .font(.largeTitle)
                     .foregroundStyle(
@@ -90,7 +91,7 @@ struct slBeforeAfter: View {
                     )
                     .offset(x: sliderX - width / 2)
 
-                // Before / After 标签
+                // Before / After labels
                 if showLabels {
                     HStack {
                         Text("Before")
@@ -123,7 +124,7 @@ struct slBeforeAfter: View {
 // MARK: - Preview
 
 #Preview {
-    slBeforeAfter(
+    SWBeforeAfter(
         before: Image(systemName: "photo"),
         after: Image(systemName: "photo.fill")
     )

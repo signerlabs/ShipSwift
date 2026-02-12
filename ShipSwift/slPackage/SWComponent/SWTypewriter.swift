@@ -1,91 +1,91 @@
 //
-//  slTypewriter.swift
+//  SWTypewriter.swift
 //  ShipSwift
 //
-//  打字机效果文字组件 - 支持多条文案循环切换，出现和消失都有动画
+//  Typewriter text component - supports cycling through multiple texts with character-level animations
 //
 
 import SwiftUI
 
-// MARK: - slTypewriter
-/// 打字机效果文字组件
+// MARK: - SWTypewriterStyle
+
+/// Animation style for the typewriter effect
+enum SWTypewriterStyle {
+    case none       // No animation, plain typewriter
+    case spring     // Spring effect: characters bounce in/out
+    case blur       // Blur effect: characters transition from blurry to clear
+    case fade       // Fade effect: characters fade in/out with slide
+    case scale      // Scale effect: characters grow/shrink
+    case wave       // Wave effect: characters have vertical oscillation
+}
+
+// MARK: - SWTypewriter
+
+/// Typewriter text component
 ///
-/// 逐字符打印文字，支持多条文案循环切换，出现和消失都有平滑动画效果。
-/// 适合用于首页标语、AI 对话、引导提示等场景。
+/// Prints text character by character, supporting multiple texts in a cycle with smooth animations.
+/// Ideal for landing page headlines, AI chat, onboarding prompts, etc.
 ///
-/// ## 使用方法
+/// ## Usage
 ///
 /// ```swift
-/// // 基本用法
-/// slTypewriter(texts: ["Hello World", "Welcome Back", "Let's Go"])
+/// // Basic usage
+/// SWTypewriter(texts: ["Hello World", "Welcome Back", "Let's Go"])
 ///
-/// // 自定义渐变色
-/// slTypewriter(
+/// // Custom gradient
+/// SWTypewriter(
 ///     texts: ["Message 1", "Message 2"],
 ///     gradient: LinearGradient(colors: [.pink, .orange], startPoint: .leading, endPoint: .trailing)
 /// )
 ///
-/// // 自定义动画风格
-/// slTypewriter(
+/// // Custom animation style
+/// SWTypewriter(
 ///     texts: ["Message 1", "Message 2"],
 ///     animationStyle: .blur
 /// )
 ///
-/// // 完整参数
-/// slTypewriter(
+/// // Full parameters
+/// SWTypewriter(
 ///     texts: ["Message 1", "Message 2"],
-///     typingSpeed: 0.05,      // 打字速度（秒/字符）
-///     deletingSpeed: 0.03,    // 删除速度（秒/字符）
-///     pauseDuration: 3.0,     // 停留时间（秒）
+///     typingSpeed: 0.05,      // Typing speed (seconds per character)
+///     deletingSpeed: 0.03,    // Deleting speed (seconds per character)
+///     pauseDuration: 3.0,     // Pause duration (seconds)
 ///     animationStyle: .spring,
 ///     gradient: LinearGradient(colors: [.cyan, .purple], startPoint: .leading, endPoint: .trailing)
 /// )
 /// .font(.title3.weight(.semibold))
 /// ```
 ///
-/// ## 动画风格 (slTypewriterStyle)
+/// ## Animation Styles (SWTypewriterStyle)
 ///
-/// | 风格 | 出现效果 | 消失效果 |
-/// |------|----------|----------|
-/// | `.none` | 无动画 | 无动画 |
-/// | `.spring` | 从小弹入 + 淡入 | 缩小 + 淡出 |
-/// | `.blur` | 从模糊变清晰 | 模糊 + 淡出 |
-/// | `.fade` | 从上方滑入 + 淡入 | 向下滑出 + 淡出 |
-/// | `.scale` | 从大缩小 + 淡入 | 放大 + 淡出 |
-/// | `.wave` | 从上方弹入 + 淡入 | 向下偏移 + 淡出 |
+/// | Style     | Insertion          | Removal            |
+/// |-----------|--------------------|--------------------|
+/// | `.none`   | No animation       | No animation       |
+/// | `.spring` | Bounce in + fade   | Shrink + fade out  |
+/// | `.blur`   | Blur → clear       | Blur + fade out    |
+/// | `.fade`   | Slide down + fade  | Slide down + fade  |
+/// | `.scale`  | Scale down + fade  | Scale up + fade    |
+/// | `.wave`   | Drop in + fade     | Drop out + fade    |
 ///
-/// ## 参数说明
-/// - `texts`: 要循环显示的文案数组
-/// - `typingSpeed`: 打字速度，每个字符的间隔（秒），默认 0.04
-/// - `deletingSpeed`: 删除速度，每个字符的间隔（秒），默认 0.03
-/// - `pauseDuration`: 文案显示完后的停留时间（秒），默认 2.5
-/// - `animationStyle`: 动画风格，默认 `.spring`
-/// - `gradient`: 文字渐变色，默认 cyan → purple
+/// ## Parameters
+/// - `texts`: Array of texts to cycle through
+/// - `typingSpeed`: Interval per character when typing (seconds), default 0.04
+/// - `deletingSpeed`: Interval per character when deleting (seconds), default 0.03
+/// - `pauseDuration`: How long to display completed text (seconds), default 2.5
+/// - `animationStyle`: Animation style, default `.spring`
+/// - `gradient`: Text gradient, default cyan → purple
 ///
-/// ## 注意事项
-/// - 组件会无限循环播放
-/// - 建议搭配 `.font()` 修饰符设置字体大小和粗细
-/// - 使用 `|` 字符作为隐形占位符防止高度跳动
+/// ## Notes
+/// - The component loops infinitely
+/// - Pair with `.font()` modifier to set size and weight
+/// - Uses an invisible `|` character as height placeholder to prevent layout jumps
 
-// MARK: - 动画风格枚举
-
-enum slTypewriterStyle {
-    case none           // 无动画，纯打字机
-    case spring         // 弹性效果：每个字符弹入/弹出
-    case blur           // 模糊效果：字符从模糊变清晰
-    case fade           // 渐入效果：字符淡入/淡出
-    case scale          // 缩放效果：字符从小变大/从大变小
-    case wave           // 波浪效果：字符有上下波动
-}
-
-// MARK: - 主组件
-
-struct slTypewriter: View {
+struct SWTypewriter: View {
     let texts: [String]
     var typingSpeed: Double = 0.04
     var deletingSpeed: Double = 0.03
     var pauseDuration: Double = 2.5
-    var animationStyle: slTypewriterStyle = .spring
+    var animationStyle: SWTypewriterStyle = .spring
     var gradient: LinearGradient = LinearGradient(
         colors: [.cyan, .purple],
         startPoint: .leading,
@@ -95,12 +95,12 @@ struct slTypewriter: View {
     @State private var displayedText = ""
     @State private var currentIndex = 0
     @State private var isDeleting = false
-    @State private var charStates: [slTypewriterCharState] = []
+    @State private var charStates: [SWTypewriterCharState] = []
     @State private var isActive = false
 
     var body: some View {
         HStack(spacing: 0) {
-            // 字符级别动画
+            // Character-level animation
             HStack(spacing: 0) {
                 ForEach(charStates) { state in
                     Text(state.character)
@@ -110,12 +110,11 @@ struct slTypewriter: View {
             }
             .animation(animationForCurrentAction, value: charStates.count)
 
-            // 纵向占位，防止高度跳动
+            // Invisible height placeholder to prevent layout jumps
             Text("|")
                 .foregroundStyle(.clear)
         }
         .onAppear {
-            // 重置状态并启动
             isActive = true
             displayedText = ""
             charStates = []
@@ -128,7 +127,7 @@ struct slTypewriter: View {
         }
     }
 
-    // MARK: - Transition 配置
+    // MARK: - Transition Configuration
 
     private var transitionForStyle: AnyTransition {
         switch animationStyle {
@@ -143,8 +142,8 @@ struct slTypewriter: View {
 
         case .blur:
             return .asymmetric(
-                insertion: .opacity.combined(with: .slBlur),
-                removal: .opacity.combined(with: .slBlur)
+                insertion: .opacity.combined(with: .swBlur),
+                removal: .opacity.combined(with: .swBlur)
             )
 
         case .fade:
@@ -169,7 +168,6 @@ struct slTypewriter: View {
 
     private var animationForCurrentAction: Animation {
         if isDeleting {
-            // 删除动画
             switch animationStyle {
             case .none: return .linear(duration: 0)
             case .spring: return .easeOut(duration: 0.15)
@@ -179,7 +177,6 @@ struct slTypewriter: View {
             case .wave: return .easeOut(duration: 0.12)
             }
         } else {
-            // 添加动画
             switch animationStyle {
             case .none: return .linear(duration: 0)
             case .spring: return .spring(response: 0.3, dampingFraction: 0.6)
@@ -191,7 +188,7 @@ struct slTypewriter: View {
         }
     }
 
-    // MARK: - 打字逻辑
+    // MARK: - Typing Logic
 
     private func startTyping() {
         guard !texts.isEmpty, isActive else { return }
@@ -199,14 +196,13 @@ struct slTypewriter: View {
     }
 
     private func typeNextCharacter() {
-        // 检查是否仍然激活
         guard isActive else { return }
 
         let currentText = texts[currentIndex]
 
         if isDeleting {
             if charStates.isEmpty {
-                // 所有字符已删除，切换到下一条
+                // All characters deleted, switch to next text
                 isDeleting = false
                 displayedText = ""
                 currentIndex = (currentIndex + 1) % texts.count
@@ -215,7 +211,7 @@ struct slTypewriter: View {
                     typeNextCharacter()
                 }
             } else {
-                // 移除最后一个字符
+                // Remove last character
                 DispatchQueue.main.asyncAfter(deadline: .now() + deletingSpeed) { [self] in
                     guard isActive else { return }
                     if !charStates.isEmpty {
@@ -233,11 +229,11 @@ struct slTypewriter: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + typingSpeed) { [self] in
                     guard isActive else { return }
                     displayedText.append(newChar)
-                    charStates.append(slTypewriterCharState(character: String(newChar)))
+                    charStates.append(SWTypewriterCharState(character: String(newChar)))
                     typeNextCharacter()
                 }
             } else {
-                // 打字完成，等待后开始删除
+                // Typing complete, wait before deleting
                 DispatchQueue.main.asyncAfter(deadline: .now() + pauseDuration) { [self] in
                     guard isActive else { return }
                     isDeleting = true
@@ -248,25 +244,25 @@ struct slTypewriter: View {
     }
 }
 
-// MARK: - 字符状态
+// MARK: - Character State
 
-private struct slTypewriterCharState: Identifiable, Equatable {
+private struct SWTypewriterCharState: Identifiable, Equatable {
     let id = UUID()
     var character: String
 }
 
-// MARK: - 自定义 Blur Transition
+// MARK: - Custom Blur Transition
 
 extension AnyTransition {
-    static var slBlur: AnyTransition {
+    static var swBlur: AnyTransition {
         .modifier(
-            active: slBlurModifier(radius: 10, opacity: 0),
-            identity: slBlurModifier(radius: 0, opacity: 1)
+            active: SWBlurModifier(radius: 10, opacity: 0),
+            identity: SWBlurModifier(radius: 0, opacity: 1)
         )
     }
 }
 
-private struct slBlurModifier: ViewModifier {
+private struct SWBlurModifier: ViewModifier {
     let radius: CGFloat
     let opacity: Double
 
@@ -277,34 +273,34 @@ private struct slBlurModifier: ViewModifier {
     }
 }
 
-// MARK: - 便捷初始化扩展
+// MARK: - Convenience Initializers
 
-extension slTypewriter {
-    /// 弹性风格（推荐）
-    static func spring(texts: [String]) -> slTypewriter {
-        slTypewriter(texts: texts, animationStyle: .spring)
+extension SWTypewriter {
+    /// Spring style (recommended)
+    static func spring(texts: [String]) -> SWTypewriter {
+        SWTypewriter(texts: texts, animationStyle: .spring)
     }
 
-    /// 模糊风格
-    static func blur(texts: [String]) -> slTypewriter {
-        slTypewriter(texts: texts, animationStyle: .blur)
+    /// Blur style
+    static func blur(texts: [String]) -> SWTypewriter {
+        SWTypewriter(texts: texts, animationStyle: .blur)
     }
 
-    /// 缩放风格
-    static func scale(texts: [String]) -> slTypewriter {
-        slTypewriter(texts: texts, animationStyle: .scale)
+    /// Scale style
+    static func scale(texts: [String]) -> SWTypewriter {
+        SWTypewriter(texts: texts, animationStyle: .scale)
     }
 
-    /// 渐入风格
-    static func fade(texts: [String]) -> slTypewriter {
-        slTypewriter(texts: texts, animationStyle: .fade)
+    /// Fade style
+    static func fade(texts: [String]) -> SWTypewriter {
+        SWTypewriter(texts: texts, animationStyle: .fade)
     }
 }
 
 // MARK: - Preview
 
 #Preview("Spring Style (Default)") {
-    slTypewriter(
+    SWTypewriter(
         texts: [
             "Level up your smile game",
             "AI-powered smile analysis",
@@ -319,7 +315,7 @@ extension slTypewriter {
 }
 
 #Preview("Blur Style") {
-    slTypewriter(
+    SWTypewriter(
         texts: [
             "Level up your smile game",
             "AI-powered smile analysis",
@@ -333,38 +329,8 @@ extension slTypewriter {
     .background(Color.black)
 }
 
-#Preview("Scale Style") {
-    slTypewriter(
-        texts: [
-            "Level up your smile game",
-            "AI-powered smile analysis",
-            "Join the glow up era"
-        ],
-        animationStyle: .scale
-    )
-    .font(.title3.weight(.semibold))
-    .padding()
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color.black)
-}
-
-#Preview("Fade Style") {
-    slTypewriter(
-        texts: [
-            "Level up your smile game",
-            "AI-powered smile analysis",
-            "Join the glow up era"
-        ],
-        animationStyle: .fade
-    )
-    .font(.title3.weight(.semibold))
-    .padding()
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color.black)
-}
-
 #Preview("Custom Gradient") {
-    slTypewriter(
+    SWTypewriter(
         texts: [
             "Hello World",
             "Welcome Back",
@@ -378,26 +344,6 @@ extension slTypewriter {
         )
     )
     .font(.title.weight(.bold))
-    .padding()
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color.black)
-}
-
-#Preview("White Text") {
-    slTypewriter(
-        texts: [
-            "Simple and clean",
-            "Minimalist design",
-            "Pure elegance"
-        ],
-        animationStyle: .fade,
-        gradient: LinearGradient(
-            colors: [.white],
-            startPoint: .leading,
-            endPoint: .trailing
-        )
-    )
-    .font(.headline)
     .padding()
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Color.black)
