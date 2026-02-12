@@ -1,81 +1,92 @@
 # ShipSwift
 
-> 面向 AI 的 iOS 开发组件库 — 让大模型基于实战验证的代码写出生产级 iOS 应用。
+> AI-native iOS component library — production-ready SwiftUI code that LLMs can use to build real apps.
 
-## 快速开始
+## Quick Start
 
-通过 MCP 连接 ShipSwift，AI 自动获取组件和最佳实践：
+Connect ShipSwift via MCP so your AI assistant can access components and best practices:
 
 ```bash
 claude mcp add --transport http shipswift https://api.shipswift.app/mcp
 ```
 
-## 开源组件
+## Open-Source Components
 
-### slComponent — 20+ SwiftUI UI 组件
+### SWComponent — 28 Self-Contained UI Components
 
-Heatmap, RadarChart, DonutChart, RingChart, ScatterChart, BeforeAfter, GlowScan, ThinkingIndicator 等
+Charts: DonutChart, RingChart, RadarChart, ScatterChart, ActivityHeatmap
+Animations: Typewriter, BeforeAfter, Shimmer, FloatingLabels, ShakingIcon, MeshGradient, ImageScanOverlay, ScrollingFAQ
+UI Elements: Alert, Loading, Label, TabButton, Stepper, GradientDivider, BulletPointText, ThinkingIndicator, AddSheet, ViewfinderOverlay, ScanImage, GlowScan, RotatingQuote, LogoOrbit, AgreementChecker
 
-### slAnimation — 9 个即用动画
+### SWModule — 5 Multi-File Frameworks
 
-Shimmer, MeshGradient, Typewriter, FloatingLabels, BeforeAfter 等
+- **SWAuth** — User authentication (Amplify/Cognito, social login, email/password)
+- **SWCamera** — Camera capture with viewfinder, zoom, and photo picker
+- **SWPaywall** — Subscription paywall using StoreKit 2
+- **SWChat** — Chat input, message list, and voice recognition (VolcEngine ASR)
+- **SWFaceCamera** — Face detection camera with Vision landmark tracking
 
-### slView — 7 个完整页面
+### SWView — 4 Complete Page Views
 
-Onboarding, Paywall, Camera, Settings, Order, RootTab, Auth
+Onboarding, Settings, Order, RootTab
 
-### slManager — 6 个管理器
+### SWUtil — 5 Shared Utilities
 
-User, Store, Camera, Alert, Loading, Location
+DebugLog, String/Date/View extensions, LocationManager
 
-### slChat — 聊天组件
-
-聊天输入 + 消息列表 + 语音识别
-
-### slUtil — 工具扩展
-
-Date/String/View 扩展 + DebugLog
-
-### slConfig — 全局配置
-
-Constants 配置项
-
-## 目录结构
+## Directory Structure
 
 ```
 ShipSwift/
 ├── slPackage/
-│   ├── slComponent/    # UI 组件
-│   ├── slAnimation/    # 动画组件
-│   ├── slView/         # 完整页面
-│   ├── slManager/      # 管理器
-│   ├── slChat/         # 聊天组件
-│   ├── slUtil/         # 工具扩展
-│   └── slConfig/       # 全局配置
-└── View/               # 示例视图
+│   ├── SWComponent/         # Self-contained UI components (28 files)
+│   ├── SWModule/            # Multi-file frameworks (5 modules)
+│   │   ├── SWAuth/          #   Authentication (3 files)
+│   │   ├── SWCamera/        #   Camera capture (2 files)
+│   │   ├── SWPaywall/       #   Subscription paywall (2 files)
+│   │   ├── SWChat/          #   Chat + voice input (3 files)
+│   │   └── SWFaceCamera/    #   Face detection camera (3 files)
+│   ├── SWView/              # Complete page views (4 files)
+│   └── SWUtil/              # Shared utilities (5 files)
+└── View/                    # Demo views
 ```
 
-## 技术栈
+## Naming Convention
+
+All types use the `SW` prefix (e.g., `SWAlertManager`, `SWStoreManager`).
+View modifiers use `.sw` lowercase prefix (e.g., `.swAlert()`, `.swPageLoading()`, `.swPrimary`).
+
+## Dependency Rules
+
+```
+SWUtil        ← no dependencies on other slPackage directories
+SWComponent   ← may depend on SWUtil only
+SWView        ← may depend on SWUtil only
+SWModule      ← may depend on SWUtil and SWComponent; internal files may depend on each other
+```
+
+## Tech Stack
 
 - SwiftUI + Swift
 - StoreKit 2
-- Amplify SDK
+- Amplify SDK (Cognito)
+- AVFoundation + Vision
 - SpriteKit
-- 火山引擎 ASR
+- VolcEngine ASR
 
-## Pro Recipe
+## Pro Recipes
 
-开源组件之外，ShipSwift 还提供付费 Recipe — 包含架构决策、完整实现、集成清单和已知陷阱的全栈解决方案：
+Beyond open-source components, ShipSwift offers paid Recipes — full-stack solutions with architecture decisions, complete implementations, integration checklists, and known pitfalls:
 
-- 认证系统（Cognito + Amplify）
-- 订阅系统（StoreKit 2 + 服务端验证）
-- AI 流式对话（Lambda Streaming + SSE）
-- 语音输入（火山引擎 ASR）
-- 基础设施（AWS CDK 全栈）
-- 数据库（Aurora Serverless + Drizzle ORM）
-- 消息服务（SES/SNS）
+- Authentication (Cognito + Amplify)
+- Subscriptions (StoreKit 2 + server-side validation)
+- AI Streaming Chat (Lambda Streaming + SSE)
+- Voice Input (VolcEngine ASR)
+- Infrastructure (AWS CDK full-stack)
+- Database (Aurora Serverless + Drizzle ORM)
+- Messaging (SES/SNS)
 
-详情访问 [shipswift.app](https://shipswift.app)
+Learn more at [shipswift.app](https://shipswift.app)
 
 ## License
 
