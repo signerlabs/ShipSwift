@@ -10,10 +10,10 @@ import SwiftUI
 @main
 struct ShipSwiftApp: App {
     @State private var storeManager = SWStoreManager.shared
-
+    
     var body: some Scene {
         WindowGroup {
-            SWRootTabView()
+            RootTabView()
                 .environment(storeManager)
                 .swAlert()
         }
