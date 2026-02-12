@@ -33,39 +33,39 @@ import SwiftUI
 
 struct SWOrderView: View {
     @State private var qty: Int = 1
-    @State private var flavor: String = "抹茶"
-    @State private var size: String = "中杯"
+    @State private var flavor: String = "Matcha"
+    @State private var size: String = "Medium"
     @Namespace private var sizeNS
     @Namespace private var flavorNS
-
-    private let flavors = ["抹茶", "巧克力", "芒果"]
-    private let sizes = ["中杯", "大杯", "超大杯"]
-
+    
+    private let flavors = ["Matcha", "Chocolate", "Mango"]
+    private let sizes = ["Medium", "Large", "XL"]
+    
     private var bg: Color {
         switch flavor {
-        case "芒果":
+        case "Mango":
             return .orange
-        case "巧克力":
+        case "Chocolate":
             return .brown
         default:
             return Color(red: 0.2, green: 0.5, blue: 0.3)
         }
     }
-
+    
     var body: some View {
         ZStack {
             backgroundGradient
             contentView
         }
     }
-
+    
     private var backgroundGradient: some View {
         LinearGradient(colors: [.black, bg],
-                      startPoint: .top, endPoint: .bottom)
-            .ignoresSafeArea()
-            .animation(.easeInOut, value: flavor)
+                       startPoint: .top, endPoint: .bottom)
+        .ignoresSafeArea()
+        .animation(.easeInOut, value: flavor)
     }
-
+    
     private var contentView: some View {
         VStack(spacing: 30) {
             cupsSection
@@ -75,57 +75,40 @@ struct SWOrderView: View {
             addToCartButton
         }
     }
-
+    
     private var cupsSection: some View {
         ZStack {
             ForEach(Array(0..<qty), id: \.self) { i in
                 SWCupView(idx: i, count: qty, img: flavor)
             }
         }
-        .frame(height: 240)
+        .frame(height: 500)
+        .animation(.spring(), value: qty)
     }
-
-    @ViewBuilder
+    
     private var quantityControl: some View {
-        HStack(spacing: 40) {
-//            SWOrderButton(icon: "minus") {
-//
-////                guard qty > 1 else { return }
-//                withAnimation(.spring()) {
-//                    qty -= 1
-//                }
-//            }
-//
-//            Text("\(qty)")
-//                .font(.system(size: 40, weight: .black))
-//                .contentTransition(.numericText)
-//
-//            SWOrderButton(icon: "plus") {
-////                guard qty < 3 else { return }
-//                withAnimation(.spring()) {
-//                    qty += 1
-//                }
-//            }
-        }
-//        .foregroundStyle(.white)
+        SWQuantityControl(qty: $qty)
     }
-
+    
     private var selectorsSection: some View {
         VStack(spacing: 20) {
-            SWOrderSelector(items: sizes, sel: $size, ns: sizeNS, label: "杯型")
-            SWOrderSelector(items: flavors, sel: $flavor, ns: flavorNS, label: "口味")
+            SWOrderSelector(items: sizes, sel: $size, ns: sizeNS, label: "Size")
+            SWOrderSelector(items: flavors, sel: $flavor, ns: flavorNS, label: "Flavor")
         }
     }
-
+    
     private var addToCartButton: some View {
-        Text("添加至购物车   ¥\(33 * qty)")
-            .font(.title3.bold())
-            .frame(maxWidth: .infinity, minHeight: 56)
-            .background(.white)
-            .foregroundStyle(bg)
-            .clipShape(Capsule())
-            .padding()
-            .padding(.top, 60)
+        Button {
+            
+        } label: {
+            Text("Add to Cart   ¥\(33 * qty)")
+                .font(.title3.bold())
+                .frame(maxWidth: .infinity, minHeight: 56)
+                .background(.white)
+                .foregroundStyle(bg)
+                .clipShape(Capsule())
+                .padding()
+        }
     }
 }
 
@@ -135,27 +118,27 @@ struct SWCupView: View {
     let idx: Int
     let count: Int
     let img: String
-
+    
     private var sfSymbol: String {
         switch img {
-        case "抹茶":
+        case "Matcha":
             return "leaf.fill"
-        case "巧克力":
+        case "Chocolate":
             return "mug.fill"
-        case "芒果":
+        case "Mango":
             return "sun.max.fill"
         default:
             return "cup.and.saucer.fill"
         }
     }
-
+    
     private var isSide: Bool {
         count >= 3 && idx != 1
     }
-
+    
     var body: some View {
         Image(systemName: sfSymbol)
-            .font(.system(size: 100))
+            .font(.system(size: 200))
             .foregroundStyle(.white)
             .scaleEffect(isSide ? 0.7 : 1.0)
             .offset(y: isSide ? 15 : 0)
@@ -177,12 +160,13 @@ struct SWOrderSelector: View {
     @Binding var sel: String
     var ns: Namespace.ID
     var label: String
-
+    
     var body: some View {
         HStack {
             Text(label)
                 .bold()
                 .foregroundStyle(.white)
+                .frame(width: 60)
             HStack {
                 ForEach(items, id: \.self) { item in
                     itemButton(item)
@@ -193,7 +177,7 @@ struct SWOrderSelector: View {
         }
         .padding(.horizontal)
     }
-
+    
     private func itemButton(_ item: String) -> some View {
         Text(item)
             .frame(maxWidth: .infinity)
@@ -214,12 +198,40 @@ struct SWOrderSelector: View {
     }
 }
 
+// MARK: - SWQuantityControl
+
+struct SWQuantityControl: View {
+    @Binding var qty: Int
+    
+    var body: some View {
+        HStack(spacing: 40) {
+            Button { if qty > 1 { qty -= 1 } } label: {
+                Image(systemName: "minus.circle.fill")
+                    .font(.largeTitle)
+                    .foregroundStyle(.white, .ultraThinMaterial)
+            }
+            
+            Text("\(qty)")
+                .font(.system(size: 40, weight: .black))
+                .contentTransition(.numericText())
+                .frame(width: 60)
+            
+            Button { if qty < 3 { qty += 1 } } label: {
+                Image(systemName: "plus.circle.fill")
+                    .font(.largeTitle)
+                    .foregroundStyle(.white, .ultraThinMaterial)
+            }
+        }
+        .foregroundStyle(Color.white)
+    }
+}
+
 // MARK: - SWOrderButton
 
 struct SWOrderButton: View {
     let icon: String
     let action: () -> Void
-
+    
     var body: some View {
         Button(action: action) {
             Image(systemName: icon)
