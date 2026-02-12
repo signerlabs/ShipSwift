@@ -1,10 +1,10 @@
 # CLAUDE.md
 
 ## 项目定位
-- 这是 iOS 组件模板库 + 后端开发文档，不是独立运行的应用
+- ShipSwift iOS 组件模板库（公开 repo）
 - 产品规划详见 README.md
-- 作为 03-full-pack 和 04-journey 的参考资源
+- 作为 03-full-pack、04-journey、06-smile-max-ios 的参考资源
+- 后端开发文档已迁移到 02-ship-swift-server/Docs/
 
 ## 目录约定
 - 可复用组件放 ShipSwift/slPackage/ 对应子目录
-- 后端开发文档放 ShipSwift/Docs/

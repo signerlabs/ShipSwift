@@ -331,7 +331,7 @@ app.tool("getRecipe", { recipeId: z.string() }, async ({ recipeId }, c) => {
 | 8_export.md | 696 | 数据导出 |
 | 9_ios_issue.md | 61 | iOS 问题 |
 
-### 后端基础（07-smile-max-server/）
+### 后端基础（02-ship-swift-server/）
 
 - Hono 4.11.7 + TypeScript 5.9.3
 - CDK 2.237.1（已有 VPC, Cognito, App Runner, Aurora Serverless v2, S3）
@@ -373,10 +373,10 @@ app.tool("getRecipe", { recipeId: z.string() }, async ({ recipeId }, c) => {
 
 **目标**：跑通 MCP 协议，本地 Claude Code 可连接并调用工具
 
-**项目结构**（在 07-smile-max-server 中扩展）：
+**项目结构**（在 02-ship-swift-server 中扩展）：
 
 ```
-07-smile-max-server/src/
+02-ship-swift-server/src/
 ├── server.ts              # 现有 Hono 服务（挂载 /mcp 路由）
 ├── mcp/
 │   ├── index.ts           # MCP Server 入口
