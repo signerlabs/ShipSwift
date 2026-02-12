@@ -10,38 +10,39 @@
 import SwiftUI
 
 struct SWSettingView: View {
-
+    
     // MARK: - State
-
+    
     @AppStorage("appLanguage") private var appLanguage = "en"
     @State private var showDeleteConfirmation = false
     @State private var showSignOutConfirmation = false
     @State private var isDeleting = false
     @State private var isSigningOut = false
-
+    
     // MARK: - Configuration (modify these values directly)
-
+    
     private let appStoreURL = URL(string: "https://apps.apple.com/app/id123456789")!
-    private let termsURL = URL(string: "https://example.com/terms")!
-    private let privacyURL = URL(string: "https://example.com/privacy")!
-
+    private let termsURL = URL(string: "https://shipswift.app/terms")!
+    private let privacyURL = URL(string: "https://shipswift.app/privacy")!
+    
     // App Store URLs (examples, replace with actual URLs)
     private let appStoreFullpack = "https://apps.apple.com/us/app/fullpack-packing-outfit/id6745692929"
     private let appStoreBrushmo = "https://apps.apple.com/us/app/brushmo/id6744569822"
     private let appStoreJourney = "https://apps.apple.com/us/app/journey-goal-tracker-diary/id6748666816"
-
+    private let appStoreSmileMax = "https://apps.apple.com/us/app/smilemax/id6758947123"
+    
     /// App version number
     private var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
     }
-
+    
     /// App build number
     private var buildNumber: String {
         Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
     }
-
+    
     // MARK: - Body
-
+    
     var body: some View {
         NavigationStack {
             List {
@@ -52,7 +53,7 @@ struct SWSettingView: View {
                         Text("English").tag("en")
                         Text("简体中文").tag("zh-Hans")
                     }
-
+                    
                     // Share App
                     ShareLink(item: appStoreURL) {
                         HStack {
@@ -63,7 +64,7 @@ struct SWSettingView: View {
                         }
                     }
                 }
-
+                
                 // MARK: - Legal
                 Section {
                     Link(destination: termsURL) {
@@ -75,7 +76,7 @@ struct SWSettingView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
-
+                    
                     Link(destination: privacyURL) {
                         HStack {
                             Text("Privacy Policy")
@@ -86,24 +87,23 @@ struct SWSettingView: View {
                         }
                     }
                 }
-
-                // MARK: - My Apps
-                // Before using:
-                // 1. Add the corresponding logo image assets to your project's Assets.xcassets
-                // 2. Ensure assets are named "Fullpack Logo", "Brushmo Logo", "Journey Logo" (auto-converts to .fullpackLogo etc.)
-                // 3. Uncomment the section below
-                // Section("My Apps") {
-                //     Link(destination: URL(string: appStoreFullpack)!) {
-                //         SWLabelWithImage(image: .fullpackLogo, name: "Fullpack - Packing & Outfit")
-                //     }
-                //     Link(destination: URL(string: appStoreBrushmo)!) {
-                //         SWLabelWithImage(image: .brushmoLogo, name: "Brushmo - Oral Health Companion")
-                //     }
-                //     Link(destination: URL(string: appStoreJourney)!) {
-                //         SWLabelWithImage(image: .journeyLogo, name: "Journey - Goal Tracker & Diary")
-                //     }
-                // }
-
+                
+                // MARK: - Recommended Apps
+                Section("Apps Built with ShipSwift") {
+                    Link(destination: URL(string: appStoreSmileMax)!) {
+                        SWLabelWithImage(image: .smileMaxLogo, name: "SmileMax - Glow Up Coach")
+                    }
+                    Link(destination: URL(string: appStoreFullpack)!) {
+                        SWLabelWithImage(image: .fullpackLogo, name: "Fullpack - Packing & Outfit")
+                    }
+                    Link(destination: URL(string: appStoreBrushmo)!) {
+                        SWLabelWithImage(image: .brushmoLogo, name: "Brushmo - Oral Health Companion")
+                    }
+                    Link(destination: URL(string: appStoreJourney)!) {
+                        SWLabelWithImage(image: .journeyLogo, name: "Journey - Goal Tracker & Diary")
+                    }
+                }
+                
                 // MARK: - Account Actions
                 Section {
                     Button {
@@ -118,7 +118,7 @@ struct SWSettingView: View {
                         }
                     }
                     .disabled(isDeleting || isSigningOut)
-
+                    
                     Button(role: .destructive) {
                         showDeleteConfirmation = true
                     } label: {
@@ -132,7 +132,7 @@ struct SWSettingView: View {
                     }
                     .disabled(isDeleting || isSigningOut)
                 }
-
+                
                 // MARK: - Version Info
                 Section {
                     LabeledContent("Version") {
@@ -159,9 +159,9 @@ struct SWSettingView: View {
             }
         }
     }
-
+    
     // MARK: - Actions (replace with actual logic)
-
+    
     private func signOut() {
         isSigningOut = true
         Task {
@@ -171,7 +171,7 @@ struct SWSettingView: View {
             isSigningOut = false
         }
     }
-
+    
     private func deleteAccount() {
         isDeleting = true
         Task {

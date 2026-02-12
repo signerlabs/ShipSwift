@@ -13,7 +13,7 @@ struct SWRootTabView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab(value: "home") {
-                EmptyView()
+                Text("Home View")
             } label: {
                 Label {
                     Text("Home")
@@ -24,7 +24,7 @@ struct SWRootTabView: View {
             }
 
             Tab(value: "outfit") {
-                EmptyView()
+                Text("Outfit View")
             } label: {
                 Label {
                     Text("Outfit")
@@ -35,7 +35,7 @@ struct SWRootTabView: View {
             }
 
             Tab(value: "setting") {
-                EmptyView()
+                Text("Setting View")
             } label: {
                 Label {
                     Text("Setting")
