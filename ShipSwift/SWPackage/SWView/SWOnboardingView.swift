@@ -14,9 +14,10 @@
 //
 //    // 2. Customize pages: modify the OnboardingPage enum, add/remove cases and provide icon / title / description:
 //    enum OnboardingPage: CaseIterable {
-//        case welcome
-//        case trackProgress
-//        case stayConnected
+//        case shipFast
+//        case components
+//        case modular
+//        case launch
 //        // To add a new page, simply add a case and implement the three computed properties
 //    }
 //
@@ -57,6 +58,7 @@ struct SWOnboardingView: View {
                         Spacer()
                     }
                     .tag(index)
+                    .padding(.horizontal)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
@@ -84,39 +86,43 @@ struct SWOnboardingView: View {
                 Text("Skip")
                     .foregroundStyle(.secondary)
             }
-            .opacity(currentPage < pages.count - 1 ? 1 : 0)
+            .opacity(currentPage < pages.count - 1 ? 0 : 1)
         }
-        .padding(.horizontal)
+        .safeAreaPadding(.horizontal)
     }
 }
 
 // MARK: - Onboarding Page Model
 enum OnboardingPage: CaseIterable {
-    case welcome
-    case trackProgress
-    case stayConnected
+    case shipFast
+    case components
+    case modular
+    case launch
 
     var icon: String {
         switch self {
-        case .welcome: "hand.wave"
-        case .trackProgress: "chart.line.uptrend.xyaxis"
-        case .stayConnected: "person.2"
+        case .shipFast: "shippingbox.fill"
+        case .components: "square.grid.2x2.fill"
+        case .modular: "puzzlepiece.extension.fill"
+        case .launch: "paperplane.fill"
         }
     }
 
     var title: String {
         switch self {
-        case .welcome: "Welcome"
-        case .trackProgress: "Track Progress"
-        case .stayConnected: "Stay Connected"
+        case .shipFast: "Ship Faster"
+        case .components: "50+ Components"
+        case .modular: "Plug & Play"
+        case .launch: "Idea to App Store"
         }
     }
 
     var description: String {
         switch self {
-        case .welcome: "Get started with our app"
-        case .trackProgress: "Monitor your daily activities"
-        case .stayConnected: "Share with friends and family"
+        case .shipFast: "Build production-ready iOS apps in days, not months."
+        case .components: "Charts, animations, camera, auth, paywall — all ready to use."
+        case .modular: "Every component is self-contained. Drop it in and it just works."
+        case .launch: "Stop rebuilding the basics. Focus on what makes your app unique."
         }
     }
 }
