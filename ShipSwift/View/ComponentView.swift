@@ -652,15 +652,52 @@ struct ComponentView: View {
 
                     // 旋转名言组件 — 自动轮播名人名言
                     NavigationLink {
-                        SWRotatingQuote(
-                            quotes: [
-                                "Those times when you get up early, and you work hard, those times when you stay up late, and you work hard.",
-                                "Those times when you don't feel like working, you're too tired, you don't want to push yourself, but you do it anyway.",
-                                "That is actually the dream. It's not the destination, it's the journey."
-                            ],
-                            author: "Kobe Bryant"
-                        )
-                        .padding()
+                        ScrollView {
+                            VStack(spacing: 32) {
+                                // Multiple quotes rotation
+                                SWRotatingQuote(
+                                    quotes: [
+                                        "Those times when you get up early, and you work hard, those times when you stay up late, and you work hard.",
+                                        "Those times when you don't feel like working, you're too tired, you don't want to push yourself, but you do it anyway.",
+                                        "That is actually the dream. It's not the destination, it's the journey."
+                                    ],
+                                    author: "Kobe Bryant"
+                                )
+                                .frame(height: 140)
+
+                                Divider()
+
+                                // Single quote (no rotation)
+                                SWRotatingQuote(
+                                    quotes: [
+                                        "Stay hungry, stay foolish."
+                                    ],
+                                    author: "Steve Jobs",
+                                    quoteFont: .title3,
+                                    authorFont: .title2
+                                )
+                                .frame(height: 100)
+
+                                Divider()
+
+                                // Custom style (serif, faster rotation)
+                                SWRotatingQuote(
+                                    quotes: [
+                                        "The only way to do great work is to love what you do.",
+                                        "Innovation distinguishes between a leader and a follower.",
+                                        "Your time is limited, don't waste it living someone else's life."
+                                    ],
+                                    author: "Steve Jobs",
+                                    interval: 3.0,
+                                    quoteFont: .body,
+                                    authorFont: .callout,
+                                    fontDesign: .serif,
+                                    foregroundStyle: .primary
+                                )
+                                .frame(height: 120)
+                            }
+                            .padding()
+                        }
                     } label: {
                         ListItem(
                             title: "Rotating Quote",
