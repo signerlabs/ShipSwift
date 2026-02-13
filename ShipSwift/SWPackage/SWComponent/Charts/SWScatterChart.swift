@@ -201,77 +201,65 @@ extension SWScatterChart where CategoryType == String {
 
 // MARK: - Preview
 
-#Preview("Basic Scatter Chart") {
-    // Sample data: simulated teeth and food scan records
-    let calendar = Calendar.current
-    let today = calendar.startOfDay(for: Date())
+#Preview {
+    ScrollView {
+        VStack(spacing: 32) {
+            // Example 1: Basic scatter chart
+            Group {
+                let calendar = Calendar.current
+                let today = calendar.startOfDay(for: Date())
 
-    let sampleData: [SWScatterChart<String>.DataPoint] = [
-        // Today's data
-        .init(date: calendar.date(byAdding: .hour, value: 8, to: today)!, value: 85, category: "Teeth"),
-        .init(date: calendar.date(byAdding: .hour, value: 12, to: today)!, value: 52, category: "Food"),
-        .init(date: calendar.date(byAdding: .hour, value: 18, to: today)!, value: 78, category: "Food"),
-        // Yesterday's data
-        .init(date: calendar.date(byAdding: .day, value: -1, to: today)!, value: 72, category: "Teeth"),
-        .init(date: calendar.date(byAdding: .hour, value: -18, to: today)!, value: 65, category: "Food"),
-        // Day before yesterday's data
-        .init(date: calendar.date(byAdding: .day, value: -2, to: today)!, value: 90, category: "Teeth"),
-        // 3 days ago
-        .init(date: calendar.date(byAdding: .day, value: -3, to: today)!, value: 45, category: "Food"),
-        .init(date: calendar.date(byAdding: .day, value: -3, to: today)!, value: 88, category: "Teeth"),
-    ]
+                let sampleData: [SWScatterChart<String>.DataPoint] = [
+                    .init(date: calendar.date(byAdding: .hour, value: 8, to: today)!, value: 85, category: "Teeth"),
+                    .init(date: calendar.date(byAdding: .hour, value: 12, to: today)!, value: 52, category: "Food"),
+                    .init(date: calendar.date(byAdding: .hour, value: 18, to: today)!, value: 78, category: "Food"),
+                    .init(date: calendar.date(byAdding: .day, value: -1, to: today)!, value: 72, category: "Teeth"),
+                    .init(date: calendar.date(byAdding: .hour, value: -18, to: today)!, value: 65, category: "Food"),
+                    .init(date: calendar.date(byAdding: .day, value: -2, to: today)!, value: 90, category: "Teeth"),
+                    .init(date: calendar.date(byAdding: .day, value: -3, to: today)!, value: 45, category: "Food"),
+                    .init(date: calendar.date(byAdding: .day, value: -3, to: today)!, value: 88, category: "Teeth"),
+                ]
 
-    let colorMapping: [String: Color] = [
-        "Teeth": .blue,
-        "Food": .orange
-    ]
+                SWScatterChart(
+                    dataPoints: sampleData,
+                    colorMapping: ["Teeth": .blue, "Food": .orange],
+                    title: "Scan Trends"
+                )
+            }
 
-    SWScatterChart(
-        dataPoints: sampleData,
-        colorMapping: colorMapping,
-        title: "Scan Trends"
-    )
-    .padding()
-}
+            Divider()
 
-#Preview("Custom Y Domain") {
-    let calendar = Calendar.current
-    let today = calendar.startOfDay(for: Date())
+            // Example 2: Custom Y domain
+            Group {
+                let calendar = Calendar.current
+                let today = calendar.startOfDay(for: Date())
 
-    let temperatureData: [SWScatterChart<String>.DataPoint] = [
-        .init(date: calendar.date(byAdding: .hour, value: 6, to: today)!, value: 36.2, category: "Morning"),
-        .init(date: calendar.date(byAdding: .hour, value: 12, to: today)!, value: 36.8, category: "Noon"),
-        .init(date: calendar.date(byAdding: .hour, value: 20, to: today)!, value: 37.1, category: "Evening"),
-        .init(date: calendar.date(byAdding: .day, value: -1, to: today)!, value: 36.5, category: "Morning"),
-    ]
+                let temperatureData: [SWScatterChart<String>.DataPoint] = [
+                    .init(date: calendar.date(byAdding: .hour, value: 6, to: today)!, value: 36.2, category: "Morning"),
+                    .init(date: calendar.date(byAdding: .hour, value: 12, to: today)!, value: 36.8, category: "Noon"),
+                    .init(date: calendar.date(byAdding: .hour, value: 20, to: today)!, value: 37.1, category: "Evening"),
+                    .init(date: calendar.date(byAdding: .day, value: -1, to: today)!, value: 36.5, category: "Morning"),
+                ]
 
-    let colorMapping: [String: Color] = [
-        "Morning": .cyan,
-        "Noon": .yellow,
-        "Evening": .purple
-    ]
+                SWScatterChart(
+                    dataPoints: temperatureData,
+                    colorMapping: ["Morning": .cyan, "Noon": .yellow, "Evening": .purple],
+                    yDomain: 35...40,
+                    visibleDays: 5,
+                    chartHeight: 200,
+                    title: "Body Temperature"
+                )
+            }
 
-    SWScatterChart(
-        dataPoints: temperatureData,
-        colorMapping: colorMapping,
-        yDomain: 35...40,
-        visibleDays: 5,
-        chartHeight: 200,
-        title: "Body Temperature"
-    )
-    .padding()
-}
+            Divider()
 
-#Preview("Empty State") {
-    let colorMapping: [String: Color] = [
-        "Type A": .blue,
-        "Type B": .green
-    ]
-
-    SWScatterChart<String>(
-        dataPoints: [],
-        colorMapping: colorMapping,
-        title: "No Data Yet"
-    )
-    .padding()
+            // Example 3: Empty state
+            SWScatterChart<String>(
+                dataPoints: [],
+                colorMapping: ["Type A": .blue, "Type B": .green],
+                title: "No Data Yet"
+            )
+        }
+        .padding()
+    }
 }

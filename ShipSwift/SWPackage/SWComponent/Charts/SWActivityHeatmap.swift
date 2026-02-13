@@ -465,7 +465,7 @@ enum SWActivityHeatmap {
 
 // MARK: - Preview
 
-#Preview("Full Example") {
+#Preview {
     // Sample data: random check-ins over the past 60 days
     let timestamps: [Date] = {
         var dates: [Date] = []
@@ -490,8 +490,8 @@ enum SWActivityHeatmap {
 
     NavigationStack {
         Form {
-            // Streak card
-            Section {
+            // Section 1: Full example with data
+            Section("With Data") {
                 SWActivityHeatmap.StreakCard(
                     streaks: timestamps,
                     colors: [.blue, .purple]
@@ -499,7 +499,6 @@ enum SWActivityHeatmap {
             }
             .listRowInsets(EdgeInsets())
 
-            // Heatmap
             Section {
                 SWActivityHeatmap.HeatmapGrid(
                     timestamps: timestamps,
@@ -513,15 +512,9 @@ enum SWActivityHeatmap {
                     baseColor: .green
                 )
             }
-        }
-        .navigationTitle("Activity")
-    }
-}
 
-#Preview("Empty Data") {
-    NavigationStack {
-        Form {
-            Section {
+            // Section 2: Empty state
+            Section("Empty Data") {
                 SWActivityHeatmap.StreakCard(
                     streaks: [],
                     colors: [.orange, .red]
@@ -535,7 +528,7 @@ enum SWActivityHeatmap {
                     baseColor: .blue
                 )
             } header: {
-                Text("Past 60 days")
+                Text("Empty heatmap")
             } footer: {
                 SWActivityHeatmap.HeatmapLegend(
                     baseColor: .blue
