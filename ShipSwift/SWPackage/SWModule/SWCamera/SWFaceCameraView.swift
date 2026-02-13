@@ -54,6 +54,7 @@ struct SWFaceCameraView: View {
     /// Landmark color scheme
     var landmarkColors: SWFaceLandmarkColors = .default
 
+    @Environment(\.dismiss) private var dismiss
     @State private var cameraManager = SWCameraManager(position: .front)
     @State private var isCapturing = false
     @State private var showLandmarks = true
@@ -64,31 +65,23 @@ struct SWFaceCameraView: View {
                 ZStack {
                     Color.black.ignoresSafeArea()
 
-                    VStack(spacing: 0) {
-                        Spacer()
+                    // 相机预览（纵向居中）
+                    GeometryReader { geometry in
+                        let previewWidth = geometry.size.width
+                        let previewHeight = previewWidth * 4 / 3
 
-                        // 3:4 比例相机预览
-                        GeometryReader { geometry in
-                            let previewWidth = geometry.size.width
-                            let previewHeight = previewWidth * 4 / 3
-
-                            SWFaceCameraPreview(session: cameraManager.session)
-                                .frame(width: previewWidth, height: previewHeight)
-                                .clipped()
-                                .overlay {
-                                    if showLandmarks {
-                                        SWFaceTrackingOverlay(
-                                            landmarks: cameraManager.faceLandmarks,
-                                            colors: landmarkColors
-                                        )
-                                    }
+                        SWFaceCameraPreview(session: cameraManager.session)
+                            .frame(width: previewWidth, height: previewHeight)
+                            .clipped()
+                            .overlay {
+                                if showLandmarks {
+                                    SWFaceTrackingOverlay(
+                                        landmarks: cameraManager.faceLandmarks,
+                                        colors: landmarkColors
+                                    )
                                 }
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        }
-
-                        Spacer()
-
-                        controlBar
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                     .onAppear {
                         cameraManager.faceTrackingEnabled = true
@@ -97,6 +90,29 @@ struct SWFaceCameraView: View {
                     .onDisappear {
                         cameraManager.faceTrackingEnabled = false
                         cameraManager.stopSession()
+                    }
+
+                    // 底部控制栏
+                    VStack {
+                        Spacer()
+                        controlBar
+                    }
+
+                    // 左上角关闭按钮
+                    VStack {
+                        HStack {
+                            Button { dismiss() } label: {
+                                Image(systemName: "xmark")
+                                    .font(.title3)
+                                    .foregroundStyle(.white)
+                                    .frame(width: 44, height: 44)
+                                    .background(.black.opacity(0.4), in: Circle())
+                            }
+                            Spacer()
+                        }
+                        .padding(.leading, 16)
+                        .padding(.top, 8)
+                        Spacer()
                     }
                 }
             } else {

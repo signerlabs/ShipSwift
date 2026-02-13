@@ -13,6 +13,8 @@ struct ModuleView: View {
     @State private var showAuthDemo = false
     @State private var showCameraDemo = false
     @State private var showFaceCameraDemo = false
+    @State private var showPaywall = false
+    @State private var showChatDemo = false
 
     var body: some View {
         NavigationStack {
@@ -47,6 +49,28 @@ struct ModuleView: View {
                         title: "Face Camera",
                         icon: "face.smiling.inverse",
                         description: "Camera with real-time Vision face landmark detection, front/back switching, landmark overlay toggle, and configurable color schemes."
+                    )
+                }
+
+                // Paywall demo — sheet 方式展示 SWPaywall 模块
+                Button {
+                    showPaywall = true
+                } label: {
+                    ListItem(
+                        title: "Paywall",
+                        icon: "creditcard.fill",
+                        description: "Subscription paywall with monthly/yearly options, feature list, restore purchases, redeem code, and policy links."
+                    )
+                }
+
+                // Chat demo — fullScreenCover 方式展示 SWChat 模块
+                Button {
+                    showChatDemo = true
+                } label: {
+                    ListItem(
+                        title: "Chat",
+                        icon: "bubble.left.and.bubble.right.fill",
+                        description: "Chat interface with message bubbles, text input, voice recording waveform, and simple echo response simulation."
                     )
                 }
 
@@ -931,28 +955,10 @@ private struct SWAuthDemoView: View {
 
 // MARK: - Face Camera Demo View (Real Camera with Face Tracking)
 
-/// Face Camera demo with Vision face landmark detection overlay.
-/// Wraps SWFaceCameraView with a close button (top-left) since SWFaceCameraView
-/// is designed to be embedded and does not include its own dismiss logic.
+/// SWFaceCameraView 自带关闭按钮，直接展示即可。
 private struct SWFaceCameraDemoView: View {
-    @Environment(\.dismiss) private var dismiss
-
     var body: some View {
-        SWFaceCameraView { _ in
-            // Photo captured — dismiss without processing
-            dismiss()
-        }
-        .overlay(alignment: .topLeading) {
-            Button { dismiss() } label: {
-                Image(systemName: "xmark")
-                    .font(.title3)
-                    .foregroundStyle(.white)
-                    .frame(width: 44, height: 44)
-                    .background(.black.opacity(0.4), in: Circle())
-            }
-            .padding(.leading, 16)
-            .padding(.top, 8)
-        }
+        SWFaceCameraView()
     }
 }
 

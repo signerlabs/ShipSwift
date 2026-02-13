@@ -52,35 +52,33 @@ struct SWCameraView: View {
                 ZStack {
                     Color.black.ignoresSafeArea()
 
-                    VStack(spacing: 0) {
-                        Spacer()
+                    // 相机预览（纵向居中）
+                    GeometryReader { geometry in
+                        let previewWidth = geometry.size.width
+                        let previewHeight = previewWidth * 4 / 3
 
-                        // 3:4 比例相机预览
-                        GeometryReader { geometry in
-                            let previewWidth = geometry.size.width
-                            let previewHeight = previewWidth * 4 / 3
-
-                            SWCameraPreview(session: cameraManager.session)
-                                .frame(width: previewWidth, height: previewHeight)
-                                .clipped()
-                                .overlay(alignment: .bottom) {
-                                    zoomControl
-                                }
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        }
-                        .gesture(pinchGesture)
-
-                        Spacer()
-
-                        controlBar
+                        SWCameraPreview(session: cameraManager.session)
+                            .frame(width: previewWidth, height: previewHeight)
+                            .clipped()
+                            .overlay(alignment: .bottom) {
+                                zoomControl
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
+                    .gesture(pinchGesture)
                     .onAppear {
                         cameraManager.onError = { SWAlertManager.shared.show(.error, message: $0) }
                         cameraManager.startSession()
                     }
                     .onDisappear { cameraManager.stopSession() }
 
-                    // 左上角关闭按钮（overlay 不占布局空间）
+                    // 底部控制栏
+                    VStack {
+                        Spacer()
+                        controlBar
+                    }
+
+                    // 左上角关闭按钮
                     VStack {
                         HStack {
                             Button { dismiss() } label: {
