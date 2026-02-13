@@ -142,7 +142,7 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
     /// Title (optional)
     var title: String? = nil
 
-    /// 动画进度（0 到 1），控制遮罩宽度，实现折线从左到右逐步揭露的效果
+    /// Animation progress (0 to 1), Y values multiply by this to animate from 0 to target
     @State private var animationProgress: Double = 0
 
     // MARK: - Computed Properties
@@ -164,12 +164,11 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
         return startDate...endDate
     }
 
-    /// Chart initial scroll position: center today in the visible range
+    /// Chart initial scroll position: latest data at right edge
     private var chartInitialScrollDate: Date {
         let calendar = Calendar.current
         let startOfToday = calendar.startOfDay(for: Date())
-        let offset = visibleDays / 2
-        return calendar.date(byAdding: .day, value: -offset, to: startOfToday)!
+        return calendar.date(byAdding: .day, value: -visibleDays, to: startOfToday)!
     }
 
     /// Visible range time length (seconds)
@@ -188,13 +187,12 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
                     .fontWeight(.semibold)
             }
 
-            // Chart（通过 chartPlotStyle 内的 mask 遮罩仅对绘图区域实现从左到右逐步揭露）
+            // Chart
             Chart {
-                // 数据系列（始终渲染全部数据点，由外层 mask 控制可见范围）
                 ForEach(dataPoints) { point in
                     LineMark(
                         x: .value("Date", point.date),
-                        y: .value("Value", point.value)
+                        y: .value("Value", point.value * animationProgress)
                     )
                     .foregroundStyle(by: .value("Category", point.category))
                     .interpolationMethod(interpolationMethod)
@@ -203,16 +201,15 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
                     if showPointMarkers {
                         PointMark(
                             x: .value("Date", point.date),
-                            y: .value("Value", point.value)
+                            y: .value("Value", point.value * animationProgress)
                         )
                         .foregroundStyle(by: .value("Category", point.category))
                         .symbolSize(30)
                     }
                 }
 
-                // 参考线（RuleMark），始终显示，不参与日期轴动画
                 ForEach(Array(referenceLines.enumerated()), id: \.offset) { _, line in
-                    RuleMark(y: .value("Reference", line.value))
+                    RuleMark(y: .value("Reference", line.value * animationProgress))
                         .foregroundStyle(line.color)
                         .lineStyle(line.style)
                         .annotation(position: .top, alignment: .leading) {
@@ -246,18 +243,6 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
                 }
             }
             .chartLegend(position: .top, alignment: .trailing)
-            // 用 chartPlotStyle 将 mask 只应用到绘图区域（plot area），
-            // 不遮挡坐标轴、标签、标题、Legend 等外围元素
-            .chartPlotStyle { plotArea in
-                plotArea
-                    .mask(
-                        GeometryReader { geo in
-                            Rectangle()
-                                .frame(width: geo.size.width * animationProgress)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                    )
-            }
             .frame(height: chartHeight)
             .onAppear {
                 withAnimation(.easeOut(duration: 1.2).delay(0.2)) {
