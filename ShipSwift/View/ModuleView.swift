@@ -20,7 +20,7 @@ struct ModuleView: View {
                     ListItem(
                         title: "Auth",
                         icon: "person.badge.key.fill",
-                        description: "Complete auth flow: email sign-in/up, verification code, forgot/reset password, Apple & Google social sign-in."
+                        description: "Complete auth flow: email sign-in/up, phone sign-in with country code picker, verification code, forgot/reset password, Apple & Google social sign-in."
                     )
                 }
 
@@ -65,6 +65,8 @@ private struct SWAuthDemoView: View {
         case verifyEmail
         case forgotPassword
         case resetPassword
+        case phoneSignIn
+        case phoneVerify
     }
 
     // MARK: - State
@@ -86,6 +88,14 @@ private struct SWAuthDemoView: View {
     @State private var newPassword = ""
     @State private var confirmNewPassword = ""
 
+    // Phone sign-in
+    @State private var phoneNumber = ""
+    @State private var countryCode = "+1"
+    @State private var showingCountryPicker = false
+    @State private var countrySearchText = ""
+    @State private var phoneVerificationCode = ""
+    @FocusState private var isPhoneCodeFocused: Bool
+
     // Agreement
     @State private var agreementChecked = false
 
@@ -102,6 +112,12 @@ private struct SWAuthDemoView: View {
     private var isValidResetCode: Bool { resetCode.count == 6 }
     private var isValidNewPassword: Bool { newPassword.count >= 8 }
     private var newPasswordsMatch: Bool { newPassword == confirmNewPassword && isValidNewPassword }
+    private var isValidPhone: Bool {
+        let expectedLength = SWCountryData.phoneLength(for: countryCode)
+        return expectedLength.contains(phoneNumber.count)
+    }
+    private var isValidPhoneCode: Bool { phoneVerificationCode.count == 6 }
+    private var fullPhoneNumber: String { "\(countryCode)\(phoneNumber)" }
 
     // MARK: - Body
 
@@ -141,11 +157,18 @@ private struct SWAuthDemoView: View {
                     forgotPasswordSection
                 case .resetPassword:
                     resetPasswordSection
+                case .phoneSignIn:
+                    phoneSignInSection
+                case .phoneVerify:
+                    phoneVerifySection
                 }
             }
             .padding()
         }
         .scrollDismissesKeyboard(.interactively)
+        .sheet(isPresented: $showingCountryPicker) {
+            countryCodePicker
+        }
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -158,6 +181,8 @@ private struct SWAuthDemoView: View {
         case .verifyEmail:    return "Verify Email"
         case .forgotPassword: return "Forgot Password"
         case .resetPassword:  return "Reset Password"
+        case .phoneSignIn:    return "Phone Sign In"
+        case .phoneVerify:    return "Verify Phone"
         }
     }
 
@@ -168,6 +193,8 @@ private struct SWAuthDemoView: View {
         case .verifyEmail:    return "Enter the 6-digit code sent to \(email.isEmpty ? "your email" : email)"
         case .forgotPassword: return "Enter your email to receive a reset code"
         case .resetPassword:  return "Enter the code and your new password"
+        case .phoneSignIn:    return "Sign in with your phone number"
+        case .phoneVerify:    return "Enter the 6-digit code sent to \(fullPhoneNumber)"
         }
     }
 
@@ -294,6 +321,17 @@ private struct SWAuthDemoView: View {
                      : "Don't have an account? Sign Up")
                     .font(.subheadline)
                     .foregroundStyle(Color.accentColor)
+            }
+
+            // Switch to phone sign-in (sign-in mode only)
+            if viewMode == .signIn {
+                Button {
+                    withAnimation { viewMode = .phoneSignIn }
+                } label: {
+                    Text("Sign in with phone number")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.accentColor)
+                }
             }
         }
         .padding(.vertical)
@@ -592,6 +630,203 @@ private struct SWAuthDemoView: View {
 
             // Agreement checker
             SWAgreementChecker(agreementChecked: $agreementChecked)
+        }
+    }
+
+    // MARK: - Phone Sign-In Section
+
+    @ViewBuilder
+    private var phoneSignInSection: some View {
+        VStack(spacing: 16) {
+            // Country code + phone number input
+            HStack(spacing: 8) {
+                // Country code selector button
+                Button {
+                    showingCountryPicker = true
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(SWCountryData.flag(for: countryCode))
+                        Text(countryCode)
+                        Image(systemName: "chevron.down")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 14)
+                    .background(.accent.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+
+                // Phone number input
+                TextField("Phone Number", text: $phoneNumber)
+                    .keyboardType(.phonePad)
+                    .textContentType(.telephoneNumber)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+                    .background(.accent.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .onChange(of: phoneNumber) { _, newValue in
+                        let cleaned = newValue.replacingOccurrences(of: " ", with: "")
+                        if cleaned != newValue {
+                            phoneNumber = cleaned
+                        }
+                    }
+            }
+
+            // Send verification code button
+            Button {
+                simulateAction {
+                    SWAlertManager.shared.show(.success, message: "Demo: Code sent to \(fullPhoneNumber)")
+                    withAnimation { viewMode = .phoneVerify }
+                }
+            } label: {
+                HStack {
+                    if isLoading {
+                        ProgressView()
+                            .tint(.white)
+                    }
+                    Text(isLoading ? "Sending..." : "Send Verification Code")
+                }
+            }
+            .buttonStyle(.swPrimary)
+            .disabled(!isValidPhone || isLoading)
+
+            // Switch to email sign-in
+            Button {
+                withAnimation { viewMode = .signIn }
+            } label: {
+                Text("Sign in with email instead")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.accentColor)
+            }
+
+            // Social sign-in area
+            socialSignInSection
+        }
+        .padding(.vertical)
+    }
+
+    // MARK: - Phone Verify Section
+
+    @ViewBuilder
+    private var phoneVerifySection: some View {
+        VStack(spacing: 16) {
+            // 6-digit verification code input
+            TextField("000000", text: $phoneVerificationCode)
+                .keyboardType(.numberPad)
+                .textContentType(.oneTimeCode)
+                .focused($isPhoneCodeFocused)
+                .multilineTextAlignment(.center)
+                .font(.title2.monospacedDigit())
+                .padding(.vertical, 16)
+                .background(.accent.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .onChange(of: phoneVerificationCode) { _, newValue in
+                    phoneVerificationCode = String(newValue.filter(\.isNumber).prefix(6))
+                }
+
+            // Verify button
+            Button {
+                simulateAction {
+                    SWAlertManager.shared.show(.success, message: "Demo: Phone verified successfully")
+                    withAnimation { viewMode = .signIn }
+                    phoneVerificationCode = ""
+                }
+            } label: {
+                HStack {
+                    if isLoading {
+                        ProgressView()
+                            .tint(.white)
+                    }
+                    Text(isLoading ? "Verifying..." : "Verify Phone")
+                }
+            }
+            .buttonStyle(.swPrimary)
+            .disabled(!isValidPhoneCode || isLoading)
+
+            // Resend code
+            Button {
+                SWAlertManager.shared.show(.info, message: "Demo: Verification code resent to \(fullPhoneNumber)")
+            } label: {
+                Text("Resend Code")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.accentColor)
+            }
+
+            // Back to phone sign-in
+            Button {
+                withAnimation {
+                    viewMode = .phoneSignIn
+                    phoneVerificationCode = ""
+                }
+            } label: {
+                Text("Back")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical)
+        .task {
+            try? await Task.sleep(for: .milliseconds(300))
+            isPhoneCodeFocused = true
+        }
+    }
+
+    // MARK: - Country Code Picker
+
+    private var countryCodePicker: some View {
+        let filteredCountries: [SWCountry] = countrySearchText.isEmpty
+            ? SWCountryData.allCountries
+            : SWCountryData.allCountries.filter {
+                $0.name.localizedCaseInsensitiveContains(countrySearchText) ||
+                $0.code.contains(countrySearchText)
+            }
+        let groupedCountries = Dictionary(grouping: filteredCountries) { country in
+            String(country.name.prefix(1)).uppercased()
+        }.sorted { $0.key < $1.key }
+
+        return NavigationStack {
+            List {
+                ForEach(groupedCountries, id: \.key) { letter, countries in
+                    Section(header: Text(letter)) {
+                        ForEach(countries, id: \.name) { country in
+                            Button {
+                                countryCode = country.code
+                                countrySearchText = ""
+                                showingCountryPicker = false
+                            } label: {
+                                HStack {
+                                    Text(country.flag)
+                                        .font(.title2)
+                                    HStack(spacing: 8) {
+                                        Text(country.name)
+                                            .foregroundStyle(.primary)
+                                        Text(country.code)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    if countryCode == country.code {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(Color.accentColor)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .searchable(text: $countrySearchText, prompt: "Search")
+            .tint(.primary)
+            .navigationTitle("Select Country")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        countrySearchText = ""
+                        showingCountryPicker = false
+                    }
+                }
+            }
         }
     }
 

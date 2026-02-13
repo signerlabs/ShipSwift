@@ -361,6 +361,23 @@ final class SWUserManager {
         sessionState = .signedOut()
     }
 
+    // MARK: - Phone Authentication
+
+    /// Send phone verification code
+    func sendPhoneVerificationCode(phoneNumber: String) async throws {
+        isAuthenticating = true
+        defer { isAuthenticating = false }
+        try await authService.sendPhoneVerificationCode(phoneNumber: phoneNumber)
+    }
+
+    /// Confirm phone sign-in with verification code
+    func confirmPhoneSignIn(phoneNumber: String, code: String) async throws {
+        isAuthenticating = true
+        defer { isAuthenticating = false }
+        let tokens = try await authService.confirmPhoneSignIn(phoneNumber: phoneNumber, code: code)
+        sessionState = .ready(tokens: tokens)
+    }
+
     // MARK: - Password Reset
 
     /// Forgot password
@@ -674,6 +691,34 @@ actor SWAuthService {
         } catch {
             return false
         }
+    }
+
+    // MARK: - Phone Authentication
+
+    /// Send verification code to phone number via custom auth flow
+    func sendPhoneVerificationCode(phoneNumber: String) async throws {
+        // Sign out any existing session first to start fresh
+        if await isSignedIn() {
+            await signOut()
+        }
+
+        let result = try await Amplify.Auth.signIn(username: phoneNumber)
+        // Cognito custom auth flow sends verification code automatically
+        guard case .confirmSignInWithCustomChallenge = result.nextStep else {
+            if result.isSignedIn {
+                return // Already signed in
+            }
+            throw SWServiceError.invalidState
+        }
+    }
+
+    /// Confirm phone sign-in with verification code
+    func confirmPhoneSignIn(phoneNumber: String, code: String) async throws -> SWAuthTokens {
+        let result = try await Amplify.Auth.confirmSignIn(challengeResponse: code)
+        guard result.isSignedIn else {
+            throw SWServiceError.notSignedIn
+        }
+        return try await fetchTokens()
     }
 
     // MARK: - Password Reset
