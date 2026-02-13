@@ -75,7 +75,7 @@ struct SWPaywallView: View {
     @ViewBuilder
     private var paywallContent: some View {
         VStack(spacing: 20) {
-            SWShakingIcon()
+            SWShakingIcon(image: Image(systemName: "apple.logo"))
 
             Text(storeManager.config.title)
                 .font(.largeTitle)

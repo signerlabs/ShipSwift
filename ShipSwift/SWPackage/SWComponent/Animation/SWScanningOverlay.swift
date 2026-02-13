@@ -211,18 +211,22 @@ struct SWScanningOverlay<Content: View>: View {
 #Preview("Basic Usage") {
     VStack(spacing: 20) {
         SWScanningOverlay {
-            Color.blue
-                .frame(width: 300, height: 200)
+            Image(.facePicture)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 180)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
         }
 
         SWScanningOverlay(
-            gridOpacity: 0.3,
-            bandOpacity: 0.5,
+            gridOpacity: 0.1,
+            bandOpacity: 0.1,
             speed: 3.0
         ) {
-            Color.purple
-                .frame(width: 300, height: 200)
+            Image(.facePicture)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 200)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }

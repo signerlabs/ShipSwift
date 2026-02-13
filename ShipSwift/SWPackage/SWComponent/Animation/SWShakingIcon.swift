@@ -8,26 +8,23 @@
 //  -> three shake pairs (left/right) -> zoom out, then repeats.
 //
 //  Usage:
-//    // Default SF Symbol ("apple.logo", 80pt)
-//    SWShakingIcon()
+//    // SF Symbol
+//    SWShakingIcon(image: Image(systemName: "bell.fill"))
 //
-//    // Custom SF Symbol
-//    SWShakingIcon(systemName: "bell.fill")
+//    // Asset image (automatically gets corner radius)
+//    SWShakingIcon(image: Image(.myLogo), height: 100, cornerRadius: 16)
 //
-//    // Custom size and timing
+//    // Custom timing
 //    SWShakingIcon(
-//        systemName: "heart.fill",
+//        image: Image(systemName: "heart.fill"),
 //        height: 120,
 //        idleDelay: 2.0    // seconds before each shake cycle, default 1.5
 //    )
 //
-//    // Asset image instead of SF Symbol
-//    SWShakingIcon(imageName: "custom-logo", height: 100)
-//
 //  Parameters:
-//    - systemName: SF Symbol name (default "apple.logo", ignored if imageName is set)
-//    - imageName: Asset image name (takes priority over systemName)
+//    - image: Image to display (SF Symbol or asset)
 //    - height: Icon height in points (default 80)
+//    - cornerRadius: Corner radius for asset images (default 0, no rounding)
 //    - idleDelay: Pause before each shake cycle in seconds (default 1.5)
 //
 //  Created by Wei Zhong on 3/1/26.
@@ -36,12 +33,12 @@
 import SwiftUI
 
 struct SWShakingIcon: View {
-    /// SF Symbol name, used when `imageName` is nil
-    var systemName: String = "apple.logo"
-    /// Asset image name; when set, takes priority over `systemName`
-    var imageName: String? = nil
+    /// Image to display (SF Symbol or asset image)
+    let image: Image
     /// Icon height in points
     var height: CGFloat = 80
+    /// Corner radius for asset images (0 = no rounding)
+    var cornerRadius: CGFloat = 0
     /// Pause duration before each shake cycle (seconds)
     var idleDelay: Double = 1.5
 
@@ -75,8 +72,11 @@ struct SWShakingIcon: View {
 
     var body: some View {
         PhaseAnimator(ShakePhase.allCases) { phase in
-            iconImage
+            image
+                .resizable()
+                .scaledToFit()
                 .frame(height: height)
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                 .scaleEffect(phase.scale)
                 .rotationEffect(.degrees(phase.rotation))
         } animation: { phase in
@@ -90,30 +90,13 @@ struct SWShakingIcon: View {
         }
     }
 
-    @ViewBuilder
-    private var iconImage: some View {
-        if let imageName {
-            Image(imageName)
-                .resizable()
-                .scaledToFit()
-        } else {
-            Image(systemName: systemName)
-                .resizable()
-                .scaledToFit()
-        }
-    }
 }
 
 // MARK: - Preview
 
-#Preview("Default") {
-    SWShakingIcon()
-}
-
-#Preview("Custom Icon") {
-    SWShakingIcon(systemName: "bell.fill", height: 100)
-}
-
-#Preview("Slow Shake") {
-    SWShakingIcon(systemName: "heart.fill", idleDelay: 3.0)
+#Preview {
+    VStack(spacing: 40) {
+        SWShakingIcon(image: Image(systemName: "apple.logo"), height: 20)
+        SWShakingIcon(image: Image(.smileAfter), height: 100, cornerRadius: 8)
+    }
 }
