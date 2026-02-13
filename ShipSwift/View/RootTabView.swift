@@ -8,10 +8,21 @@
 import SwiftUI
 
 struct RootTabView: View {
-    @State private var selectedTab = "animation"
+    @State private var selectedTab = "modules"
 
     var body: some View {
         TabView(selection: $selectedTab) {
+            Tab(value: "modules") {
+                ModuleView()
+            } label: {
+                Label {
+                    Text("Modules")
+                } icon: {
+                    Image(systemName: selectedTab == "modules" ? "puzzlepiece.extension.fill" : "puzzlepiece.extension")
+                }
+                .environment(\.symbolVariants, .none)
+            }
+
             Tab(value: "animation") {
                 AnimationView()
             } label: {
@@ -41,17 +52,6 @@ struct RootTabView: View {
                     Text("Components")
                 } icon: {
                     Image(systemName: selectedTab == "components" ? "square.grid.2x2.fill" : "square.grid.2x2")
-                }
-                .environment(\.symbolVariants, .none)
-            }
-
-            Tab(value: "modules") {
-                ModuleView()
-            } label: {
-                Label {
-                    Text("Modules")
-                } icon: {
-                    Image(systemName: selectedTab == "modules" ? "puzzlepiece.extension.fill" : "puzzlepiece.extension")
                 }
                 .environment(\.symbolVariants, .none)
             }
