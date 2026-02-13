@@ -49,7 +49,8 @@ struct SWRootTabView: View {
             Tab(value: "home") {
                 NavigationStack {
                     ScrollView {
-                        Text("Home View")
+                        ContentUnavailableView("Home", systemImage: "house.fill", description: Text("Your main feed and dashboard content goes here."))
+                            .containerRelativeFrame(.vertical)
                     }
                     .navigationTitle("Home")
                 }
@@ -65,7 +66,8 @@ struct SWRootTabView: View {
             Tab(value: "outfit") {
                 NavigationStack {
                     ScrollView {
-                        Text("Outfit View")
+                        ContentUnavailableView("Outfit", systemImage: "tshirt.fill", description: Text("Browse and manage your outfit collections here."))
+                            .containerRelativeFrame(.vertical)
                     }
                     .navigationTitle("Outfit")
                 }
@@ -81,7 +83,8 @@ struct SWRootTabView: View {
             Tab(value: "setting") {
                 NavigationStack {
                     ScrollView {
-                        Text("Setting View")
+                        ContentUnavailableView("Settings", systemImage: "gearshape.fill", description: Text("Adjust preferences, account, and app configuration."))
+                            .containerRelativeFrame(.vertical)
                     }
                     .navigationTitle("Setting")
                 }
