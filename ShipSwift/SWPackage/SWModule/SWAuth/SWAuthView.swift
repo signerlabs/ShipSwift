@@ -396,10 +396,9 @@ struct SWAuthView: View {
             }
         }
         .padding(.vertical)
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                isEmailCodeFocused = true
-            }
+        .task {
+            try? await Task.sleep(for: .milliseconds(300))
+            isEmailCodeFocused = true
         }
     }
 
@@ -624,7 +623,7 @@ struct SWAuthView: View {
             do {
                 try await userManager.signIn(email: email, password: password)
             } catch {
-                SWAlertManager.shared.show(.error, message: error.displayMessage)
+                SWAlertManager.shared.show(.error, message: SWAuthErrorHelper.displayMessage(for: error))
             }
         }
     }
@@ -643,7 +642,7 @@ struct SWAuthView: View {
                     viewMode = .confirmSignUp
                 }
             } catch {
-                SWAlertManager.shared.show(.error, message: error.displayMessage)
+                SWAlertManager.shared.show(.error, message: SWAuthErrorHelper.displayMessage(for: error))
             }
         }
     }
@@ -656,7 +655,7 @@ struct SWAuthView: View {
                 try await userManager.confirmSignUp(email: email, code: emailVerificationCode)
                 try await userManager.signIn(email: email, password: password)
             } catch {
-                SWAlertManager.shared.show(.error, message: error.displayMessage)
+                SWAlertManager.shared.show(.error, message: SWAuthErrorHelper.displayMessage(for: error))
             }
         }
     }
@@ -669,7 +668,7 @@ struct SWAuthView: View {
                 try await userManager.resendSignUpCode(email: email)
                 SWAlertManager.shared.show(.success, message: "Code sent to \(email)")
             } catch {
-                SWAlertManager.shared.show(.error, message: error.displayMessage)
+                SWAlertManager.shared.show(.error, message: SWAuthErrorHelper.displayMessage(for: error))
             }
         }
     }
@@ -684,7 +683,7 @@ struct SWAuthView: View {
                     viewMode = .resetPassword
                 }
             } catch {
-                SWAlertManager.shared.show(.error, message: error.displayMessage)
+                SWAlertManager.shared.show(.error, message: SWAuthErrorHelper.displayMessage(for: error))
             }
         }
     }
@@ -704,7 +703,7 @@ struct SWAuthView: View {
                     password = ""
                 }
             } catch {
-                SWAlertManager.shared.show(.error, message: error.displayMessage)
+                SWAlertManager.shared.show(.error, message: SWAuthErrorHelper.displayMessage(for: error))
             }
         }
     }
@@ -718,7 +717,7 @@ struct SWAuthView: View {
             do {
                 try await userManager.signInWithApple()
             } catch {
-                SWAlertManager.shared.show(.error, message: error.displayMessage)
+                SWAlertManager.shared.show(.error, message: SWAuthErrorHelper.displayMessage(for: error))
             }
         }
     }
@@ -732,7 +731,7 @@ struct SWAuthView: View {
             do {
                 try await userManager.signInWithGoogle()
             } catch {
-                SWAlertManager.shared.show(.error, message: error.displayMessage)
+                SWAlertManager.shared.show(.error, message: SWAuthErrorHelper.displayMessage(for: error))
             }
         }
     }
@@ -745,22 +744,25 @@ struct SWAuthView: View {
 
 // MARK: - Auth Error Localization
 
-extension Error {
-    /// User-friendly error message
-    var displayMessage: String {
-        if let authError = self as? AuthError {
-            if let cognitoError = authError.underlyingError as? AWSCognitoAuthError {
-                return cognitoError.localizedMessage
-            }
-            return authError.localizedMessage
-        }
-        return localizedDescription
-    }
-}
+/// Converts auth errors to user-friendly messages.
+/// Scoped to this file to avoid polluting the global Error namespace in consuming apps.
+private enum SWAuthErrorHelper {
 
-extension AuthError {
-    var localizedMessage: String {
-        switch self {
+    /// Returns a user-friendly message for any error thrown by Amplify Auth operations
+    static func displayMessage(for error: Error) -> String {
+        if let authError = error as? AuthError {
+            if let cognitoError = authError.underlyingError as? AWSCognitoAuthError {
+                return cognitoMessage(for: cognitoError)
+            }
+            return authMessage(for: authError)
+        }
+        return error.localizedDescription
+    }
+
+    // MARK: - AuthError Messages
+
+    private static func authMessage(for error: AuthError) -> String {
+        switch error {
         case .notAuthorized:
             return "Incorrect email or password"
         case .signedOut:
@@ -770,7 +772,7 @@ extension AuthError {
         case .configuration:
             return "App configuration error"
         case .service, .unknown, .invalidState:
-            let desc = errorDescription.lowercased()
+            let desc = error.errorDescription.lowercased()
             if desc.contains("incorrect username or password") {
                 return "Incorrect email or password"
             }
@@ -785,11 +787,11 @@ extension AuthError {
             return "Operation failed, please try again"
         }
     }
-}
 
-extension AWSCognitoAuthError {
-    var localizedMessage: String {
-        switch self {
+    // MARK: - AWSCognitoAuthError Messages
+
+    private static func cognitoMessage(for error: AWSCognitoAuthError) -> String {
+        switch error {
         case .userNotFound:
             return "This email is not registered"
         case .userNotConfirmed:

@@ -545,15 +545,11 @@ actor SWAuthService {
 
     /// Apple Sign In
     func signInWithApple(presentationAnchor: AuthUIPresentationAnchor) async throws -> SWAuthTokens {
-        #if DEBUG
-        print("🍎 [SWAuthService] signInWithApple started")
-        #endif
+        swDebugLog("🍎 [SWAuthService] signInWithApple started")
 
         // If already signed in, sign out first
         if await isSignedIn() {
-            #if DEBUG
-            print("🍎 [SWAuthService] Already signed in, signing out first...")
-            #endif
+            swDebugLog("🍎 [SWAuthService] Already signed in, signing out first...")
             await signOut()
         }
 
@@ -573,14 +569,10 @@ actor SWAuthService {
 
             return try await fetchTokens()
         } catch let error as AuthError {
-            #if DEBUG
-            print("🍎 [SWAuthService] ❌ AuthError:", error.errorDescription)
-            #endif
+            swDebugLog("🍎 [SWAuthService] ❌ AuthError:", error.errorDescription)
             throw error
         } catch {
-            #if DEBUG
-            print("🍎 [SWAuthService] ❌ Unknown Error:", String(describing: error))
-            #endif
+            swDebugLog("🍎 [SWAuthService] ❌ Unknown Error:", String(describing: error))
             throw error
         }
     }
