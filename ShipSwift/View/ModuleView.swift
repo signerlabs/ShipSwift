@@ -10,12 +10,14 @@
 import SwiftUI
 
 struct ModuleView: View {
+    @State private var showAuthDemo = false
+
     var body: some View {
         NavigationStack {
             List {
-                // Auth demo — pure UI showcase of SWAuth module (no backend)
-                NavigationLink {
-                    SWAuthDemoView()
+                // Auth demo — fullScreenCover 方式展示 SWAuth 模块（无后端）
+                Button {
+                    showAuthDemo = true
                 } label: {
                     ListItem(
                         title: "Auth",
@@ -44,8 +46,12 @@ struct ModuleView: View {
                     } label: {
                         Image(systemName: "gearshape.fill")
                     }
-
                 }
+            }
+        }
+        .fullScreenCover(isPresented: $showAuthDemo) {
+            NavigationStack {
+                SWAuthDemoView()
             }
         }
     }
@@ -56,6 +62,8 @@ struct ModuleView: View {
 /// Standalone demo view showcasing the SWAuth module UI interactions.
 /// Does not import Amplify or connect to any backend — all actions are simulated locally.
 private struct SWAuthDemoView: View {
+
+    @Environment(\.dismiss) private var dismiss
 
     // MARK: - View Mode
 
@@ -69,9 +77,16 @@ private struct SWAuthDemoView: View {
         case phoneVerify
     }
 
+    // 登录方式枚举，用于顶部 Segmented Picker 切换 Email / Phone
+    private enum SignInMethod: String, CaseIterable {
+        case email = "Email"
+        case phone = "Phone"
+    }
+
     // MARK: - State
 
     @State private var viewMode: ViewMode = .signIn
+    @State private var signInMethod: SignInMethod = .email
     @State private var isLoading = false
 
     // Sign in / sign up fields
@@ -145,6 +160,14 @@ private struct SWAuthDemoView: View {
                         .multilineTextAlignment(.center)
                 }
 
+                // 登录方式切换按钮，仅在 signIn / phoneSignIn 模式下显示
+                if viewMode == .signIn || viewMode == .phoneSignIn {
+                    HStack(spacing: 12) {
+                        signInMethodButton(.email, icon: "envelope.fill", label: "Email")
+                        signInMethodButton(.phone, icon: "phone.fill", label: "Phone")
+                    }
+                }
+
                 Spacer(minLength: 20)
 
                 // Content based on mode
@@ -166,10 +189,28 @@ private struct SWAuthDemoView: View {
             .padding()
         }
         .scrollDismissesKeyboard(.interactively)
+        .onChange(of: signInMethod) { _, newMethod in
+            withAnimation {
+                switch newMethod {
+                case .email: viewMode = .signIn
+                case .phone: viewMode = .phoneSignIn
+                }
+            }
+        }
         .sheet(isPresented: $showingCountryPicker) {
             countryCodePicker
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
     }
 
     // MARK: - Header Text
@@ -313,6 +354,7 @@ private struct SWAuthDemoView: View {
             Button {
                 withAnimation {
                     viewMode = viewMode == .signIn ? .signUp : .signIn
+                    signInMethod = .email
                     confirmPassword = ""
                 }
             } label: {
@@ -321,17 +363,6 @@ private struct SWAuthDemoView: View {
                      : "Don't have an account? Sign Up")
                     .font(.subheadline)
                     .foregroundStyle(Color.accentColor)
-            }
-
-            // Switch to phone sign-in (sign-in mode only)
-            if viewMode == .signIn {
-                Button {
-                    withAnimation { viewMode = .phoneSignIn }
-                } label: {
-                    Text("Sign in with phone number")
-                        .font(.subheadline)
-                        .foregroundStyle(Color.accentColor)
-                }
             }
         }
         .padding(.vertical)
@@ -374,7 +405,10 @@ private struct SWAuthDemoView: View {
             Button {
                 simulateAction {
                     SWAlertManager.shared.show(.success, message: "Demo: Email verified successfully")
-                    withAnimation { viewMode = .signIn }
+                    withAnimation {
+                        viewMode = .signIn
+                        signInMethod = .email
+                    }
                     verificationCode = ""
                 }
             } label: {
@@ -402,6 +436,7 @@ private struct SWAuthDemoView: View {
             Button {
                 withAnimation {
                     viewMode = .signIn
+                    signInMethod = .email
                     verificationCode = ""
                 }
             } label: {
@@ -457,7 +492,10 @@ private struct SWAuthDemoView: View {
 
             // Back
             Button {
-                withAnimation { viewMode = .signIn }
+                withAnimation {
+                    viewMode = .signIn
+                    signInMethod = .email
+                }
             } label: {
                 Text("Back to Sign In")
                     .font(.subheadline)
@@ -549,6 +587,7 @@ private struct SWAuthDemoView: View {
                     SWAlertManager.shared.show(.success, message: "Demo: Password reset successful")
                     withAnimation {
                         viewMode = .signIn
+                        signInMethod = .email
                         resetCode = ""
                         newPassword = ""
                         confirmNewPassword = ""
@@ -571,6 +610,7 @@ private struct SWAuthDemoView: View {
             Button {
                 withAnimation {
                     viewMode = .signIn
+                    signInMethod = .email
                     resetCode = ""
                     newPassword = ""
                     confirmNewPassword = ""
@@ -691,15 +731,6 @@ private struct SWAuthDemoView: View {
             .buttonStyle(.swPrimary)
             .disabled(!isValidPhone || isLoading)
 
-            // Switch to email sign-in
-            Button {
-                withAnimation { viewMode = .signIn }
-            } label: {
-                Text("Sign in with email instead")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.accentColor)
-            }
-
             // Social sign-in area
             socialSignInSection
         }
@@ -729,7 +760,10 @@ private struct SWAuthDemoView: View {
             Button {
                 simulateAction {
                     SWAlertManager.shared.show(.success, message: "Demo: Phone verified successfully")
-                    withAnimation { viewMode = .signIn }
+                    withAnimation {
+                        viewMode = .signIn
+                        signInMethod = .email
+                    }
                     phoneVerificationCode = ""
                 }
             } label: {
@@ -753,7 +787,7 @@ private struct SWAuthDemoView: View {
                     .foregroundStyle(Color.accentColor)
             }
 
-            // Back to phone sign-in
+            // 返回 phoneSignIn，保持 signInMethod = .phone
             Button {
                 withAnimation {
                     viewMode = .phoneSignIn
@@ -831,6 +865,27 @@ private struct SWAuthDemoView: View {
     }
 
     // MARK: - Helpers
+
+    /// 登录方式切换按钮：选中态为 accentColor + 胶囊背景，未选中态为 secondary
+    private func signInMethodButton(_ method: SignInMethod, icon: String, label: String) -> some View {
+        Button {
+            withAnimation { signInMethod = method }
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                Text(label)
+            }
+            .font(.subheadline)
+            .fontWeight(signInMethod == method ? .medium : .regular)
+            .foregroundStyle(signInMethod == method ? Color.accentColor : .secondary)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(
+                signInMethod == method ? Color.accentColor.opacity(0.1) : Color.clear,
+                in: Capsule()
+            )
+        }
+    }
 
     /// Simulates a loading state for 1 second, then executes the completion
     private func simulateAction(completion: @escaping () -> Void) {
