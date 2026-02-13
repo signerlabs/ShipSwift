@@ -167,34 +167,47 @@ extension View {
 
 // MARK: - Preview
 
-#Preview("Page Loading - Default") {
+#Preview {
     ZStack {
         LinearGradient(
             colors: [.blue, .purple],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
-        Text("Page Content")
-            .font(.largeTitle)
-            .foregroundStyle(.white)
+        .ignoresSafeArea()
+
+        VStack(spacing: 20) {
+            Text("Page Content")
+                .font(.largeTitle)
+                .foregroundStyle(.white)
+
+            Button("Show Default Loading") {
+                SWLoadingManager.shared.show(page: .home, message: "Loading data...")
+                Task {
+                    try? await Task.sleep(for: .seconds(2))
+                    SWLoadingManager.shared.hide(page: .home)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+
+            Button("Show Loading with Icon") {
+                SWLoadingManager.shared.show(
+                    page: .home,
+                    message: "Syncing data...",
+                    systemImage: "arrow.triangle.2.circlepath"
+                )
+                Task {
+                    try? await Task.sleep(for: .seconds(2))
+                    SWLoadingManager.shared.hide(page: .home)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+
+            Button("Hide Loading") {
+                SWLoadingManager.shared.hide(page: .home)
+            }
+            .buttonStyle(.bordered)
+        }
     }
     .swPageLoading(.home)
-    .onAppear {
-        SWLoadingManager.shared.show(page: .home, message: "Loading data...")
-    }
-}
-
-#Preview("Page Loading - With Icon") {
-    ZStack {
-        Color.gray.opacity(0.2)
-        Text("Content")
-    }
-    .swPageLoading(.settings)
-    .onAppear {
-        SWLoadingManager.shared.show(
-            page: .settings,
-            message: "Syncing data...",
-            systemImage: "arrow.triangle.2.circlepath"
-        )
-    }
 }

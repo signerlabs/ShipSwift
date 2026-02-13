@@ -802,6 +802,180 @@ struct ComponentView: View {
                         .font(.title3.bold())
                         .textCase(nil)
                 }
+
+                // MARK: - Feedback 组件分区
+                Section {
+                    // 全局 Toast 弹窗组件 — 支持 info/success/warning/error 四种预设及自定义样式
+                    NavigationLink {
+                        VStack(spacing: 12) {
+                            Spacer()
+
+                            Text("Tap to trigger alerts")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+
+                            VStack(spacing: 10) {
+                                Button {
+                                    SWAlertManager.shared.show(.info, message: "This is an info message")
+                                } label: {
+                                    Label("Info", systemImage: "info.circle.fill")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .tint(.primary)
+
+                                Button {
+                                    SWAlertManager.shared.show(.success, message: "Saved successfully")
+                                } label: {
+                                    Label("Success", systemImage: "checkmark.circle.fill")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .tint(.green)
+
+                                Button {
+                                    SWAlertManager.shared.show(.warning, message: "Slow connection")
+                                } label: {
+                                    Label("Warning", systemImage: "exclamationmark.triangle.fill")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .tint(.orange)
+
+                                Button {
+                                    SWAlertManager.shared.show(.error, message: "Operation failed, please retry")
+                                } label: {
+                                    Label("Error", systemImage: "xmark.circle.fill")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .tint(.red)
+
+                                Button {
+                                    SWAlertManager.shared.show(
+                                        icon: "star.fill",
+                                        message: "Custom alert style",
+                                        textColor: .yellow,
+                                        backgroundStyle: AnyShapeStyle(.black),
+                                        borderColor: .yellow
+                                    )
+                                } label: {
+                                    Label("Custom", systemImage: "star.fill")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .tint(.yellow)
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.large)
+
+                            Spacer()
+                        }
+                        .padding(.horizontal, 24)
+                    } label: {
+                        ListItem(
+                            title: "SWAlert",
+                            icon: "bell.badge",
+                            description: "Toast-style alert overlay with four preset styles (info, success, warning, error) and custom styling. Auto-dismisses after configurable duration."
+                        )
+                    }
+
+                    // 全屏加载遮罩组件 — 毛玻璃背景 + 可选图标脉冲动画
+                    NavigationLink {
+                        ZStack {
+                            LinearGradient(
+                                colors: [.blue, .purple],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                            .ignoresSafeArea()
+
+                            VStack(spacing: 20) {
+                                Text("Page Content")
+                                    .font(.largeTitle)
+                                    .foregroundStyle(.white)
+
+                                Button("Show Default Loading") {
+                                    SWLoadingManager.shared.show(page: .home, message: "Loading data...")
+                                    Task {
+                                        try? await Task.sleep(for: .seconds(2))
+                                        SWLoadingManager.shared.hide(page: .home)
+                                    }
+                                }
+                                .buttonStyle(.borderedProminent)
+
+                                Button("Show Loading with Icon") {
+                                    SWLoadingManager.shared.show(
+                                        page: .home,
+                                        message: "Syncing data...",
+                                        systemImage: "arrow.triangle.2.circlepath"
+                                    )
+                                    Task {
+                                        try? await Task.sleep(for: .seconds(2))
+                                        SWLoadingManager.shared.hide(page: .home)
+                                    }
+                                }
+                                .buttonStyle(.borderedProminent)
+                            }
+                        }
+                        .swPageLoading(.home)
+                    } label: {
+                        ListItem(
+                            title: "SWLoading",
+                            icon: "hourglass",
+                            description: "Fullscreen loading overlay with blur material background, customizable message, optional SF Symbol icon with pulse animation."
+                        )
+                    }
+
+                    // 思考指示器组件 — 三点弹跳动画，用于聊天输入状态
+                    NavigationLink {
+                        VStack(spacing: 40) {
+                            // 默认样式
+                            VStack(spacing: 8) {
+                                Text("Default")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                SWThinkingIndicator()
+                            }
+
+                            // 聊天气泡中使用
+                            VStack(spacing: 8) {
+                                Text("Chat Bubble")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                HStack(alignment: .bottom, spacing: 8) {
+                                    Image(systemName: "brain.head.profile")
+                                        .font(.title2)
+                                        .foregroundStyle(.purple)
+                                    HStack(spacing: 4) {
+                                        Text("Thinking")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                        SWThinkingIndicator()
+                                    }
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 10)
+                                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                                }
+                            }
+
+                            // 自定义颜色和大小
+                            VStack(spacing: 8) {
+                                Text("Custom (blue, large)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                SWThinkingIndicator(dotSize: 10, dotColor: .blue, spacing: 6)
+                            }
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } label: {
+                        ListItem(
+                            title: "SWThinkingIndicator",
+                            icon: "ellipsis.bubble",
+                            description: "Animated three-dot bouncing indicator for chat typing states. Configurable dot size, color, and spacing."
+                        )
+                    }
+                } header: {
+                    Text("Feedback (3)")
+                        .font(.title3.bold())
+                        .textCase(nil)
+                }
             }
             .navigationTitle("Components")
         }

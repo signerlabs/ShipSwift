@@ -281,29 +281,40 @@ extension View {
 
 // MARK: - Preview
 
-#Preview("Info") {
-    Color.gray
-        .ignoresSafeArea()
-        .swAlert()
-        .onAppear {
+#Preview {
+    VStack(spacing: 20) {
+        Button("Info") {
             SWAlertManager.shared.show(.info, message: "This is an info message")
         }
-}
-
-#Preview("Success") {
-    Color.gray
-        .ignoresSafeArea()
-        .swAlert()
-        .onAppear {
+        .buttonStyle(.bordered)
+        
+        Button("Success") {
             SWAlertManager.shared.show(.success, message: "Saved successfully")
         }
-}
+        .buttonStyle(.bordered)
 
-#Preview("Error") {
-    Color.gray
-        .ignoresSafeArea()
-        .swAlert()
-        .onAppear {
+        Button("Warning") {
+            SWAlertManager.shared.show(.warning, message: "Slow connection")
+        }
+        .buttonStyle(.bordered)
+
+        Button("Error") {
             SWAlertManager.shared.show(.error, message: "Operation failed, please retry")
         }
+        .buttonStyle(.bordered)
+
+        Button("Custom") {
+            SWAlertManager.shared.show(
+                icon: "star.fill",
+                message: "Custom alert style",
+                textColor: .yellow,
+                backgroundStyle: AnyShapeStyle(.black),
+                borderColor: .yellow
+            )
+        }
+        .buttonStyle(.bordered)
+    }
+    .font(.headline)
+    .frame(maxWidth: .infinity)
+    .swAlert()
 }
