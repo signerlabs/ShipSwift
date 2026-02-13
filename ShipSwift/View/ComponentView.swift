@@ -652,18 +652,15 @@ struct ComponentView: View {
 
                     // 旋转名言组件 — 自动轮播名人名言
                     NavigationLink {
-                        VStack {
-                            SWRotatingQuote(
-                                quotes: [
-                                    "Those times when you get up early, and you work hard, those times when you stay up late, and you work hard.",
-                                    "Those times when you don't feel like working, you're too tired, you don't want to push yourself, but you do it anyway.",
-                                    "That is actually the dream. It's not the destination, it's the journey."
-                                ],
-                                author: "Kobe Bryant"
-                            )
-                            .padding()
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        SWRotatingQuote(
+                            quotes: [
+                                "Those times when you get up early, and you work hard, those times when you stay up late, and you work hard.",
+                                "Those times when you don't feel like working, you're too tired, you don't want to push yourself, but you do it anyway.",
+                                "That is actually the dream. It's not the destination, it's the journey."
+                            ],
+                            author: "Kobe Bryant"
+                        )
+                        .padding()
                     } label: {
                         ListItem(
                             title: "Rotating Quote",

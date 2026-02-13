@@ -64,22 +64,18 @@ struct SWScrollingFAQ: View {
                     .frame(height: 34)
                 }
             }
-            .overlay(alignment: .leading) {
+            .mask(
                 LinearGradient(
-                    colors: [Color(.systemBackground).opacity(0.8), .clear, .clear, .clear, .clear],
+                    stops: [
+                        .init(color: .clear, location: 0),
+                        .init(color: .black, location: 0.08),
+                        .init(color: .black, location: 0.92),
+                        .init(color: .clear, location: 1.0),
+                    ],
                     startPoint: .leading,
                     endPoint: .trailing
                 )
-                .allowsHitTesting(false)
-            }
-            .overlay(alignment: .trailing) {
-                LinearGradient(
-                    colors: [Color(.systemBackground).opacity(0.8), .clear, .clear, .clear, .clear],
-                    startPoint: .trailing,
-                    endPoint: .leading
-                )
-                .allowsHitTesting(false)
-            }
+            )
         }
         .padding(.vertical)
     }
@@ -108,7 +104,7 @@ struct SWScrollingFAQ: View {
                 for question in questions {
                     let button = Button(question) { onTap(question) }
                         .font(.subheadline)
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.bordered)
                     let host = UIHostingController(rootView: button)
                     host.view.backgroundColor = .clear
                     host.safeAreaRegions = []
