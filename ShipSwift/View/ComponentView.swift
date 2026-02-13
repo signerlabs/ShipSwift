@@ -549,6 +549,17 @@ struct ComponentView: View {
                 }
             }
             .navigationTitle("Components")
+            .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        SettingView()
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                    }
+
+                }
+            }
             .fullScreenCover(isPresented: $showOnboarding) {
                 SWOnboardingView(onComplete: { showOnboarding = false })
             }

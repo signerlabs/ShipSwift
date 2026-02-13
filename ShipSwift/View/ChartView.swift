@@ -389,6 +389,17 @@ struct ChartView: View {
                 }
             }
             .navigationTitle("Charts")
+            .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        SettingView()
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                    }
+
+                }
+            }
         }
     }
 }
