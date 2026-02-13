@@ -23,7 +23,7 @@
 //    group.points    // [CGPoint] in normalized coordinates (0...1)
 //    group.isClosed  // true if points.count > 2 (pupils are not closed)
 //
-//    // 3. Typically consumed from SWFaceCameraManager.faceLandmarks
+//    // 3. Typically consumed from SWCameraManager.faceLandmarks
 //    for group in cameraManager.faceLandmarks {
 //        switch group.region {
 //        case .outerLips: drawLips(group.points)

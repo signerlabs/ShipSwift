@@ -54,106 +54,130 @@ struct SWFaceCameraView: View {
     /// Landmark color scheme
     var landmarkColors: SWFaceLandmarkColors = .default
 
-    @State private var cameraManager = SWFaceCameraManager(position: .front)
+    @State private var cameraManager = SWCameraManager(position: .front)
     @State private var isCapturing = false
     @State private var showLandmarks = true
 
     var body: some View {
-        VStack(spacing: 0) {
+        Group {
             if cameraManager.isAuthorized {
-                Spacer()
+                ZStack {
+                    Color.black.ignoresSafeArea()
 
-                GeometryReader { geometry in
-                    let previewWidth = geometry.size.width
-                    let previewHeight = previewWidth * 4 / 3
+                    VStack(spacing: 0) {
+                        Spacer()
 
-                    SWFaceCameraPreview(session: cameraManager.session)
-                        .frame(width: previewWidth, height: previewHeight)
-                        .clipped()
-                        .overlay {
-                            if showLandmarks {
-                                SWFaceTrackingOverlay(
-                                    landmarks: cameraManager.faceLandmarks,
-                                    colors: landmarkColors
-                                )
-                            }
+                        // 3:4 比例相机预览
+                        GeometryReader { geometry in
+                            let previewWidth = geometry.size.width
+                            let previewHeight = previewWidth * 4 / 3
+
+                            SWFaceCameraPreview(session: cameraManager.session)
+                                .frame(width: previewWidth, height: previewHeight)
+                                .clipped()
+                                .overlay {
+                                    if showLandmarks {
+                                        SWFaceTrackingOverlay(
+                                            landmarks: cameraManager.faceLandmarks,
+                                            colors: landmarkColors
+                                        )
+                                    }
+                                }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-                .onAppear {
-                    cameraManager.faceTrackingEnabled = true
-                    cameraManager.startSession()
-                }
-                .onDisappear {
-                    cameraManager.faceTrackingEnabled = false
-                    cameraManager.stopSession()
-                }
 
-                Spacer()
+                        Spacer()
+
+                        controlBar
+                    }
+                    .onAppear {
+                        cameraManager.faceTrackingEnabled = true
+                        cameraManager.startSession()
+                    }
+                    .onDisappear {
+                        cameraManager.faceTrackingEnabled = false
+                        cameraManager.stopSession()
+                    }
+                }
             } else {
-                ContentUnavailableView(
-                    "Camera Access Required",
-                    systemImage: "camera.fill",
-                    description: Text("Please enable camera access in Settings")
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                unauthorizedView
             }
-
-            // Bottom control bar
-            controlBar
         }
+        .background(.black)
+    }
+
+    // MARK: - Unauthorized View
+
+    private var unauthorizedView: some View {
+        VStack(spacing: 20) {
+            Label("Camera permission required", systemImage: "camera.fill")
+                .foregroundStyle(.regularMaterial)
+
+            Button("Open Settings") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: - Bottom Control Bar
 
     private var controlBar: some View {
         VStack {
-            Text("Smile and show your teeth")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .padding()
-
-            HStack(spacing: 60) {
-                // Switch camera
+            HStack(spacing: 50) {
+                // 翻转镜头
                 Button {
                     cameraManager.switchCamera()
                 } label: {
-                    Image(systemName: "camera.rotate.fill")
-                        .font(.title)
-                        .foregroundStyle(.white)
-                        .frame(width: 50, height: 50)
+                    controlButton(icon: "camera.rotate.fill")
                 }
 
-                // Capture button
+                // 快门按钮（和 SWCameraView 一致）
                 Button {
                     capturePhoto()
                 } label: {
-                    ZStack {
-                        Circle()
-                            .strokeBorder(.white, lineWidth: 4)
-                            .frame(width: 75, height: 75)
-
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 60, height: 60)
-                            .scaleEffect(isCapturing ? 0.85 : 1.0)
-                            .animation(.easeInOut(duration: 0.1), value: isCapturing)
-                    }
+                    shutterButton
                 }
                 .disabled(!cameraManager.isAuthorized || isCapturing)
 
-                // Landmark display toggle
+                // 人脸标记开关
                 Button {
                     showLandmarks.toggle()
                 } label: {
-                    Image(systemName: showLandmarks ? "face.dashed.fill" : "face.dashed")
-                        .font(.title)
-                        .foregroundStyle(showLandmarks ? .cyan : .white.opacity(0.4))
-                        .frame(width: 50, height: 50)
+                    controlButton(icon: showLandmarks ? "face.dashed.fill" : "face.dashed")
                 }
             }
         }
-        .padding(.bottom)
+        .padding(.bottom, 50)
+        .padding(.top, 20)
+    }
+
+    // MARK: - Control Button Style
+
+    private func controlButton(icon: String) -> some View {
+        Image(systemName: icon)
+            .font(.title2)
+            .foregroundStyle(.white)
+            .frame(width: 50, height: 50)
+            .background(.black.opacity(0.6), in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    // MARK: - Shutter Button
+
+    private var shutterButton: some View {
+        Circle()
+            .fill(cameraManager.isAuthorized && !isCapturing ? .white : .gray)
+            .frame(width: 70, height: 70)
+            .overlay {
+                Circle()
+                    .strokeBorder(.black.opacity(0.2), lineWidth: 2)
+                    .frame(width: 60, height: 60)
+            }
+            .scaleEffect(isCapturing ? 0.9 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: isCapturing)
     }
 
     // MARK: - Photo Capture

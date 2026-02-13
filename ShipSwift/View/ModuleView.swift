@@ -12,6 +12,7 @@ import SwiftUI
 struct ModuleView: View {
     @State private var showAuthDemo = false
     @State private var showCameraDemo = false
+    @State private var showFaceCameraDemo = false
 
     var body: some View {
         NavigationStack {
@@ -35,6 +36,17 @@ struct ModuleView: View {
                         title: "Camera",
                         icon: "camera.fill",
                         description: "Full camera capture view with viewfinder overlay, pinch-to-zoom, zoom slider, photo library picker, and permission handling."
+                    )
+                }
+
+                // Face Camera demo — real camera with Vision face tracking
+                Button {
+                    showFaceCameraDemo = true
+                } label: {
+                    ListItem(
+                        title: "Face Camera",
+                        icon: "face.smiling.inverse",
+                        description: "Camera with real-time Vision face landmark detection, front/back switching, landmark overlay toggle, and configurable color schemes."
                     )
                 }
 
@@ -69,6 +81,9 @@ struct ModuleView: View {
         .fullScreenCover(isPresented: $showCameraDemo) {
             SWCameraDemoView()
                 .swAlert()
+        }
+        .fullScreenCover(isPresented: $showFaceCameraDemo) {
+            SWFaceCameraDemoView()
         }
     }
 }
@@ -910,6 +925,33 @@ private struct SWAuthDemoView: View {
             try? await Task.sleep(for: .seconds(1))
             isLoading = false
             completion()
+        }
+    }
+}
+
+// MARK: - Face Camera Demo View (Real Camera with Face Tracking)
+
+/// Face Camera demo with Vision face landmark detection overlay.
+/// Wraps SWFaceCameraView with a close button (top-left) since SWFaceCameraView
+/// is designed to be embedded and does not include its own dismiss logic.
+private struct SWFaceCameraDemoView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        SWFaceCameraView { _ in
+            // Photo captured — dismiss without processing
+            dismiss()
+        }
+        .overlay(alignment: .topLeading) {
+            Button { dismiss() } label: {
+                Image(systemName: "xmark")
+                    .font(.title3)
+                    .foregroundStyle(.white)
+                    .frame(width: 44, height: 44)
+                    .background(.black.opacity(0.4), in: Circle())
+            }
+            .padding(.leading, 16)
+            .padding(.top, 8)
         }
     }
 }

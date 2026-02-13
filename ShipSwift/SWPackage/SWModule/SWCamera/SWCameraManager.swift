@@ -2,9 +2,15 @@
 //  SWCameraManager.swift
 //  ShipSwift
 //
-//  AVCaptureSession manager with photo capture and zoom control.
-//  Handles camera permissions, session lifecycle, photo capture,
-//  and pinch-to-zoom with configurable zoom range.
+//  Unified AVCaptureSession manager with photo capture, zoom control,
+//  and optional real-time Vision face landmark tracking.
+//
+//  Base camera features: permission handling, session lifecycle,
+//  front/back switching, pinch-to-zoom, and photo capture.
+//
+//  Face tracking features (opt-in via faceTrackingEnabled):
+//  real-time Vision face landmark detection with normalized coordinates,
+//  suitable for overlay rendering in SWFaceCameraView.
 //
 //  Usage:
 //    // 1. Create manager (automatically checks camera permission)
@@ -34,42 +40,92 @@
 //    // 6. Check authorization
 //    if cameraManager.isAuthorized { /* show camera preview */ }
 //
-//    // 7. Access the AVCaptureSession for SWCameraPreview
+//    // 7. Access the AVCaptureSession for preview
 //    SWCameraPreview(session: cameraManager.session)
+//
+//    // 8. Enable face tracking (for SWFaceCameraView)
+//    cameraManager.faceTrackingEnabled = true
+//    // Access real-time landmarks:
+//    for group in cameraManager.faceLandmarks {
+//        // group.region: SWFaceLandmarkRegion
+//        // group.points: [CGPoint] in normalized coordinates (0...1)
+//    }
+//
+//    // 9. Initialize with specific camera position
+//    @State private var cameraManager = SWCameraManager(position: .front)
 //
 //  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI
 import AVFoundation
+import Vision
 
 @Observable
-class SWCameraManager: NSObject {
+final class SWCameraManager: NSObject, @unchecked Sendable {
+
+    // MARK: - Public Properties (Base Camera)
+
     let session = AVCaptureSession()
-    private let photoOutput = AVCapturePhotoOutput()
-    private var captureCompletion: ((UIImage?) -> Void)?
-    private var currentDevice: AVCaptureDevice?
     var isAuthorized = false
     var cameraPosition: AVCaptureDevice.Position = .back
 
-    // Zoom
+    /// Zoom
     var currentZoom: CGFloat = 1.0
     var minZoom: CGFloat = 1.0
     var maxZoom: CGFloat = 5.0
 
-    // Error callback - wire this up in the view layer
+    /// Error callback - wire this up in the view layer
     var onError: ((String) -> Void)?
 
-    // Dedicated queue for thread-safe session operations
+    // MARK: - Public Properties (Face Tracking, opt-in)
+
+    /// Whether real-time face detection is enabled (default off; SWFaceCameraView turns it on)
+    @ObservationIgnored
+    nonisolated(unsafe) var faceTrackingEnabled = false
+
+    /// Real-time detected face landmarks (capture device normalized coordinates, top-left origin)
+    var faceLandmarks: [SWFaceLandmarkGroup] = []
+
+    // MARK: - Private Properties (Session)
+
+    private let photoOutput = AVCapturePhotoOutput()
+    private var captureCompletion: ((UIImage?) -> Void)?
+    private var currentDevice: AVCaptureDevice?
+
+    /// Dedicated queue for thread-safe session operations
     private let sessionQueue = DispatchQueue(label: "com.shipswift.camera.session")
     private var isConfigured = false
     private var isConfiguring = false
     private var pendingStartSession = false
 
+    // MARK: - Private Properties (Face Tracking)
+
+    private let videoDataOutput = AVCaptureVideoDataOutput()
+    private let videoDataQueue = DispatchQueue(label: "com.shipswift.camera.videodata", qos: .userInitiated)
+    @ObservationIgnored
+    private nonisolated(unsafe) let sequenceHandler = VNSequenceRequestHandler()
+    /// Background-thread-safe copy of camera position (for Vision orientation)
+    @ObservationIgnored
+    private nonisolated(unsafe) var _bgCameraPosition: AVCaptureDevice.Position = .back
+
+    // MARK: - Initialization
+
+    /// Default initializer (rear camera)
     override init() {
         super.init()
         checkCameraPermission()
     }
+
+    /// Initialize with specific camera position
+    init(position: AVCaptureDevice.Position) {
+        self.cameraPosition = position
+        self._bgCameraPosition = position
+        super.init()
+        checkCameraPermission()
+    }
+
+    // MARK: - Permission Check
 
     private func checkCameraPermission() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
@@ -100,10 +156,11 @@ class SWCameraManager: NSObject {
         }
     }
 
+    // MARK: - Camera Configuration
+
     private func setupCamera() {
         sessionQueue.async { [weak self] in
             guard let self else { return }
-
             guard !self.isConfigured, !self.isConfiguring else { return }
 
             self.isConfiguring = true
@@ -128,7 +185,7 @@ class SWCameraManager: NSObject {
 
             self.currentDevice = camera
 
-            // Set zoom range
+            // Update zoom range
             DispatchQueue.main.async {
                 self.minZoom = 1.0
                 self.maxZoom = min(camera.activeFormat.videoMaxZoomFactor, 5.0)
@@ -151,6 +208,7 @@ class SWCameraManager: NSObject {
 
                 self.session.sessionPreset = .photo
 
+                // Photo output
                 if self.photoOutput.availablePhotoCodecTypes.contains(AVVideoCodecType.hevc) {
                     self.photoOutput.maxPhotoQualityPrioritization = .balanced
                 }
@@ -165,6 +223,16 @@ class SWCameraManager: NSObject {
                     self.isConfiguring = false
                     return
                 }
+
+                // Video data output (for face tracking; always added so tracking can be toggled at runtime)
+                self.videoDataOutput.setSampleBufferDelegate(self, queue: self.videoDataQueue)
+                self.videoDataOutput.alwaysDiscardsLateVideoFrames = true
+                if self.session.canAddOutput(self.videoDataOutput) {
+                    self.session.addOutput(self.videoDataOutput)
+                }
+
+                // Auto focus / exposure / white balance configuration
+                self.configureAutoFocus(camera)
 
                 self.session.commitConfiguration()
                 self.isConfigured = true
@@ -187,6 +255,8 @@ class SWCameraManager: NSObject {
             }
         }
     }
+
+    // MARK: - Session Control
 
     func startSession() {
         sessionQueue.async { [weak self] in
@@ -216,6 +286,8 @@ class SWCameraManager: NSObject {
             }
         }
     }
+
+    // MARK: - Photo Capture
 
     func capturePhoto(completion: @escaping (UIImage?) -> Void) {
         self.captureCompletion = completion
@@ -254,7 +326,7 @@ class SWCameraManager: NSObject {
         setZoom(currentZoom * delta)
     }
 
-    // MARK: - Switch Camera (前后镜头切换)
+    // MARK: - Switch Camera
 
     func switchCamera() {
         sessionQueue.async { [weak self] in
@@ -268,7 +340,7 @@ class SWCameraManager: NSObject {
 
             self.session.beginConfiguration()
 
-            // 移除现有的输入源
+            // Remove existing inputs
             for input in self.session.inputs {
                 self.session.removeInput(input)
             }
@@ -279,19 +351,25 @@ class SWCameraManager: NSObject {
                     self.session.addInput(newInput)
                     self.currentDevice = newCamera
 
-                    // 更新缩放范围
+                    // Update background-thread-safe camera position (for Vision orientation)
+                    self._bgCameraPosition = newPosition
+
+                    // Configure auto focus for the new camera
+                    self.configureAutoFocus(newCamera)
+
+                    // Reset zoom
+                    self.applyZoom(1.0, to: newCamera)
+
+                    // Update main-thread properties
                     DispatchQueue.main.async {
+                        self.cameraPosition = newPosition
                         self.minZoom = 1.0
                         self.maxZoom = min(newCamera.activeFormat.videoMaxZoomFactor, 5.0)
                         self.currentZoom = 1.0
-                        self.cameraPosition = newPosition
                     }
-
-                    // 重置缩放
-                    self.applyZoom(1.0, to: newCamera)
                 }
             } catch {
-                // 切换失败，静默忽略
+                // Switch failed, silently ignore
             }
 
             self.session.commitConfiguration()
@@ -306,7 +384,32 @@ class SWCameraManager: NSObject {
             device.videoZoomFactor = max(1.0, min(factor, device.activeFormat.videoMaxZoomFactor))
             device.unlockForConfiguration()
         } catch {
-            // 缩放失败，静默忽略
+            // Zoom failed, silently ignore
+        }
+    }
+
+    /// Configure auto focus, exposure, and white balance for optimal camera performance
+    private func configureAutoFocus(_ device: AVCaptureDevice) {
+        do {
+            try device.lockForConfiguration()
+
+            if device.isFocusModeSupported(.continuousAutoFocus) {
+                device.focusMode = .continuousAutoFocus
+            } else if device.isFocusModeSupported(.autoFocus) {
+                device.focusMode = .autoFocus
+            }
+
+            if device.isExposureModeSupported(.continuousAutoExposure) {
+                device.exposureMode = .continuousAutoExposure
+            }
+
+            if device.isWhiteBalanceModeSupported(.continuousAutoWhiteBalance) {
+                device.whiteBalanceMode = .continuousAutoWhiteBalance
+            }
+
+            device.unlockForConfiguration()
+        } catch {
+            // Configuration failed, silently ignore
         }
     }
 }
@@ -333,5 +436,61 @@ extension SWCameraManager: AVCapturePhotoCaptureDelegate {
         }
 
         captureCompletion?(image)
+    }
+}
+
+// MARK: - Real-time Face Landmark Detection (Vision)
+
+extension SWCameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
+    nonisolated func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        // Skip processing when face tracking is disabled
+        guard faceTrackingEnabled else { return }
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+
+        // Front camera is mirrored, rear camera is normal
+        let orientation: CGImagePropertyOrientation = _bgCameraPosition == .front ? .leftMirrored : .right
+
+        let request = VNDetectFaceLandmarksRequest()
+        try? sequenceHandler.perform([request], on: pixelBuffer, orientation: orientation)
+
+        guard let face = request.results?.first,
+              let landmarks = face.landmarks else {
+            Task { @MainActor in
+                self.faceLandmarks = []
+            }
+            return
+        }
+
+        let bbox = face.boundingBox
+        var groups: [SWFaceLandmarkGroup] = []
+
+        /// Convert Vision landmark points to capture device normalized coordinates
+        func convert(_ region: VNFaceLandmarkRegion2D?, type: SWFaceLandmarkRegion) {
+            guard let region else { return }
+            let pts = region.normalizedPoints.map { p in
+                let x = bbox.origin.x + p.x * bbox.width
+                let y = bbox.origin.y + p.y * bbox.height
+                return CGPoint(x: x, y: 1.0 - y)
+            }
+            groups.append(SWFaceLandmarkGroup(region: type, points: pts))
+        }
+
+        // Extract all supported face landmarks
+        convert(landmarks.faceContour, type: .faceContour)
+        convert(landmarks.leftEyebrow, type: .leftEyebrow)
+        convert(landmarks.rightEyebrow, type: .rightEyebrow)
+        convert(landmarks.leftEye, type: .leftEye)
+        convert(landmarks.rightEye, type: .rightEye)
+        convert(landmarks.leftPupil, type: .leftPupil)
+        convert(landmarks.rightPupil, type: .rightPupil)
+        convert(landmarks.nose, type: .nose)
+        convert(landmarks.noseCrest, type: .noseCrest)
+        convert(landmarks.outerLips, type: .outerLips)
+        convert(landmarks.innerLips, type: .innerLips)
+
+        let result = groups
+        Task { @MainActor in
+            self.faceLandmarks = result
+        }
     }
 }

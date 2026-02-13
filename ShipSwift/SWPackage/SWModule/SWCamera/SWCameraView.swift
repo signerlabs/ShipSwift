@@ -50,16 +50,37 @@ struct SWCameraView: View {
         Group {
             if cameraManager.isAuthorized {
                 ZStack {
-                    SWCameraPreview(session: cameraManager.session)
-                        .ignoresSafeArea()
-                        .onAppear {
-                            cameraManager.onError = { SWAlertManager.shared.show(.error, message: $0) }
-                            cameraManager.startSession()
+                    Color.black.ignoresSafeArea()
+
+                    VStack(spacing: 0) {
+                        Spacer()
+
+                        // 3:4 比例相机预览
+                        GeometryReader { geometry in
+                            let previewWidth = geometry.size.width
+                            let previewHeight = previewWidth * 4 / 3
+
+                            SWCameraPreview(session: cameraManager.session)
+                                .frame(width: previewWidth, height: previewHeight)
+                                .clipped()
+                                .overlay(alignment: .bottom) {
+                                    zoomControl
+                                }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
-                        .onDisappear { cameraManager.stopSession() }
                         .gesture(pinchGesture)
 
-                    // 左上角关闭按钮
+                        Spacer()
+
+                        controlBar
+                    }
+                    .onAppear {
+                        cameraManager.onError = { SWAlertManager.shared.show(.error, message: $0) }
+                        cameraManager.startSession()
+                    }
+                    .onDisappear { cameraManager.stopSession() }
+
+                    // 左上角关闭按钮（overlay 不占布局空间）
                     VStack {
                         HStack {
                             Button { dismiss() } label: {
@@ -74,12 +95,6 @@ struct SWCameraView: View {
                         .padding(.leading, 16)
                         .padding(.top, 8)
                         Spacer()
-                    }
-
-                    VStack {
-                        Spacer()
-                        zoomControl
-                        controlBar
                     }
                 }
             } else {
@@ -269,7 +284,7 @@ class SWPreviewView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         videoPreviewLayer.frame = bounds
-        videoPreviewLayer.videoGravity = .resizeAspect
+        videoPreviewLayer.videoGravity = .resizeAspectFill
     }
 }
 
