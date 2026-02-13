@@ -606,6 +606,168 @@ struct ComponentView: View {
                         .font(.title3.bold())
                         .textCase(nil)
                 }
+
+                // MARK: - Display 组件分区
+                Section {
+                    // 浮动标签组件 — 图片上方悬浮动画胶囊标签
+                    NavigationLink {
+                        SWFloatingLabels(
+                            image: Image(.facePicture),
+                            labels: [
+                                .init(text: "Teeth mapping",    position: CGPoint(x: 0.3, y: 0.5)),
+                                .init(text: "Plaque detection", position: CGPoint(x: 0.9, y: 0.6)),
+                                .init(text: "Shape & balance",  position: CGPoint(x: 0.5, y: 0.8))
+                            ]
+                        )
+                    } label: {
+                        ListItem(
+                            title: "Floating Labels",
+                            icon: "tag.fill",
+                            description: "Animated floating capsule labels over an image. Labels fade in/out at specified positions, ideal for feature callouts."
+                        )
+                    }
+
+                    // 滚动问答组件 — 自动滚动的水平问答胶囊轮播
+                    NavigationLink {
+                        SWScrollingFAQ(
+                            rows: [
+                                ["How does AI work?", "What can I ask?", "How accurate?", "Help with coding?",
+                                 "Remember chat?", "Languages supported?", "Get started?", "Explain topics?"],
+                                ["Write an email", "Summarize article", "Translate text", "Creative ideas",
+                                 "Debug code", "Explain concept", "Meal plan", "Brainstorm"],
+                                ["Best approach?", "How to improve?", "Give examples", "Compare options",
+                                 "Suggest alternatives", "Pros and cons?", "Help understand", "Walk through"]
+                            ],
+                            title: "Let's talk about new topics"
+                        ) { question in
+                            print("Tapped: \(question)")
+                        }
+                    } label: {
+                        ListItem(
+                            title: "Scrolling FAQ",
+                            icon: "bubble.left.and.text.bubble.right",
+                            description: "Auto-scrolling horizontal FAQ carousel with alternating row directions. Tapping a pill triggers a callback."
+                        )
+                    }
+
+                    // 旋转名言组件 — 自动轮播名人名言
+                    NavigationLink {
+                        VStack {
+                            SWRotatingQuote(
+                                quotes: [
+                                    "Those times when you get up early, and you work hard, those times when you stay up late, and you work hard.",
+                                    "Those times when you don't feel like working, you're too tired, you don't want to push yourself, but you do it anyway.",
+                                    "That is actually the dream. It's not the destination, it's the journey."
+                                ],
+                                author: "Kobe Bryant"
+                            )
+                            .padding()
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } label: {
+                        ListItem(
+                            title: "Rotating Quote",
+                            icon: "text.quote",
+                            description: "Auto-rotating quote display that cycles through texts with animated transitions and author attribution."
+                        )
+                    }
+
+                    // 基础展示元素合并页 — BulletPointText + GradientDivider + Label
+                    NavigationLink {
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 24) {
+
+                                // 区域一：SWBulletPointText 演示
+                                Text("Bullet Point Text")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+
+                                VStack(alignment: .leading, spacing: 10) {
+                                    SWBulletPointText(bulletColor: .blue) {
+                                        Text("Wealth")
+                                    }
+                                    SWBulletPointText(bulletColor: .green) {
+                                        HStack {
+                                            Text("Health")
+                                            Image(systemName: "heart.fill")
+                                        }
+                                    }
+                                    SWBulletPointText(bulletColor: .orange) {
+                                        Text("Happiness")
+                                    }
+                                    SWBulletPointText(bulletColor: .purple) {
+                                        Text("Wisdom")
+                                    }
+                                }
+                                .padding(.horizontal)
+
+                                Divider()
+
+                                // 区域二：SWGradientDivider 演示
+                                Text("Gradient Divider")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+
+                                VStack(spacing: 20) {
+                                    SWGradientDivider()
+                                    SWGradientDivider(color: .purple, opacity: 0.5)
+                                    SWGradientDivider(color: .mint, height: 2)
+                                }
+                                .padding(.horizontal)
+
+                                Divider()
+
+                                // 区域三：SWLabelWithIcon 演示
+                                Text("Label with Icon")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+
+                                VStack(alignment: .leading, spacing: 8) {
+                                    SWLabelWithIcon()
+                                    SWLabelWithIcon(
+                                        icon: "gearshape",
+                                        bg: .orange,
+                                        name: "Settings"
+                                    )
+                                    SWLabelWithIcon(
+                                        icon: "bell.badge",
+                                        bg: .red,
+                                        name: "Notifications"
+                                    )
+                                    SWLabelWithIcon(
+                                        icon: "lock.shield",
+                                        bg: .green,
+                                        name: "Privacy"
+                                    )
+                                    SWLabelWithIcon(
+                                        icon: "creditcard",
+                                        bg: .purple,
+                                        name: "Subscription"
+                                    )
+
+                                    Divider()
+
+                                    SWLabelWithImage(
+                                        image: .fullpackLogo,
+                                        name: "FullPack"
+                                    )
+                                }
+                                .padding(.horizontal)
+                            }
+                            .padding(.vertical)
+                        }
+                    } label: {
+                        ListItem(
+                            title: "Basic Display Elements",
+                            icon: "rectangle.3.group",
+                            description: "BulletPointText, GradientDivider, and LabelWithIcon — simple building blocks for lists, settings, and content sections."
+                        )
+                    }
+                } header: {
+                    Text("Display (6)")
+                        .font(.title3.bold())
+                        .textCase(nil)
+                }
             }
             .navigationTitle("Components")
         }

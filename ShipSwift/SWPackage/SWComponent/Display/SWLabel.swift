@@ -91,6 +91,13 @@ struct SWLabelWithImage: View {
             bg: .purple,
             name: "Subscription"
         )
+
+        Divider()
+
+        SWLabelWithImage(
+            image: .fullpackLogo,
+            name: "FullPack"
+        )
     }
     .padding()
 }
