@@ -51,8 +51,8 @@
 //    - title: String?                               — Optional title
 //
 //  Notes:
-//    - Appear animation: area and line draw from left to right along the date axis with easeOut 1.2s after 0.2s delay
-//    - Y-axis range is fixed to real data bounds during animation (axis stays, area appears progressively)
+//    - Appear animation: a mask rectangle expands from left to right (easeOut 1.2s, 0.2s delay),
+//      revealing the chart progressively. All data points are always rendered so axes stay stable.
 //
 //  Created by Wei Zhong on 2/13/26.
 //
@@ -128,31 +128,10 @@ struct SWAreaChart<CategoryType: Hashable & Plottable>: View {
     /// Title (optional)
     var title: String? = nil
 
-    /// 动画进度（0 到 1），控制面积图沿日期轴从左到右逐步出现
+    /// 动画进度（0 到 1），控制遮罩宽度，实现面积图从左到右逐步揭露的效果
     @State private var animationProgress: Double = 0
 
     // MARK: - Computed Properties
-
-    /// 数据的日期范围（最小日期和最大日期）
-    private var dateRange: (min: Date, max: Date) {
-        let dates = dataPoints.map(\.date)
-        let minDate = dates.min() ?? Date()
-        let maxDate = dates.max() ?? Date()
-        return (minDate, maxDate)
-    }
-
-    /// 当前动画截止日期：根据 animationProgress 映射到日期范围内的某一时刻
-    private var animatedMaxDate: Date {
-        let range = dateRange
-        let totalInterval = range.max.timeIntervalSince(range.min)
-        let animatedInterval = totalInterval * animationProgress
-        return range.min.addingTimeInterval(animatedInterval)
-    }
-
-    /// 动画范围内可见的数据点（日期 <= animatedMaxDate）
-    private var visibleDataPoints: [DataPoint] {
-        dataPoints.filter { $0.date <= animatedMaxDate }
-    }
 
     /// 基于真实数据计算的 Y 轴范围（动画期间保持不变，避免 Y 轴随数据缩放）
     /// stacked 模式下取同一日期各系列之和的最大值，standard 模式下取单一数据点最大值
@@ -207,9 +186,9 @@ struct SWAreaChart<CategoryType: Hashable & Plottable>: View {
                     .fontWeight(.semibold)
             }
 
-            // Chart（沿日期轴从左到右逐步渲染，只显示 animatedMaxDate 以内的数据点）
+            // Chart（通过 mask 遮罩实现从左到右逐步揭露的动画效果）
             Chart {
-                ForEach(visibleDataPoints) { point in
+                ForEach(dataPoints) { point in
                     // 面积标记（带渐变）
                     AreaMark(
                         x: .value("Date", point.date),
@@ -255,6 +234,16 @@ struct SWAreaChart<CategoryType: Hashable & Plottable>: View {
             }
             .chartLegend(position: .top, alignment: .trailing)
             .frame(height: chartHeight)
+            // 用 mask 遮罩实现从左到右逐步揭露：
+            // animationProgress 从 0 到 1 控制 Rectangle 宽度占比，
+            // SwiftUI 可以平滑插值 CGFloat，因此动画丝滑连续
+            .mask(
+                GeometryReader { geo in
+                    Rectangle()
+                        .frame(width: geo.size.width * animationProgress)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            )
             .onAppear {
                 withAnimation(.easeOut(duration: 1.2).delay(0.2)) {
                     animationProgress = 1.0

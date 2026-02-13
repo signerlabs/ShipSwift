@@ -56,9 +56,9 @@
 //    - title: String?                                — Optional title
 //
 //  Notes:
-//    - Appear animation: lines draw from left to right along the date axis with easeOut 1.2s after 0.2s delay
-//    - Y-axis range is fixed to real data bounds during animation (axis stays, lines appear progressively)
-//    - Reference lines are always visible and do not participate in the date-axis animation
+//    - Appear animation: a mask rectangle expands from left to right (easeOut 1.2s, 0.2s delay),
+//      revealing the chart progressively. All data points are always rendered so axes stay stable.
+//    - Reference lines are also revealed progressively by the same mask animation
 //
 //  Created by Wei Zhong on 2/13/26.
 //
@@ -141,31 +141,10 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
     /// Title (optional)
     var title: String? = nil
 
-    /// 动画进度（0 到 1），控制折线沿日期轴从左到右逐步出现
+    /// 动画进度（0 到 1），控制遮罩宽度，实现折线从左到右逐步揭露的效果
     @State private var animationProgress: Double = 0
 
     // MARK: - Computed Properties
-
-    /// 数据的日期范围（最小日期和最大日期）
-    private var dateRange: (min: Date, max: Date) {
-        let dates = dataPoints.map(\.date)
-        let minDate = dates.min() ?? Date()
-        let maxDate = dates.max() ?? Date()
-        return (minDate, maxDate)
-    }
-
-    /// 当前动画截止日期：根据 animationProgress 映射到日期范围内的某一时刻
-    private var animatedMaxDate: Date {
-        let range = dateRange
-        let totalInterval = range.max.timeIntervalSince(range.min)
-        let animatedInterval = totalInterval * animationProgress
-        return range.min.addingTimeInterval(animatedInterval)
-    }
-
-    /// 动画范围内可见的数据点（日期 <= animatedMaxDate）
-    private var visibleDataPoints: [DataPoint] {
-        dataPoints.filter { $0.date <= animatedMaxDate }
-    }
 
     /// 基于真实数据计算的 Y 轴范围（动画期间保持不变，避免 Y 轴随数据缩放）
     private var effectiveYDomain: ClosedRange<Double>? {
@@ -208,10 +187,10 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
                     .fontWeight(.semibold)
             }
 
-            // Chart（沿日期轴从左到右逐步渲染，只显示 animatedMaxDate 以内的数据点）
+            // Chart（通过 mask 遮罩实现从左到右逐步揭露的动画效果）
             Chart {
-                // 数据系列（仅显示动画范围内的可见数据点）
-                ForEach(visibleDataPoints) { point in
+                // 数据系列（始终渲染全部数据点，由外层 mask 控制可见范围）
+                ForEach(dataPoints) { point in
                     LineMark(
                         x: .value("Date", point.date),
                         y: .value("Value", point.value)
@@ -267,6 +246,16 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
             }
             .chartLegend(position: .top, alignment: .trailing)
             .frame(height: chartHeight)
+            // 用 mask 遮罩实现从左到右逐步揭露：
+            // animationProgress 从 0 到 1 控制 Rectangle 宽度占比，
+            // SwiftUI 可以平滑插值 CGFloat，因此动画丝滑连续
+            .mask(
+                GeometryReader { geo in
+                    Rectangle()
+                        .frame(width: geo.size.width * animationProgress)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            )
             .onAppear {
                 withAnimation(.easeOut(duration: 1.2).delay(0.2)) {
                     animationProgress = 1.0
