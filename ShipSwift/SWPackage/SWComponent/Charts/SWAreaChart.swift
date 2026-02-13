@@ -51,8 +51,9 @@
 //    - title: String?                               — Optional title
 //
 //  Notes:
-//    - Appear animation: a mask rectangle expands from left to right (easeOut 1.2s, 0.2s delay),
-//      revealing the chart progressively. All data points are always rendered so axes stay stable.
+//    - Appear animation: via chartPlotStyle, a mask rectangle expands from left to right
+//      (easeOut 1.2s, 0.2s delay) only on the plot area, so axes/labels/legend stay visible.
+//      All data points are always rendered so axes stay stable.
 //
 //  Created by Wei Zhong on 2/13/26.
 //
@@ -186,7 +187,7 @@ struct SWAreaChart<CategoryType: Hashable & Plottable>: View {
                     .fontWeight(.semibold)
             }
 
-            // Chart（通过 mask 遮罩实现从左到右逐步揭露的动画效果）
+            // Chart（通过 chartPlotStyle 内的 mask 遮罩仅对绘图区域实现从左到右逐步揭露）
             Chart {
                 ForEach(dataPoints) { point in
                     // 面积标记（带渐变）
@@ -233,17 +234,19 @@ struct SWAreaChart<CategoryType: Hashable & Plottable>: View {
                 }
             }
             .chartLegend(position: .top, alignment: .trailing)
+            // 用 chartPlotStyle 将 mask 只应用到绘图区域（plot area），
+            // 不遮挡坐标轴、标签、标题、Legend 等外围元素
+            .chartPlotStyle { plotArea in
+                plotArea
+                    .mask(
+                        GeometryReader { geo in
+                            Rectangle()
+                                .frame(width: geo.size.width * animationProgress)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    )
+            }
             .frame(height: chartHeight)
-            // 用 mask 遮罩实现从左到右逐步揭露：
-            // animationProgress 从 0 到 1 控制 Rectangle 宽度占比，
-            // SwiftUI 可以平滑插值 CGFloat，因此动画丝滑连续
-            .mask(
-                GeometryReader { geo in
-                    Rectangle()
-                        .frame(width: geo.size.width * animationProgress)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            )
             .onAppear {
                 withAnimation(.easeOut(duration: 1.2).delay(0.2)) {
                     animationProgress = 1.0
