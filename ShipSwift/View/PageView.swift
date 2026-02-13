@@ -15,44 +15,44 @@ struct PageView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    Button {
-                        showOnboarding = true
-                    } label: {
-                        Label("Onboarding", systemImage: "hand.wave.fill")
-                    }
-                } footer: {
-                    Text("Multi-page welcome flow with swipe navigation and skip support. Presented as fullScreenCover.")
+                Button {
+                    showOnboarding = true
+                } label: {
+                    ListItem(
+                        title: "Onboarding",
+                        icon: "hand.wave.fill",
+                        description: "Multi-page welcome flow with swipe navigation and skip support. Presented as fullScreenCover."
+                    )
                 }
 
-                Section {
-                    NavigationLink {
-                        SWSettingView()
-                    } label: {
-                        Label("Settings", systemImage: "gearshape.fill")
-                    }
-                } footer: {
-                    Text("Generic settings page with language switch, share, legal links, and account actions. Pushed via NavigationLink.")
+                NavigationLink {
+                    SWSettingView()
+                } label: {
+                    ListItem(
+                        title: "Settings",
+                        icon: "gearshape.fill",
+                        description: "Generic settings page with language switch, share, legal links, and account actions. Pushed via NavigationLink."
+                    )
                 }
 
-                Section {
-                    Button {
-                        showOrder = true
-                    } label: {
-                        Label("Order", systemImage: "cup.and.saucer.fill")
-                    }
-                } footer: {
-                    Text("Animated drink customization demo with flavor/size selectors and cup animations. Presented as fullScreenCover.")
+                Button {
+                    showOrder = true
+                } label: {
+                    ListItem(
+                        title: "Order",
+                        icon: "cup.and.saucer.fill",
+                        description: "Animated drink customization demo with flavor/size selectors and cup animations. Presented as fullScreenCover."
+                    )
                 }
 
-                Section {
-                    Button {
-                        showRootTab = true
-                    } label: {
-                        Label("Tab", systemImage: "rectangle.split.3x1.fill")
-                    }
-                } footer: {
-                    Text("TabView template with selected/unselected icons and haptic feedback. Presented as sheet.")
+                Button {
+                    showRootTab = true
+                } label: {
+                    ListItem(
+                        title: "Tab",
+                        icon: "rectangle.split.3x1.fill",
+                        description: "TabView template with selected/unselected icons and haptic feedback. Presented as sheet."
+                    )
                 }
             }
             .navigationTitle("Pages")

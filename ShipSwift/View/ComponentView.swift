@@ -12,11 +12,24 @@ import SwiftUI
 struct ComponentView: View {
     var body: some View {
         NavigationStack {
-            ContentUnavailableView(
-                "Components",
-                systemImage: "square.grid.2x2",
-                description: Text("Coming soon")
-            )
+            List {
+                Section {
+                    NavigationLink {
+                        SWBeforeAfter(before: Image(.smileBefore), after: Image(.smileAfter))
+                    } label: {
+                        ListItem(
+                            title: "Before / After",
+                            icon: "slider.horizontal.below.rectangle",
+                            description: "Image comparison view with auto-oscillating slider and drag gesture. Supports custom labels, speed, and aspect ratio."
+                        )
+                    }
+                } header: {
+                    Text("Animation")
+                        .font(.title3.bold())
+                } footer: {
+
+                }
+            }
             .navigationTitle("Components")
         }
     }
