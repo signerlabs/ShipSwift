@@ -89,22 +89,20 @@ struct SWLightSweep<Content: View>: View {
 
 // MARK: - Preview
 
-#Preview("Wrapper") {
-    SWLightSweep {
-        Image(.smileAfter)
-            .resizable()
-            .scaledToFit()
-            .frame(width: 300)
+#Preview {
+    VStack(spacing: 26) {
+        SWLightSweep {
+            Image(.smileAfter)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 180)
+        }
+        
+        SWLightSweep(lineWidth: 120, duration: 0.5, cornerRadius: 20) {
+            Image(.smileAfter)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 200)
+        }
     }
-    .padding()
-}
-
-#Preview("Custom") {
-    SWLightSweep(lineWidth: 120, duration: 0.5, cornerRadius: 20) {
-        Image(.smileAfter)
-            .resizable()
-            .scaledToFit()
-            .frame(width: 300)
-    }
-    .padding()
 }

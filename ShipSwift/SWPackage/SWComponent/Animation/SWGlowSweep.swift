@@ -103,20 +103,18 @@ struct SWGlowSweep<Content: View>: View {
 
 // MARK: - Preview
 
-#Preview("Default") {
-    SWGlowSweep {
-        Text("Start Scan Today")
-            .font(.largeTitle.bold())
-    }
-}
-
-#Preview("Custom Colors") {
-    VStack(spacing: 20) {
+#Preview {
+    VStack(spacing: 26) {
+        SWGlowSweep {
+            Text("Start Scan Today")
+                .font(.largeTitle.bold())
+        }
+        
         SWGlowSweep(baseColor: .accentColor, glowColor: .white, duration: 1.5) {
             Text("Analyzing...")
                 .font(.title2.bold())
         }
-
+        
         SWGlowSweep(baseColor: .green.opacity(0.7), glowColor: .black) {
             Text("Processing")
                 .font(.headline)

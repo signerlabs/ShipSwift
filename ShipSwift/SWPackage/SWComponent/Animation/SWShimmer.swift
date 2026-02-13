@@ -93,20 +93,27 @@ struct SWShimmer<Content: View>: View {
 
 // MARK: - Preview
 
-#Preview("Button with Shimmer") {
-    VStack(spacing: 20) {
-        SWShimmer(duration: 1.5, delay: 2.0) {
-            Text("Scan Today")
-                .font(.headline)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 12)
-                .foregroundStyle(.white)
-                .background {
-                    LinearGradient(colors: [.purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
-                }
-                .clipShape(.capsule)
+#Preview {
+    VStack(spacing: 30) {
+        // Button
+        SWShimmer {
+            Button {
+                
+            } label: {
+                Text("Upgrade Now")
+                    .font(.largeTitle)
+                    .padding(.horizontal)
+                    .padding(.vertical, 6)
+            }
+            .buttonStyle(.borderedProminent)
+        }
+
+        // Card
+        SWShimmer {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.gray.opacity(0.3))
+                .frame(width: 280, height: 120)
         }
     }
-    .padding(40)
-    .background(Color.gray.opacity(0.2))
+    .padding()
 }

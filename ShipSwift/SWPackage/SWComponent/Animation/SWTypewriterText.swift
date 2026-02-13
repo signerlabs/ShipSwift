@@ -333,52 +333,43 @@ extension SWTypewriterText {
 
 // MARK: - Preview
 
-#Preview("Spring Style (Default)") {
-    SWTypewriterText(
-        texts: [
-            "Level up your smile game",
-            "AI-powered smile analysis",
-            "Join the glow up era"
-        ],
-        animationStyle: .spring
-    )
-    .font(.title3.weight(.semibold))
-    .padding()
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color.black)
-}
-
-#Preview("Blur Style") {
-    SWTypewriterText(
-        texts: [
-            "Level up your smile game",
-            "AI-powered smile analysis",
-            "Join the glow up era"
-        ],
-        animationStyle: .blur
-    )
-    .font(.title3.weight(.semibold))
-    .padding()
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color.black)
-}
-
-#Preview("Custom Gradient") {
-    SWTypewriterText(
-        texts: [
-            "Hello World",
-            "Welcome Back",
-            "Let's Go"
-        ],
-        animationStyle: .spring,
-        gradient: LinearGradient(
-            colors: [.pink, .orange],
-            startPoint: .leading,
-            endPoint: .trailing
+#Preview {
+    VStack(spacing: 26) {
+        SWTypewriterText(
+            texts: [
+                "Level up your smile game",
+                "AI-powered smile analysis",
+                "Join the glow up era"
+            ],
+            animationStyle: .spring
         )
-    )
-    .font(.title.weight(.bold))
-    .padding()
+        .font(.title3.weight(.semibold))
+        
+        SWTypewriterText(
+            texts: [
+                "Level up your smile game",
+                "AI-powered smile analysis",
+                "Join the glow up era"
+            ],
+            animationStyle: .blur
+        )
+        .font(.title3.weight(.semibold))
+        
+        SWTypewriterText(
+            texts: [
+                "Hello World",
+                "Welcome Back",
+                "Let's Go"
+            ],
+            animationStyle: .spring,
+            gradient: LinearGradient(
+                colors: [.pink, .orange],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        )
+        .font(.title.weight(.bold))
+    }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(Color.black)
 }
