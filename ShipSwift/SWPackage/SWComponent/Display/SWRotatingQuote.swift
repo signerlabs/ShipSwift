@@ -198,55 +198,65 @@ private extension Array {
 
 // MARK: - Preview
 
-#Preview("Multiple Quotes") {
-    List {
-        Section {
-            SWRotatingQuote(
-                quotes: [
-                    "Those times when you get up early, and you work hard, those times when you stay up late, and you work hard.",
-                    "Those times when you don't feel like working, you're too tired, you don't want to push yourself, but you do it anyway.",
-                    "That is actually the dream.\n It's not the destination, it's the journey."
-                ],
-                author: "Kobe Bryant"
-            )
-        }
-        .listRowBackground(Color.clear)
-    }
-}
+#Preview {
+    ScrollView {
+        VStack(spacing: 32) {
+            // Multiple quotes rotation
+            List {
+                Section {
+                    SWRotatingQuote(
+                        quotes: [
+                            "Those times when you get up early, and you work hard, those times when you stay up late, and you work hard.",
+                            "Those times when you don't feel like working, you're too tired, you don't want to push yourself, but you do it anyway.",
+                            "That is actually the dream.\n It's not the destination, it's the journey."
+                        ],
+                        author: "Kobe Bryant"
+                    )
+                }
+                .listRowBackground(Color.clear)
+            }
+            .frame(height: 200)
 
-#Preview("Single Quote") {
-    List {
-        Section {
-            SWRotatingQuote(
-                quotes: [
-                    "Stay hungry, stay foolish."
-                ],
-                author: "Steve Jobs",
-                quoteFont: .title3,
-                authorFont: .title2
-            )
-        }
-        .listRowBackground(Color.clear)
-    }
-}
+            Divider()
 
-#Preview("Custom Style") {
-    List {
-        Section {
-            SWRotatingQuote(
-                quotes: [
-                    "The only way to do great work is to love what you do.",
-                    "Innovation distinguishes between a leader and a follower.",
-                    "Your time is limited, don't waste it living someone else's life."
-                ],
-                author: "Steve Jobs",
-                interval: 3.0,
-                quoteFont: .body,
-                authorFont: .callout,
-                fontDesign: .serif,
-                foregroundStyle: .primary
-            )
+            // Single quote (no rotation)
+            List {
+                Section {
+                    SWRotatingQuote(
+                        quotes: [
+                            "Stay hungry, stay foolish."
+                        ],
+                        author: "Steve Jobs",
+                        quoteFont: .title3,
+                        authorFont: .title2
+                    )
+                }
+                .listRowBackground(Color.clear)
+            }
+            .frame(height: 200)
+
+            Divider()
+
+            // Custom style
+            List {
+                Section {
+                    SWRotatingQuote(
+                        quotes: [
+                            "The only way to do great work is to love what you do.",
+                            "Innovation distinguishes between a leader and a follower.",
+                            "Your time is limited, don't waste it living someone else's life."
+                        ],
+                        author: "Steve Jobs",
+                        interval: 3.0,
+                        quoteFont: .body,
+                        authorFont: .callout,
+                        fontDesign: .serif,
+                        foregroundStyle: .primary
+                    )
+                }
+                .listRowBackground(Color.clear)
+            }
+            .frame(height: 200)
         }
-        .listRowBackground(Color.clear)
     }
 }

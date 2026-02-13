@@ -29,7 +29,7 @@ struct SWLabelWithIcon: View {
     var icon: String = "pencil"
     var bg: Color = .blue
     var name: LocalizedStringResource = "Name"
-
+    
     var body: some View {
         HStack {
             ZStack {
@@ -62,8 +62,35 @@ struct SWLabelWithImage: View {
     }
 }
 
+// MARK: - Preview
+
 #Preview {
-    VStack {
+    VStack(alignment: .leading) {
         SWLabelWithIcon()
+        
+        SWLabelWithIcon(
+            icon: "gearshape",
+            bg: .orange,
+            name: "Settings"
+        )
+        
+        SWLabelWithIcon(
+            icon: "bell.badge",
+            bg: .red,
+            name: "Notifications"
+        )
+        
+        SWLabelWithIcon(
+            icon: "lock.shield",
+            bg: .green,
+            name: "Privacy"
+        )
+        
+        SWLabelWithIcon(
+            icon: "creditcard",
+            bg: .purple,
+            name: "Subscription"
+        )
     }
+    .padding()
 }

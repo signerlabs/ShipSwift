@@ -2,21 +2,25 @@
 //  SWScrollingFAQ.swift
 //  ShipSwift
 //
-//  Auto-scrolling horizontal FAQ carousel that displays three rows of
+//  Auto-scrolling horizontal FAQ carousel that displays rows of
 //  question pills scrolling in alternating directions (left, right, left).
 //  Uses UIScrollView with a CADisplayLink for smooth infinite looping.
 //  Tapping a pill triggers the onTap callback with the question text.
 //
 //  Usage:
-//    SWScrollingFAQ { question in
+//    SWScrollingFAQ(
+//        rows: [
+//            ["How does AI work?", "What can I ask?", "How accurate?", "Help with coding?",
+//             "Remember chat?", "Languages supported?", "Get started?", "Explain topics?"],
+//            ["Write an email", "Summarize article", "Translate text", "Creative ideas",
+//             "Debug code", "Explain concept", "Meal plan", "Brainstorm"],
+//            ["Best approach?", "How to improve?", "Give examples", "Compare options",
+//             "Suggest alternatives", "Pros and cons?", "Help understand", "Walk through"]
+//        ],
+//        title: "Let's talk about new topics"   // optional, nil hides the title
+//    ) { question in
 //        print("User tapped: \(question)")
-//        // e.g. navigate to a chat with this question pre-filled
 //    }
-//
-//  Notes:
-//    - FAQ data is currently hardcoded inside the component (faqData array).
-//      Customize the array to fit your app's topics.
-//    - Includes leading/trailing gradient fade overlays for a polished look.
 //
 //  Created by Wei Zhong on 3/1/26.
 //
@@ -24,33 +28,45 @@
 import SwiftUI
 
 struct SWScrollingFAQ: View {
+
+    // MARK: - Configuration
+
+    /// FAQ data organized by rows. Each inner array is displayed as one scrolling row.
+    let rows: [[String]]
+
+    /// Optional title displayed above the scrolling rows
+    var title: String? = nil
+
+    /// Callback when a question pill is tapped
     var onTap: (String) -> Void
+
+    // MARK: - Internal
 
     private enum Direction { case left, right }
 
+    // MARK: - Body
+
     var body: some View {
         VStack(spacing: 8) {
-            Text("Let's talk about new topics")
-                .padding(8)
-                .font(.headline)
+            if let title {
+                Text(title)
+                    .padding(8)
+                    .font(.headline)
+            }
 
             Group {
-                InfiniteScrollView(questions: Array(faqData[0..<8]),
-                                   direction: .left,
-                                   onTap: onTap)
-                .frame(height: 34)
-                InfiniteScrollView(questions: Array(faqData[8..<16]),
-                                   direction: .right,
-                                   onTap: onTap)
-                .frame(height: 34)
-                InfiniteScrollView(questions: Array(faqData[16..<24]),
-                                   direction: .left,
-                                   onTap: onTap)
-                .frame(height: 34)
+                ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
+                    InfiniteScrollView(
+                        questions: row,
+                        direction: index % 2 == 0 ? .left : .right,
+                        onTap: onTap
+                    )
+                    .frame(height: 34)
+                }
             }
             .overlay(alignment: .leading) {
                 LinearGradient(
-                    colors: [.white.opacity(0.4), .clear, .clear, .clear, .clear],
+                    colors: [Color(.systemBackground).opacity(0.8), .clear, .clear, .clear, .clear],
                     startPoint: .leading,
                     endPoint: .trailing
                 )
@@ -58,7 +74,7 @@ struct SWScrollingFAQ: View {
             }
             .overlay(alignment: .trailing) {
                 LinearGradient(
-                    colors: [.white.opacity(0.4), .clear, .clear, .clear, .clear],
+                    colors: [Color(.systemBackground).opacity(0.8), .clear, .clear, .clear, .clear],
                     startPoint: .trailing,
                     endPoint: .leading
                 )
@@ -182,24 +198,22 @@ struct SWScrollingFAQ: View {
             }
         }
     }
-
-    // MARK: - FAQ Data
-
-    private let faqData: [String] = [
-        // Row 1 (0-7)
-        "How does AI assistance work?", "What can I ask you?", "How accurate are the answers?", "Can you help with coding?",
-        "Do you remember our chat?", "What languages do you support?", "How do I get started?", "Can you explain complex topics?",
-        // Row 2 (8-15)
-        "Help me write an email", "Summarize this article", "Translate this text", "Generate creative ideas",
-        "Debug my code", "Explain this concept", "Create a meal plan", "Help me brainstorm",
-        // Row 3 (16-23)
-        "What's the best approach?", "How can I improve this?", "Give me examples", "Compare these options",
-        "Suggest alternatives", "What are the pros and cons?", "Help me understand", "Walk me through this"
-    ]
 }
 
+// MARK: - Preview
+
 #Preview {
-    SWScrollingFAQ { question in
+    SWScrollingFAQ(
+        rows: [
+            ["How does AI work?", "What can I ask?", "How accurate?", "Help with coding?",
+             "Remember chat?", "Languages supported?", "Get started?", "Explain topics?"],
+            ["Write an email", "Summarize article", "Translate text", "Creative ideas",
+             "Debug code", "Explain concept", "Meal plan", "Brainstorm"],
+            ["Best approach?", "How to improve?", "Give examples", "Compare options",
+             "Suggest alternatives", "Pros and cons?", "Help understand", "Walk through"]
+        ],
+        title: "Let's talk about new topics"
+    ) { question in
         print("Tapped: \(question)")
     }
 }

@@ -13,16 +13,12 @@
 //        cornerRadius: 24,        // default 24
 //        cycleDuration: 3.0,      // animation cycle in seconds, default 3.0
 //        labels: [
-//            // (text, normalized position 0-1 where 0.5 is center)
-//            ("Teeth mapping",   CGPoint(x: 0.3, y: 0.5)),
-//            ("Plaque detection", CGPoint(x: 0.9, y: 0.6)),
-//            ("Shape & balance", CGPoint(x: 0.5, y: 0.8))
+//            // Normalized position 0-1 where 0.5 is center
+//            .init(text: "Teeth mapping",    position: CGPoint(x: 0.3, y: 0.5)),
+//            .init(text: "Plaque detection", position: CGPoint(x: 0.9, y: 0.6)),
+//            .init(text: "Shape & balance",  position: CGPoint(x: 0.5, y: 0.8))
 //        ]
 //    )
-//
-//  The individual SWFloatingLabel view can also be used standalone:
-//
-//    SWFloatingLabel(text: "Feature A")
 //
 //  Created by Wei Zhong on 3/1/26.
 //
@@ -30,11 +26,25 @@
 import SwiftUI
 
 struct SWFloatingLabels: View {
+
+    // MARK: - Nested Types
+
+    /// Data model for a single floating label
+    struct LabelItem: Identifiable {
+        let id = UUID()
+        let text: String
+        let position: CGPoint
+    }
+
+    // MARK: - Configuration
+
     let image: Image
     var size: CGFloat = 360
     var cornerRadius: CGFloat = 24
     var cycleDuration: Double = 3.0
-    var labels: [(String, CGPoint)] = []
+    var labels: [LabelItem] = []
+
+    // MARK: - Body
 
     var body: some View {
         TimelineView(.animation) { timeline in
@@ -62,15 +72,15 @@ struct SWFloatingLabels: View {
                     )
 
                 // Cycle through labels
-                ForEach(Array(labels.enumerated()), id: \.offset) { index, label in
+                ForEach(Array(labels.enumerated()), id: \.element.id) { index, label in
                     let delay = Double(index) * 0.3
                     let labelCycle = (cycle - delay).truncatingRemainder(dividingBy: cycleDuration)
                     let opacity = labelCycle > 0.5 && labelCycle < (cycleDuration - 0.5) ? 1.0 : 0.0
 
-                    SWFloatingLabel(text: label.0)
+                    FloatingLabel(text: label.text)
                         .offset(
-                            x: (label.1.x - 0.5) * (size * 0.78),
-                            y: (label.1.y - 0.5) * (size * 0.78)
+                            x: (label.position.x - 0.5) * (size * 0.78),
+                            y: (label.position.y - 0.5) * (size * 0.78)
                         )
                         .opacity(opacity)
                         .scaleEffect(opacity > 0 ? 1 : 0.8)
@@ -79,23 +89,24 @@ struct SWFloatingLabels: View {
             }
         }
     }
-}
 
-// MARK: - Floating Label
+    // MARK: - Floating Label (Internal)
 
-struct SWFloatingLabel: View {
-    let text: String
+    /// Capsule-style label used as an internal implementation detail
+    private struct FloatingLabel: View {
+        let text: String
 
-    var body: some View {
-        Text(text)
-            .font(.footnote)
-            .foregroundStyle(.white)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(
-                Capsule()
-                    .fill(.ultraThinMaterial)
-            )
+        var body: some View {
+            Text(text)
+                .font(.footnote)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(
+                    Capsule()
+                        .fill(.ultraThinMaterial)
+                )
+        }
     }
 }
 
@@ -103,13 +114,11 @@ struct SWFloatingLabel: View {
 
 #Preview {
     SWFloatingLabels(
-        image: Image(systemName: "face.smiling"),
+        image: Image(.facePicture),
         labels: [
-            ("Teeth mapping", CGPoint(x: 0.3, y: 0.5)),
-            ("Plaque detection", CGPoint(x: 0.9, y: 0.6)),
-            ("Shape & balance", CGPoint(x: 0.5, y: 0.8))
+            .init(text: "Teeth mapping",    position: CGPoint(x: 0.3, y: 0.5)),
+            .init(text: "Plaque detection", position: CGPoint(x: 0.9, y: 0.6)),
+            .init(text: "Shape & balance",  position: CGPoint(x: 0.5, y: 0.8))
         ]
     )
-    .padding()
-    .background(Color.black)
 }
