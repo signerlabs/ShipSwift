@@ -11,6 +11,7 @@ import SwiftUI
 
 struct ModuleView: View {
     @State private var showAuthDemo = false
+    @State private var showCameraDemo = false
 
     var body: some View {
         NavigationStack {
@@ -23,6 +24,17 @@ struct ModuleView: View {
                         title: "Auth",
                         icon: "person.badge.key.fill",
                         description: "Complete auth flow: email sign-in/up, phone sign-in with country code picker, verification code, forgot/reset password, Apple & Google social sign-in."
+                    )
+                }
+
+                // Camera demo — showcase SWCamera UI components (no real camera)
+                Button {
+                    showCameraDemo = true
+                } label: {
+                    ListItem(
+                        title: "Camera",
+                        icon: "camera.fill",
+                        description: "Full camera capture view with viewfinder overlay, pinch-to-zoom, zoom slider, photo library picker, and permission handling."
                     )
                 }
 
@@ -53,6 +65,10 @@ struct ModuleView: View {
             NavigationStack {
                 SWAuthDemoView()
             }
+        }
+        .fullScreenCover(isPresented: $showCameraDemo) {
+            SWCameraDemoView()
+                .swAlert()
         }
     }
 }
@@ -895,6 +911,18 @@ private struct SWAuthDemoView: View {
             isLoading = false
             completion()
         }
+    }
+}
+
+// MARK: - Camera Demo View (Real Camera, No Processing)
+
+/// 使用真实 SWCameraView 的 Demo，拍摄或选择的照片不做任何处理和保存。
+private struct SWCameraDemoView: View {
+    @State private var capturedImage: UIImage?
+
+    var body: some View {
+        SWCameraView(image: $capturedImage)
+            .swAlert()
     }
 }
 

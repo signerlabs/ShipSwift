@@ -50,6 +50,7 @@ class SWCameraManager: NSObject {
     private var captureCompletion: ((UIImage?) -> Void)?
     private var currentDevice: AVCaptureDevice?
     var isAuthorized = false
+    var cameraPosition: AVCaptureDevice.Position = .back
 
     // Zoom
     var currentZoom: CGFloat = 1.0
@@ -116,9 +117,9 @@ class SWCameraManager: NSObject {
                 self.session.removeOutput(output)
             }
 
-            guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+            guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: self.cameraPosition) else {
                 DispatchQueue.main.async {
-                    self.onError?(String(localized: "Unable to access rear camera"))
+                    self.onError?(String(localized: "Unable to access camera"))
                 }
                 self.session.commitConfiguration()
                 self.isConfiguring = false
@@ -251,6 +252,62 @@ class SWCameraManager: NSObject {
 
     func zoom(by delta: CGFloat) {
         setZoom(currentZoom * delta)
+    }
+
+    // MARK: - Switch Camera (前后镜头切换)
+
+    func switchCamera() {
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+
+            let newPosition: AVCaptureDevice.Position = self.cameraPosition == .front ? .back : .front
+
+            guard let newCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: newPosition) else {
+                return
+            }
+
+            self.session.beginConfiguration()
+
+            // 移除现有的输入源
+            for input in self.session.inputs {
+                self.session.removeInput(input)
+            }
+
+            do {
+                let newInput = try AVCaptureDeviceInput(device: newCamera)
+                if self.session.canAddInput(newInput) {
+                    self.session.addInput(newInput)
+                    self.currentDevice = newCamera
+
+                    // 更新缩放范围
+                    DispatchQueue.main.async {
+                        self.minZoom = 1.0
+                        self.maxZoom = min(newCamera.activeFormat.videoMaxZoomFactor, 5.0)
+                        self.currentZoom = 1.0
+                        self.cameraPosition = newPosition
+                    }
+
+                    // 重置缩放
+                    self.applyZoom(1.0, to: newCamera)
+                }
+            } catch {
+                // 切换失败，静默忽略
+            }
+
+            self.session.commitConfiguration()
+        }
+    }
+
+    // MARK: - Private Helpers
+
+    private func applyZoom(_ factor: CGFloat, to device: AVCaptureDevice) {
+        do {
+            try device.lockForConfiguration()
+            device.videoZoomFactor = max(1.0, min(factor, device.activeFormat.videoMaxZoomFactor))
+            device.unlockForConfiguration()
+        } catch {
+            // 缩放失败，静默忽略
+        }
     }
 }
 

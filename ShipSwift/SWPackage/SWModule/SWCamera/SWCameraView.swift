@@ -2,9 +2,9 @@
 //  SWCameraView.swift
 //  ShipSwift
 //
-//  Camera capture view with viewfinder overlay and photo picker.
+//  Camera capture view with photo picker and zoom control.
 //  Full-screen camera UI with shutter button, photo library picker,
-//  pinch-to-zoom gesture, zoom slider, and viewfinder guide overlay.
+//  pinch-to-zoom gesture, and zoom slider.
 //
 //  Usage:
 //    // 1. Present as a sheet with a @Binding UIImage
@@ -20,11 +20,12 @@
 //    //    The captured/selected image is written to the binding.
 //
 //    // 3. Features included:
-//    //    - Live camera preview with viewfinder frame
+//    //    - Live camera preview
 //    //    - Shutter button for photo capture
 //    //    - PhotosPicker for selecting from photo library
 //    //    - Pinch-to-zoom gesture and zoom slider
-//    //    - Close button to dismiss without capture
+//    //    - Front/back camera switching
+//    //    - Close button (top-left corner)
 //    //    - Unauthorized state with "Open Settings" button
 //
 //    // 4. Errors are shown via SWAlertManager.shared
@@ -58,8 +59,22 @@ struct SWCameraView: View {
                         .onDisappear { cameraManager.stopSession() }
                         .gesture(pinchGesture)
 
-                    // Viewfinder and hint text
-                    viewfinderOverlay
+                    // 左上角关闭按钮
+                    VStack {
+                        HStack {
+                            Button { dismiss() } label: {
+                                Image(systemName: "xmark")
+                                    .font(.title3)
+                                    .foregroundStyle(.white)
+                                    .frame(width: 44, height: 44)
+                                    .background(.black.opacity(0.4), in: Circle())
+                            }
+                            Spacer()
+                        }
+                        .padding(.leading, 16)
+                        .padding(.top, 8)
+                        Spacer()
+                    }
 
                     VStack {
                         Spacer()
@@ -71,7 +86,7 @@ struct SWCameraView: View {
                 unauthorizedView
             }
         }
-        .background(.black.opacity(0.9))
+        .background(.black)
         .onChange(of: selectedPhotoItem) {
             Task {
                 await loadSelectedPhoto()
@@ -108,87 +123,6 @@ struct SWCameraView: View {
             .buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    // MARK: - Viewfinder Overlay
-
-    private var viewfinderOverlay: some View {
-        VStack(spacing: 0) {
-            // Top hint text
-            VStack(spacing: 8) {
-                Text("Place item in the frame.")
-                    .font(.headline)
-
-                HStack(spacing: 16) {
-                    Label("Centered", systemImage: "scope")
-                    Label("Bright", systemImage: "sun.max")
-                    Label("Clear", systemImage: "eye")
-                }
-                .font(.caption)
-            }
-            .foregroundStyle(.ultraThickMaterial)
-            .padding(.top, 60)
-            .padding(.bottom, 20)
-
-            Spacer()
-
-            // Viewfinder frame
-            viewfinderFrame
-                .frame(width: 280, height: 280)
-
-            Spacer()
-
-            // Bottom hint
-            Text("For best results, use a plain background.")
-                .font(.caption)
-                .foregroundStyle(.ultraThickMaterial)
-                .padding(.bottom, 160)
-        }
-    }
-
-    // MARK: - Viewfinder Frame
-
-    private var viewfinderFrame: some View {
-        ZStack {
-            // Corner decoration lines
-            GeometryReader { geo in
-                let cornerLength: CGFloat = 30
-                let lineWidth: CGFloat = 3
-                let color = Color.white
-
-                // Top-left
-                Path { path in
-                    path.move(to: CGPoint(x: 0, y: cornerLength))
-                    path.addLine(to: CGPoint(x: 0, y: 0))
-                    path.addLine(to: CGPoint(x: cornerLength, y: 0))
-                }
-                .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-
-                // Top-right
-                Path { path in
-                    path.move(to: CGPoint(x: geo.size.width - cornerLength, y: 0))
-                    path.addLine(to: CGPoint(x: geo.size.width, y: 0))
-                    path.addLine(to: CGPoint(x: geo.size.width, y: cornerLength))
-                }
-                .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-
-                // Bottom-left
-                Path { path in
-                    path.move(to: CGPoint(x: 0, y: geo.size.height - cornerLength))
-                    path.addLine(to: CGPoint(x: 0, y: geo.size.height))
-                    path.addLine(to: CGPoint(x: cornerLength, y: geo.size.height))
-                }
-                .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-
-                // Bottom-right
-                Path { path in
-                    path.move(to: CGPoint(x: geo.size.width - cornerLength, y: geo.size.height))
-                    path.addLine(to: CGPoint(x: geo.size.width, y: geo.size.height))
-                    path.addLine(to: CGPoint(x: geo.size.width, y: geo.size.height - cornerLength))
-                }
-                .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-            }
-        }
     }
 
     // MARK: - Zoom Control
@@ -239,9 +173,9 @@ struct SWCameraView: View {
             }
             .disabled(!cameraManager.isAuthorized || isCapturing)
 
-            // Close button
-            Button { dismiss() } label: {
-                controlButton(icon: "xmark")
+            // 翻转镜头
+            Button { cameraManager.switchCamera() } label: {
+                controlButton(icon: "camera.rotate.fill")
             }
         }
         .padding(.bottom, 50)
