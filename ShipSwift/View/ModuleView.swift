@@ -992,10 +992,10 @@ private struct SWPaywallDemoView: View {
     private let monthlyPrice = "$9.99"
     private let yearlyPrice = "$59.99"
     private let features: [(icon: String, text: String)] = [
-        ("shippingbox.fill", "20+ production-ready SwiftUI modules"),
-        ("doc.text.fill", "Step-by-step integration recipes"),
-        ("arrow.triangle.branch", "Lifetime updates & new components"),
-        ("person.2.fill", "Priority Discord community support"),
+        ("cpu.fill", "AI-optimized recipes for Claude, Cursor & Windsurf"),
+        ("checkmark.seal.fill", "Full-stack iOS + AWS backend, battle-tested in production"),
+        ("terminal.fill", "One MCP command — zero downloads, instant access"),
+        ("arrow.triangle.branch", "Lifetime updates & new recipes included"),
     ]
 
     var body: some View {
@@ -1051,9 +1051,10 @@ private struct SWPaywallDemoView: View {
                     HStack(spacing: 10) {
                         Image(systemName: feature.icon)
                             .foregroundStyle(.accent)
-                            .frame(width: 24)
+                            .imageScale(.small)
+                            .frame(width: 20)
                         Text(feature.text)
-                            .font(.subheadline)
+                            .font(.caption)
                     }
                 }
             }

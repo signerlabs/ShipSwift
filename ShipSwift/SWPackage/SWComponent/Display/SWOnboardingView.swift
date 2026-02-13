@@ -101,28 +101,28 @@ enum OnboardingPage: CaseIterable {
 
     var icon: String {
         switch self {
-        case .shipFast: "shippingbox.fill"
-        case .components: "square.grid.2x2.fill"
-        case .modular: "puzzlepiece.extension.fill"
+        case .shipFast: "cpu.fill"
+        case .components: "doc.text.fill"
+        case .modular: "terminal.fill"
         case .launch: "paperplane.fill"
         }
     }
 
     var title: String {
         switch self {
-        case .shipFast: "Ship Faster"
-        case .components: "50+ Components"
-        case .modular: "Plug & Play"
-        case .launch: "Idea to App Store"
+        case .shipFast: "AI-First Development"
+        case .components: "Production-Ready Recipes"
+        case .modular: "One Command Setup"
+        case .launch: "Ship 10x Faster"
         }
     }
 
     var description: String {
         switch self {
-        case .shipFast: "Build production-ready iOS apps in days, not months."
-        case .components: "Charts, animations, camera, auth, paywall — all ready to use."
-        case .modular: "Every component is self-contained. Drop it in and it just works."
-        case .launch: "Stop rebuilding the basics. Focus on what makes your app unique."
+        case .shipFast: "Recipes structured for AI models — Claude, Cursor, Windsurf get production-grade context instantly."
+        case .components: "Auth, subscriptions, camera, AI chat, paywall — every recipe battle-tested in real App Store apps."
+        case .modular: "Connect via MCP with one command. No downloads, no setup, no dependencies to manage."
+        case .launch: "Stop rebuilding auth and payments from scratch. Focus on what makes your app unique."
         }
     }
 }
