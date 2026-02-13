@@ -109,6 +109,9 @@ struct ModuleView: View {
         .fullScreenCover(isPresented: $showFaceCameraDemo) {
             SWFaceCameraDemoView()
         }
+        .sheet(isPresented: $showPaywall) {
+            SWPaywallDemoView()
+        }
     }
 }
 
@@ -971,6 +974,208 @@ private struct SWCameraDemoView: View {
     var body: some View {
         SWCameraView(image: $capturedImage)
             .swAlert()
+    }
+}
+
+// MARK: - Paywall Demo View (Mock SubscriptionStoreView UI)
+
+/// 还原原生 SubscriptionStoreView 的 UI，不依赖 StoreKit，可直接上线展示。
+private struct SWPaywallDemoView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var selectedPlan: Plan = .yearly
+
+    private enum Plan: String {
+        case monthly, yearly
+    }
+
+    // 模拟产品数据
+    private let monthlyPrice = "$9.99"
+    private let yearlyPrice = "$59.99"
+    private let features: [(icon: String, text: String)] = [
+        ("shippingbox.fill", "20+ production-ready SwiftUI modules"),
+        ("doc.text.fill", "Step-by-step integration recipes"),
+        ("arrow.triangle.branch", "Lifetime updates & new components"),
+        ("person.2.fill", "Priority Discord community support"),
+    ]
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // 营销内容
+                    marketingHeader
+
+                    // 订阅选项
+                    subscriptionOptions
+
+                    // 订阅按钮
+                    subscribeButton
+
+                    // 底部链接
+                    footerLinks
+                }
+                .padding()
+                .padding(.bottom, 20)
+            }
+            .background(Color(.systemGroupedBackground))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Marketing Header
+
+    private var marketingHeader: some View {
+        VStack(spacing: 16) {
+            SWShakingIcon(image: Image(.shipSwiftLogo), cornerRadius: 12)
+                .padding(.vertical)
+
+            Text("ShipSwift Pro")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+
+            Text("Ship your iOS app 10x faster")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            VStack(alignment: .leading, spacing: 10) {
+                ForEach(features, id: \.icon) { feature in
+                    HStack(spacing: 10) {
+                        Image(systemName: feature.icon)
+                            .foregroundStyle(.accent)
+                            .frame(width: 24)
+                        Text(feature.text)
+                            .font(.subheadline)
+                    }
+                }
+            }
+            .padding(.vertical, 8)
+        }
+        .padding(.top, 8)
+    }
+
+    // MARK: - Subscription Options
+
+    private var subscriptionOptions: some View {
+        VStack(spacing: 12) {
+            planCard(
+                plan: .yearly,
+                title: "Yearly",
+                price: yearlyPrice,
+                period: "/year",
+                badge: "Best Value"
+            )
+
+            planCard(
+                plan: .monthly,
+                title: "Monthly",
+                price: monthlyPrice,
+                period: "/month",
+                badge: nil
+            )
+        }
+    }
+
+    private func planCard(plan: Plan, title: String, price: String, period: String, badge: String?) -> some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) { selectedPlan = plan }
+        } label: {
+            HStack {
+                // 选中指示器
+                Image(systemName: selectedPlan == plan ? "checkmark.circle.fill" : "circle")
+                    .font(.title3)
+                    .foregroundStyle(selectedPlan == plan ? .accent : .secondary)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                    Text("\(price)\(period)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                if let badge {
+                    Text(badge)
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(.accent, in: Capsule())
+                }
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color(.systemBackground))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .strokeBorder(
+                        selectedPlan == plan ? Color.accentColor : Color(.separator),
+                        lineWidth: selectedPlan == plan ? 2 : 1
+                    )
+            )
+        }
+    }
+
+    // MARK: - Subscribe Button
+
+    private var subscribeButton: some View {
+        Button {
+            dismiss()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                SWAlertManager.shared.show(.info, message: "This is a demo — no real purchase")
+            }
+        } label: {
+            Text("Get ShipSwift Pro")
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+        }
+        .buttonStyle(.borderedProminent)
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+
+    // MARK: - Footer Links
+
+    private var footerLinks: some View {
+        VStack(spacing: 12) {
+            Button("Restore Purchases") {
+                dismiss()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    SWAlertManager.shared.show(.info, message: "This is a demo — no purchases to restore")
+                }
+            }
+            .font(.subheadline)
+
+            Button("Redeem Code") {
+                dismiss()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    SWAlertManager.shared.show(.info, message: "This is a demo — no codes to redeem")
+                }
+            }
+            .font(.subheadline)
+
+            HStack(spacing: 16) {
+                Link("Terms of Service", destination: URL(string: "https://shipswift.app/terms")!)
+                Link("Privacy Policy", destination: URL(string: "https://shipswift.app/privacy")!)
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+        }
+        .padding(.top, 8)
     }
 }
 
