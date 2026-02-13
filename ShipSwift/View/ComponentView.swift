@@ -12,7 +12,7 @@ import SwiftUI
 struct ComponentView: View {
     @State private var selectedInputTab = 0
     @State private var stepperValue = 1
-    @State private var agreementChecked = false
+
     @State private var showAddSheet = false
     @State private var showOnboarding = false
     @State private var showOrder = false
@@ -500,23 +500,6 @@ struct ComponentView: View {
                         )
                     }
 
-                    // 协议勾选框 — 带服务条款和隐私政策链接的复选框
-                    NavigationLink {
-                        VStack {
-                            Spacer()
-                            SWAgreementChecker(agreementChecked: $agreementChecked)
-                                .padding(.horizontal)
-                            Spacer()
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } label: {
-                        ListItem(
-                            title: "SWAgreementChecker",
-                            icon: "checkmark.square",
-                            description: "Agreement checkbox with Terms of Service and Privacy Policy links. Configurable URLs."
-                        )
-                    }
-
                     // 添加表单 — 带文本输入的底部弹出面板
                     NavigationLink {
                         VStack {
@@ -543,7 +526,7 @@ struct ComponentView: View {
                         )
                     }
                 } header: {
-                    Text("Input (4)")
+                    Text("Input (3)")
                         .font(.title3.bold())
                         .textCase(nil)
                 }

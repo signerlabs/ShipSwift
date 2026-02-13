@@ -179,6 +179,9 @@ final class SWUserManager {
 
     // MARK: - Properties
 
+    /// 是否跳过 Amplify 认证检查（用于 Preview 环境）
+    private let skipAuthCheck: Bool
+
     /// User session state
     var sessionState: SWSessionState = .loading
 
@@ -218,13 +221,18 @@ final class SWUserManager {
 
     // MARK: - Initialization
 
-    init() {
+    init(skipAuthCheck: Bool = false) {
+        self.skipAuthCheck = skipAuthCheck
         self.isFirstLaunch = !UserDefaults.standard.bool(forKey: StorageKey.isFirstLaunch.rawValue)
         appLaunchCount += 1
 
-        // Check authentication status
-        Task {
-            await checkAuthStatus()
+        if !skipAuthCheck {
+            // Check authentication status
+            Task {
+                await checkAuthStatus()
+            }
+        } else {
+            sessionState = .signedOut()
         }
     }
 

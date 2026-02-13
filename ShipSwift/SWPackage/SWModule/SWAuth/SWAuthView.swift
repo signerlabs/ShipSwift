@@ -739,7 +739,7 @@ struct SWAuthView: View {
 
 #Preview {
     SWAuthView()
-        .environment(SWUserManager())
+        .environment(SWUserManager(skipAuthCheck: true))
 }
 
 // MARK: - Auth Error Localization
