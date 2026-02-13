@@ -111,12 +111,11 @@ private struct SWAuthDemoView: View {
                 Spacer(minLength: 40)
 
                 // Icon
-                Image(systemName: "person.circle.fill")
+                Image(.shipSwiftLogo)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 80, height: 80)
-                    .foregroundStyle(Color.accentColor)
-                    .padding()
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
 
                 // Title
                 VStack(spacing: 8) {
