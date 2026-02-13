@@ -18,11 +18,16 @@
 //        before: Image("old"),
 //        after: Image("new"),
 //        width: 300,               // default 360
-//        aspectRatio: 16.0 / 9.0,  // default 4/3
+//        aspectRatio: 16.0 / 9.0,  // default 3/4 (portrait)
 //        cornerRadius: 16,         // default 24
 //        speed: 1.2,               // oscillation speed, default 0.8
-//        showLabels: false          // hide Before/After labels
+//        showLabels: false,         // hide Before/After labels
+//        beforeLabel: "旧",         // custom label text, default "Before"
+//        afterLabel: "新"           // custom label text, default "After"
 //    )
+//
+//    // Supports drag gesture — drag the slider to compare manually,
+//    // auto-animation resumes seamlessly after release.
 //
 //  Created by Wei Zhong on 3/1/26.
 //
@@ -33,32 +38,38 @@ struct SWBeforeAfter: View {
     let before: Image
     let after: Image
     var width: CGFloat = 360
-    var aspectRatio: CGFloat = 4.0 / 3.0
+    var aspectRatio: CGFloat = 3.0 / 4.0
     var cornerRadius: CGFloat = 24
     var speed: Double = 0.8
     var showLabels: Bool = true
+    var beforeLabel: String = "Before"
+    var afterLabel: String = "After"
 
     private var height: CGFloat { width / aspectRatio }
 
+    @State private var startDate = Date.now
+    @State private var isDragging = false
+    @State private var dragSliderPos: CGFloat = 0.5
+
     var body: some View {
-        TimelineView(.animation) { timeline in
-            let t = timeline.date.timeIntervalSinceReferenceDate
-            // Slider oscillates between 0.2 and 0.8
-            let sliderPos = 0.5 + sin(t * speed) * 0.3
+        TimelineView(.animation(paused: isDragging)) { timeline in
+            let sliderPos: CGFloat = isDragging
+                ? dragSliderPos
+                : 0.5 + sin(timeline.date.timeIntervalSince(startDate) * speed) * 0.3
             let sliderX = sliderPos * width
 
             ZStack {
                 // Bottom layer (Before)
                 before
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
                     .frame(width: width, height: height)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
 
                 // Top layer (After) - clipped by mask
                 after
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
                     .frame(width: width, height: height)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                     .mask(
@@ -80,7 +91,7 @@ struct SWBeforeAfter: View {
                 Image(systemName: "arrow.left.and.right.circle.fill")
                     .font(.largeTitle)
                     .foregroundStyle(
-                        .ultraThinMaterial,
+                        .tertiary,
                         .white.opacity(0.8)
                     )
                     .offset(x: sliderX - width / 2)
@@ -88,30 +99,43 @@ struct SWBeforeAfter: View {
                 // Before / After labels
                 if showLabels {
                     HStack {
-                        Text("Before")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .background(.ultraThinMaterial, in: Capsule())
+                        labelTag(beforeLabel)
                             .padding(12)
-
                         Spacer()
-
-                        Text("After")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .background(.ultraThinMaterial, in: Capsule())
+                        labelTag(afterLabel)
                             .padding(12)
                     }
                     .frame(width: width, height: height, alignment: .bottom)
                 }
             }
+            .contentShape(Rectangle())
+            .gesture(dragGesture)
         }
+    }
+
+    private func labelTag(_ text: String) -> some View {
+        Text(text)
+            .font(.caption)
+            .fontWeight(.medium)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(.ultraThinMaterial, in: Capsule())
+    }
+
+    private var dragGesture: some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { value in
+                if !isDragging { isDragging = true }
+                dragSliderPos = min(max(value.location.x / width, 0.05), 0.95)
+            }
+            .onEnded { _ in
+                // Resume auto-animation from the current drag position
+                let normalized = min(max((dragSliderPos - 0.5) / 0.3, -1.0), 1.0)
+                let phase = Double(asin(normalized)) / speed
+                startDate = Date.now.addingTimeInterval(-phase)
+                isDragging = false
+            }
     }
 }
 
@@ -119,9 +143,8 @@ struct SWBeforeAfter: View {
 
 #Preview {
     SWBeforeAfter(
-        before: Image(systemName: "photo"),
-        after: Image(systemName: "photo.fill")
+        before: Image(.smileBefore),
+        after: Image(.smileAfter)
     )
     .padding()
-    .background(Color.black)
 }
