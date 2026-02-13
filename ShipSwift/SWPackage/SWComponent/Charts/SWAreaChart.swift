@@ -51,8 +51,8 @@
 //    - title: String?                               — Optional title
 //
 //  Notes:
-//    - Appear animation: area and line rise from 0 to target value with easeOut 1.2s after 0.2s delay
-//    - Y-axis range is fixed to real data bounds during animation (area grows, axis stays)
+//    - Appear animation: area and line draw from left to right along the date axis with easeOut 1.2s after 0.2s delay
+//    - Y-axis range is fixed to real data bounds during animation (axis stays, area appears progressively)
 //
 //  Created by Wei Zhong on 2/13/26.
 //
@@ -128,10 +128,31 @@ struct SWAreaChart<CategoryType: Hashable & Plottable>: View {
     /// Title (optional)
     var title: String? = nil
 
-    /// 动画进度（0 到 1），控制面积图从 0 升起到目标值
+    /// 动画进度（0 到 1），控制面积图沿日期轴从左到右逐步出现
     @State private var animationProgress: Double = 0
 
     // MARK: - Computed Properties
+
+    /// 数据的日期范围（最小日期和最大日期）
+    private var dateRange: (min: Date, max: Date) {
+        let dates = dataPoints.map(\.date)
+        let minDate = dates.min() ?? Date()
+        let maxDate = dates.max() ?? Date()
+        return (minDate, maxDate)
+    }
+
+    /// 当前动画截止日期：根据 animationProgress 映射到日期范围内的某一时刻
+    private var animatedMaxDate: Date {
+        let range = dateRange
+        let totalInterval = range.max.timeIntervalSince(range.min)
+        let animatedInterval = totalInterval * animationProgress
+        return range.min.addingTimeInterval(animatedInterval)
+    }
+
+    /// 动画范围内可见的数据点（日期 <= animatedMaxDate）
+    private var visibleDataPoints: [DataPoint] {
+        dataPoints.filter { $0.date <= animatedMaxDate }
+    }
 
     /// 基于真实数据计算的 Y 轴范围（动画期间保持不变，避免 Y 轴随数据缩放）
     /// stacked 模式下取同一日期各系列之和的最大值，standard 模式下取单一数据点最大值
@@ -186,13 +207,13 @@ struct SWAreaChart<CategoryType: Hashable & Plottable>: View {
                     .fontWeight(.semibold)
             }
 
-            // Chart（y 值乘以 animationProgress 实现从 0 升起的动画效果）
+            // Chart（沿日期轴从左到右逐步渲染，只显示 animatedMaxDate 以内的数据点）
             Chart {
-                ForEach(dataPoints) { point in
+                ForEach(visibleDataPoints) { point in
                     // 面积标记（带渐变）
                     AreaMark(
                         x: .value("Date", point.date),
-                        y: .value("Value", point.value * animationProgress),
+                        y: .value("Value", point.value),
                         stacking: stackMode == .stacked ? .standard : .unstacked
                     )
                     .foregroundStyle(by: .value("Category", point.category))
@@ -203,7 +224,7 @@ struct SWAreaChart<CategoryType: Hashable & Plottable>: View {
                     if showLineOverlay {
                         LineMark(
                             x: .value("Date", point.date),
-                            y: .value("Value", point.value * animationProgress)
+                            y: .value("Value", point.value)
                         )
                         .foregroundStyle(by: .value("Category", point.category))
                         .interpolationMethod(interpolationMethod)

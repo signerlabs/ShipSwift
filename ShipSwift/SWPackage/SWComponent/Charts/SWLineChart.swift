@@ -56,9 +56,9 @@
 //    - title: String?                                — Optional title
 //
 //  Notes:
-//    - Appear animation: lines rise from 0 to target value with easeOut 1.2s after 0.2s delay
-//    - Y-axis range is fixed to real data bounds during animation (lines grow, axis stays)
-//    - Reference lines also participate in the animation (rise from 0 to target position)
+//    - Appear animation: lines draw from left to right along the date axis with easeOut 1.2s after 0.2s delay
+//    - Y-axis range is fixed to real data bounds during animation (axis stays, lines appear progressively)
+//    - Reference lines are always visible and do not participate in the date-axis animation
 //
 //  Created by Wei Zhong on 2/13/26.
 //
@@ -141,10 +141,31 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
     /// Title (optional)
     var title: String? = nil
 
-    /// 动画进度（0 到 1），控制折线从 0 升起到目标值
+    /// 动画进度（0 到 1），控制折线沿日期轴从左到右逐步出现
     @State private var animationProgress: Double = 0
 
     // MARK: - Computed Properties
+
+    /// 数据的日期范围（最小日期和最大日期）
+    private var dateRange: (min: Date, max: Date) {
+        let dates = dataPoints.map(\.date)
+        let minDate = dates.min() ?? Date()
+        let maxDate = dates.max() ?? Date()
+        return (minDate, maxDate)
+    }
+
+    /// 当前动画截止日期：根据 animationProgress 映射到日期范围内的某一时刻
+    private var animatedMaxDate: Date {
+        let range = dateRange
+        let totalInterval = range.max.timeIntervalSince(range.min)
+        let animatedInterval = totalInterval * animationProgress
+        return range.min.addingTimeInterval(animatedInterval)
+    }
+
+    /// 动画范围内可见的数据点（日期 <= animatedMaxDate）
+    private var visibleDataPoints: [DataPoint] {
+        dataPoints.filter { $0.date <= animatedMaxDate }
+    }
 
     /// 基于真实数据计算的 Y 轴范围（动画期间保持不变，避免 Y 轴随数据缩放）
     private var effectiveYDomain: ClosedRange<Double>? {
@@ -187,13 +208,13 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
                     .fontWeight(.semibold)
             }
 
-            // Chart（y 值乘以 animationProgress 实现从 0 升起的动画效果）
+            // Chart（沿日期轴从左到右逐步渲染，只显示 animatedMaxDate 以内的数据点）
             Chart {
-                // 数据系列
-                ForEach(dataPoints) { point in
+                // 数据系列（仅显示动画范围内的可见数据点）
+                ForEach(visibleDataPoints) { point in
                     LineMark(
                         x: .value("Date", point.date),
-                        y: .value("Value", point.value * animationProgress)
+                        y: .value("Value", point.value)
                     )
                     .foregroundStyle(by: .value("Category", point.category))
                     .interpolationMethod(interpolationMethod)
@@ -202,16 +223,16 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
                     if showPointMarkers {
                         PointMark(
                             x: .value("Date", point.date),
-                            y: .value("Value", point.value * animationProgress)
+                            y: .value("Value", point.value)
                         )
                         .foregroundStyle(by: .value("Category", point.category))
                         .symbolSize(30)
                     }
                 }
 
-                // 参考线（RuleMark），同样参与动画
+                // 参考线（RuleMark），始终显示，不参与日期轴动画
                 ForEach(Array(referenceLines.enumerated()), id: \.offset) { _, line in
-                    RuleMark(y: .value("Reference", line.value * animationProgress))
+                    RuleMark(y: .value("Reference", line.value))
                         .foregroundStyle(line.color)
                         .lineStyle(line.style)
                         .annotation(position: .top, alignment: .leading) {
