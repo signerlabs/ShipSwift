@@ -91,18 +91,20 @@ struct SWLightSweep<Content: View>: View {
 
 #Preview("Wrapper") {
     SWLightSweep {
-        Rectangle()
-            .fill(.gray)
-            .frame(width: 300, height: 200)
+        Image(.smileAfter)
+            .resizable()
+            .scaledToFit()
+            .frame(width: 300)
     }
     .padding()
 }
 
 #Preview("Custom") {
-    SWLightSweep(lineWidth: 120, duration: 2.0, cornerRadius: 20) {
-        Rectangle()
-            .fill(.gray)
-            .frame(width: 300, height: 200)
+    SWLightSweep(lineWidth: 120, duration: 0.5, cornerRadius: 20) {
+        Image(.smileAfter)
+            .resizable()
+            .scaledToFit()
+            .frame(width: 300)
     }
     .padding()
 }

@@ -364,10 +364,11 @@ private extension SKColor {
         SWOrbitingLogos(
             images: ["airpods", "business-shoes", "sunglasses", "tshirt", "wide-brimmed-hat", "golf-gloves", "suit", "golf-gloves"]
         ) {
-            Image("Fullpack Transparent")
+            Image(.fullpackLogo)
                 .resizable()
-                .aspectRatio(contentMode: .fill)
+                .scaledToFit()
                 .frame(width: 60, height: 60)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
                 .offset(y: -5)
         }
 
