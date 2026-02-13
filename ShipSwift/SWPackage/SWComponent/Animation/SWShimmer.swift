@@ -2,41 +2,52 @@
 //  SWShimmer.swift
 //  ShipSwift
 //
-//  Shimmer highlight modifier that sweeps a translucent light band across
-//  a view in a continuous loop. Commonly used on buttons, skeleton loaders,
+//  Shimmer highlight View wrapper that sweeps a translucent light band across
+//  the content in a continuous loop. Commonly used on buttons, skeleton loaders,
 //  or cards to draw attention or indicate a loading state.
 //
 //  Usage:
 //    // Apply with default timing (2s sweep, 1s pause)
-//    Text("Upgrade Now")
-//        .padding()
-//        .background(.blue)
-//        .clipShape(.capsule)
-//        .shimmer()
+//    SWShimmer {
+//        Text("Upgrade Now")
+//            .padding()
+//            .background(.blue)
+//            .clipShape(.capsule)
+//    }
 //
 //    // Custom duration and delay
-//    myView.shimmer(duration: 1.5, delay: 2.0)
+//    SWShimmer(duration: 1.5, delay: 2.0) {
+//        myView
+//    }
 //
 //  Parameters:
-//    duration — time for the band to sweep across (seconds), default 2.0
-//    delay    — pause between sweeps (seconds), default 1.0
+//    - duration: Double     — Time for the band to sweep across (seconds), default 2.0
+//    - delay: Double        — Pause between sweeps (seconds), default 1.0
+//    - content: @ViewBuilder — View content to apply the shimmer on
 //
 //  Created by Wei Zhong on 3/1/26.
 //
 
 import SwiftUI
 
-// MARK: - SWShimmerModifier
+// MARK: - SWShimmer
 
-struct SWShimmerModifier: ViewModifier {
+struct SWShimmer<Content: View>: View {
     @State private var animate = false
 
-    let duration: Double
-    let delay: Double
+    var duration: Double = 2.0
+    var delay: Double = 1.0
 
-    init(duration: Double = 2.0, delay: Double = 1.0) {
+    @ViewBuilder let content: () -> Content
+
+    init(
+        duration: Double = 2.0,
+        delay: Double = 1.0,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
         self.duration = duration
         self.delay = delay
+        self.content = content
     }
 
     // White light band gradient
@@ -54,8 +65,8 @@ struct SWShimmerModifier: ViewModifier {
         )
     }
 
-    func body(content: Content) -> some View {
-        content
+    var body: some View {
+        content()
             .overlay {
                 GeometryReader { geo in
                     let bandWidth = geo.size.width * 0.5
@@ -80,34 +91,21 @@ struct SWShimmerModifier: ViewModifier {
     }
 }
 
-// MARK: - View Extension
-
-extension View {
-    /// Add a shimmer highlight effect
-    ///
-    /// - Parameters:
-    ///   - duration: Time for the band to sweep across (seconds), default 2.0
-    ///   - delay: Interval between sweeps (seconds), default 1.0
-    /// - Returns: View with shimmer effect applied
-    func shimmer(duration: Double = 2.0, delay: Double = 1.0) -> some View {
-        modifier(SWShimmerModifier(duration: duration, delay: delay))
-    }
-}
-
 // MARK: - Preview
 
 #Preview("Button with Shimmer") {
     VStack(spacing: 20) {
-        Text("Scan Today")
-            .font(.headline)
-            .padding(.horizontal, 24)
-            .padding(.vertical, 12)
-            .foregroundStyle(.white)
-            .background {
-                LinearGradient(colors: [.purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
-            }
-            .clipShape(.capsule)
-            .shimmer(duration: 1.5, delay: 2.0)
+        SWShimmer(duration: 1.5, delay: 2.0) {
+            Text("Scan Today")
+                .font(.headline)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 12)
+                .foregroundStyle(.white)
+                .background {
+                    LinearGradient(colors: [.purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+                }
+                .clipShape(.capsule)
+        }
     }
     .padding(40)
     .background(Color.gray.opacity(0.2))

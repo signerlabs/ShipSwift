@@ -1,5 +1,5 @@
 //
-//  SWBeforeAfter.swift
+//  SWBeforeAfterSlider.swift
 //  ShipSwift
 //
 //  Before/after image comparison view with an auto-oscillating slider
@@ -8,13 +8,13 @@
 //
 //  Usage:
 //    // Basic usage with two images
-//    SWBeforeAfter(
+//    SWBeforeAfterSlider(
 //        before: Image("photo_before"),
 //        after: Image("photo_after")
 //    )
 //
 //    // Customized size, aspect ratio, and animation speed
-//    SWBeforeAfter(
+//    SWBeforeAfterSlider(
 //        before: Image("old"),
 //        after: Image("new"),
 //        width: 300,               // default 360
@@ -34,7 +34,7 @@
 
 import SwiftUI
 
-struct SWBeforeAfter: View {
+struct SWBeforeAfterSlider: View {
     let before: Image
     let after: Image
     var width: CGFloat = 360
@@ -142,7 +142,7 @@ struct SWBeforeAfter: View {
 // MARK: - Preview
 
 #Preview {
-    SWBeforeAfter(
+    SWBeforeAfterSlider(
         before: Image(.smileBefore),
         after: Image(.smileAfter)
     )

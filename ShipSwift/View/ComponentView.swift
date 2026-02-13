@@ -15,7 +15,7 @@ struct ComponentView: View {
             List {
                 Section {
                     NavigationLink {
-                        SWBeforeAfter(before: Image(.smileBefore), after: Image(.smileAfter))
+                        SWBeforeAfterSlider(before: Image(.smileBefore), after: Image(.smileAfter))
                     } label: {
                         ListItem(
                             title: "Before / After",

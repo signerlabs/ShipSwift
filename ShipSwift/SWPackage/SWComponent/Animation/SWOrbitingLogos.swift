@@ -1,5 +1,5 @@
 //
-//  SWLogoOrbit.swift
+//  SWOrbitingLogos.swift
 //  ShipSwift
 //
 //  SpriteKit-powered animated orbit component. Displays multiple concentric rings
@@ -9,7 +9,7 @@
 //
 //  Usage:
 //    // Basic usage — array of image names + center view
-//    SWLogoOrbit(
+//    SWOrbitingLogos(
 //        images: ["icon1", "icon2", "icon3", "icon4",
 //                 "icon5", "icon6", "icon7", "icon8"]
 //    ) {
@@ -20,15 +20,21 @@
 //    }
 //
 //    // Control size (via frame constraint, component auto-scales)
-//    SWLogoOrbit(images: imageArray) {
+//    SWOrbitingLogos(images: imageArray) {
 //        Circle()
 //            .fill(.blue)
 //            .frame(width: 50, height: 50)
 //    }
 //    .frame(width: 150)
 //
+//    // Custom rotation speed
+//    SWOrbitingLogos(images: imageArray, rotationDuration: 15) {
+//        Text("Logo")
+//    }
+//
 //  Parameters:
 //    - images: [String]          — Array of asset image names (up to 8, evenly distributed on outer ring)
+//    - rotationDuration: Double  — Full orbit rotation duration in seconds (default 10)
 //    - center: @ViewBuilder      — SwiftUI view displayed at the center
 //
 //  Notes:
@@ -46,15 +52,22 @@ import SpriteKit
 /// Logo display component with orbit animation
 /// - Parameters:
 ///   - images: Array of images on the orbit (up to 8)
+///   - rotationDuration: Full orbit rotation duration in seconds (default 10)
 ///   - center: Custom view displayed at the center
-struct SWLogoOrbit<Center: View>: View {
+struct SWOrbitingLogos<Center: View>: View {
     let images: [String]
+    var rotationDuration: Double = 10
     let center: Center
 
     private let baseSize: CGFloat = 300  // Base design size
 
-    init(images: [String], @ViewBuilder center: () -> Center) {
+    init(
+        images: [String],
+        rotationDuration: Double = 10,
+        @ViewBuilder center: () -> Center
+    ) {
         self.images = images
+        self.rotationDuration = rotationDuration
         self.center = center()
     }
 
@@ -64,7 +77,11 @@ struct SWLogoOrbit<Center: View>: View {
             let scale = size / baseSize
 
             ZStack {
-                AnimatedLogoOrbit(images: images, scale: scale)
+                SWOrbitingLogosSpriteView(
+                    images: images,
+                    scale: scale,
+                    rotationDuration: rotationDuration
+                )
 
                 center
                     .scaleEffect(scale)
@@ -75,11 +92,14 @@ struct SWLogoOrbit<Center: View>: View {
     }
 }
 
-struct AnimatedLogoOrbit: View {
+// MARK: - SpriteKit Bridge View
+
+private struct SWOrbitingLogosSpriteView: View {
     let images: [String]
     let scale: CGFloat
+    let rotationDuration: Double
 
-    @State private var scene: AnimatedLogoOrbitScene?
+    @State private var scene: SWOrbitingLogosScene?
 
     var body: some View {
         ZStack {
@@ -88,9 +108,10 @@ struct AnimatedLogoOrbit: View {
             }
         }
         .onAppear {
-            let newScene = AnimatedLogoOrbitScene()
+            let newScene = SWOrbitingLogosScene()
             newScene.images = images
             newScene.scaleFactor = scale
+            newScene.rotationDuration = rotationDuration
             newScene.scaleMode = .resizeFill
             scene = newScene
         }
@@ -100,9 +121,12 @@ struct AnimatedLogoOrbit: View {
     }
 }
 
-class AnimatedLogoOrbitScene: SKScene {
+// MARK: - SpriteKit Scene
+
+private class SWOrbitingLogosScene: SKScene {
     var images: [String] = []
     var scaleFactor: CGFloat = 1.0
+    var rotationDuration: Double = 10
 
     private let dotsPerCircle = 23
     private let numCircles = 4
@@ -198,7 +222,7 @@ class AnimatedLogoOrbitScene: SKScene {
     }
 
     private func startRotation() {
-        container.run(.repeatForever(.rotate(byAngle: -.pi * 2, duration: 10)))
+        container.run(.repeatForever(.rotate(byAngle: -.pi * 2, duration: rotationDuration)))
     }
 
     private func animateNextIcon() {
@@ -321,17 +345,23 @@ private extension CGPoint {
     }
 }
 
-private extension UIColor {
+private extension SKColor {
     var rgba: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
         var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        #if canImport(UIKit)
         getRed(&r, green: &g, blue: &b, alpha: &a)
+        #else
+        // macOS: NSColor may need conversion to sRGB color space first
+        let color = usingColorSpace(.sRGB) ?? self
+        color.getRed(&r, green: &g, blue: &b, alpha: &a)
+        #endif
         return (r, g, b, a)
     }
 }
 
 #Preview {
     VStack {
-        SWLogoOrbit(
+        SWOrbitingLogos(
             images: ["airpods", "business-shoes", "sunglasses", "tshirt", "wide-brimmed-hat", "golf-gloves", "suit", "golf-gloves"]
         ) {
             Image("Fullpack Transparent")
@@ -341,7 +371,7 @@ private extension UIColor {
                 .offset(y: -5)
         }
 
-        SWLogoOrbit(
+        SWOrbitingLogos(
             images: ["airpods", "business-shoes", "sunglasses", "tshirt", "wide-brimmed-hat", "golf-gloves", "suit", "golf-gloves"]
         ) {
             Circle()

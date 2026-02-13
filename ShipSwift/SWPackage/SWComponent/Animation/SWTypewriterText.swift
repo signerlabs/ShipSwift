@@ -1,5 +1,5 @@
 //
-//  SWTypewriter.swift
+//  SWTypewriterText.swift
 //  ShipSwift
 //
 //  Typewriter text animation that cycles through an array of strings,
@@ -9,20 +9,20 @@
 //
 //  Usage:
 //    // Basic — cycles through texts with default spring animation
-//    SWTypewriter(texts: ["Hello World", "Welcome Back", "Let's Go"])
+//    SWTypewriterText(texts: ["Hello World", "Welcome Back", "Let's Go"])
 //
 //    // Choose an animation style (SWTypewriterStyle):
 //    //   .none, .spring, .blur, .fade, .scale, .wave
-//    SWTypewriter(texts: ["Line 1", "Line 2"], animationStyle: .blur)
+//    SWTypewriterText(texts: ["Line 1", "Line 2"], animationStyle: .blur)
 //
 //    // Convenience factory methods
-//    SWTypewriter.spring(texts: ["A", "B"])
-//    SWTypewriter.blur(texts: ["A", "B"])
-//    SWTypewriter.fade(texts: ["A", "B"])
-//    SWTypewriter.scale(texts: ["A", "B"])
+//    SWTypewriterText.spring(texts: ["A", "B"])
+//    SWTypewriterText.blur(texts: ["A", "B"])
+//    SWTypewriterText.fade(texts: ["A", "B"])
+//    SWTypewriterText.scale(texts: ["A", "B"])
 //
 //    // Custom gradient and timing
-//    SWTypewriter(
+//    SWTypewriterText(
 //        texts: ["Message 1", "Message 2"],
 //        typingSpeed: 0.05,       // seconds per character typed
 //        deletingSpeed: 0.03,     // seconds per character deleted
@@ -43,8 +43,8 @@ import SwiftUI
 
 // MARK: - SWTypewriterStyle
 
-/// Animation style for the typewriter effect
-enum SWTypewriterStyle {
+/// Animation style applied to each character during type/delete
+enum SWTypewriterStyle: Sendable {
     case none       // No animation, plain typewriter
     case spring     // Spring effect: characters bounce in/out
     case blur       // Blur effect: characters transition from blurry to clear
@@ -53,7 +53,7 @@ enum SWTypewriterStyle {
     case wave       // Wave effect: characters have vertical oscillation
 }
 
-// MARK: - SWTypewriter
+// MARK: - SWTypewriterText
 
 /// Typewriter text component
 ///
@@ -64,22 +64,22 @@ enum SWTypewriterStyle {
 ///
 /// ```swift
 /// // Basic usage
-/// SWTypewriter(texts: ["Hello World", "Welcome Back", "Let's Go"])
+/// SWTypewriterText(texts: ["Hello World", "Welcome Back", "Let's Go"])
 ///
 /// // Custom gradient
-/// SWTypewriter(
+/// SWTypewriterText(
 ///     texts: ["Message 1", "Message 2"],
 ///     gradient: LinearGradient(colors: [.pink, .orange], startPoint: .leading, endPoint: .trailing)
 /// )
 ///
 /// // Custom animation style
-/// SWTypewriter(
+/// SWTypewriterText(
 ///     texts: ["Message 1", "Message 2"],
 ///     animationStyle: .blur
 /// )
 ///
 /// // Full parameters
-/// SWTypewriter(
+/// SWTypewriterText(
 ///     texts: ["Message 1", "Message 2"],
 ///     typingSpeed: 0.05,      // Typing speed (seconds per character)
 ///     deletingSpeed: 0.03,    // Deleting speed (seconds per character)
@@ -96,7 +96,7 @@ enum SWTypewriterStyle {
 /// |-----------|--------------------|--------------------|
 /// | `.none`   | No animation       | No animation       |
 /// | `.spring` | Bounce in + fade   | Shrink + fade out  |
-/// | `.blur`   | Blur → clear       | Blur + fade out    |
+/// | `.blur`   | Blur -> clear      | Blur + fade out    |
 /// | `.fade`   | Slide down + fade  | Slide down + fade  |
 /// | `.scale`  | Scale down + fade  | Scale up + fade    |
 /// | `.wave`   | Drop in + fade     | Drop out + fade    |
@@ -107,14 +107,14 @@ enum SWTypewriterStyle {
 /// - `deletingSpeed`: Interval per character when deleting (seconds), default 0.03
 /// - `pauseDuration`: How long to display completed text (seconds), default 2.5
 /// - `animationStyle`: Animation style, default `.spring`
-/// - `gradient`: Text gradient, default cyan → purple
+/// - `gradient`: Text gradient, default cyan -> purple
 ///
 /// ## Notes
 /// - The component loops infinitely
 /// - Pair with `.font()` modifier to set size and weight
 /// - Uses an invisible `|` character as height placeholder to prevent layout jumps
 
-struct SWTypewriter: View {
+struct SWTypewriterText: View {
     let texts: [String]
     var typingSpeed: Double = 0.04
     var deletingSpeed: Double = 0.03
@@ -129,7 +129,7 @@ struct SWTypewriter: View {
     @State private var displayedText = ""
     @State private var currentIndex = 0
     @State private var isDeleting = false
-    @State private var charStates: [SWTypewriterCharState] = []
+    @State private var charStates: [SWTypewriterTextCharState] = []
     @State private var isActive = false
 
     var body: some View {
@@ -176,8 +176,8 @@ struct SWTypewriter: View {
 
         case .blur:
             return .asymmetric(
-                insertion: .opacity.combined(with: .swBlur),
-                removal: .opacity.combined(with: .swBlur)
+                insertion: .opacity.combined(with: .typewriterBlur),
+                removal: .opacity.combined(with: .typewriterBlur)
             )
 
         case .fade:
@@ -263,7 +263,7 @@ struct SWTypewriter: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + typingSpeed) { [self] in
                     guard isActive else { return }
                     displayedText.append(newChar)
-                    charStates.append(SWTypewriterCharState(character: String(newChar)))
+                    charStates.append(SWTypewriterTextCharState(character: String(newChar)))
                     typeNextCharacter()
                 }
             } else {
@@ -280,15 +280,15 @@ struct SWTypewriter: View {
 
 // MARK: - Character State
 
-private struct SWTypewriterCharState: Identifiable, Equatable {
+private struct SWTypewriterTextCharState: Identifiable, Equatable {
     let id = UUID()
     var character: String
 }
 
 // MARK: - Custom Blur Transition
 
-extension AnyTransition {
-    static var swBlur: AnyTransition {
+fileprivate extension AnyTransition {
+    static var typewriterBlur: AnyTransition {
         .modifier(
             active: SWBlurModifier(radius: 10, opacity: 0),
             identity: SWBlurModifier(radius: 0, opacity: 1)
@@ -309,32 +309,32 @@ private struct SWBlurModifier: ViewModifier {
 
 // MARK: - Convenience Initializers
 
-extension SWTypewriter {
+extension SWTypewriterText {
     /// Spring style (recommended)
-    static func spring(texts: [String]) -> SWTypewriter {
-        SWTypewriter(texts: texts, animationStyle: .spring)
+    static func spring(texts: [String]) -> SWTypewriterText {
+        SWTypewriterText(texts: texts, animationStyle: .spring)
     }
 
     /// Blur style
-    static func blur(texts: [String]) -> SWTypewriter {
-        SWTypewriter(texts: texts, animationStyle: .blur)
+    static func blur(texts: [String]) -> SWTypewriterText {
+        SWTypewriterText(texts: texts, animationStyle: .blur)
     }
 
     /// Scale style
-    static func scale(texts: [String]) -> SWTypewriter {
-        SWTypewriter(texts: texts, animationStyle: .scale)
+    static func scale(texts: [String]) -> SWTypewriterText {
+        SWTypewriterText(texts: texts, animationStyle: .scale)
     }
 
     /// Fade style
-    static func fade(texts: [String]) -> SWTypewriter {
-        SWTypewriter(texts: texts, animationStyle: .fade)
+    static func fade(texts: [String]) -> SWTypewriterText {
+        SWTypewriterText(texts: texts, animationStyle: .fade)
     }
 }
 
 // MARK: - Preview
 
 #Preview("Spring Style (Default)") {
-    SWTypewriter(
+    SWTypewriterText(
         texts: [
             "Level up your smile game",
             "AI-powered smile analysis",
@@ -349,7 +349,7 @@ extension SWTypewriter {
 }
 
 #Preview("Blur Style") {
-    SWTypewriter(
+    SWTypewriterText(
         texts: [
             "Level up your smile game",
             "AI-powered smile analysis",
@@ -364,7 +364,7 @@ extension SWTypewriter {
 }
 
 #Preview("Custom Gradient") {
-    SWTypewriter(
+    SWTypewriterText(
         texts: [
             "Hello World",
             "Welcome Back",
