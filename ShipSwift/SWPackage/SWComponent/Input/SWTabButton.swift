@@ -48,9 +48,18 @@ struct SWTabButton: View {
 }
 
 #Preview {
+    @Previewable @State var selectedTab = 0
+
     HStack {
-        SWTabButton(title: "Selected", isSelected: true) {}
-        SWTabButton(title: "Unselected", isSelected: false) {}
+        SWTabButton(title: "All", isSelected: selectedTab == 0) {
+            selectedTab = 0
+        }
+        SWTabButton(title: "Favorites", isSelected: selectedTab == 1) {
+            selectedTab = 1
+        }
+        SWTabButton(title: "Recent", isSelected: selectedTab == 2) {
+            selectedTab = 2
+        }
     }
     .padding()
 }

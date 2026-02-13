@@ -12,7 +12,11 @@ import Charts
 
 struct ComponentView: View {
     @State private var donutSelectedCategory: String? = nil
-
+    @State private var selectedInputTab = 0
+    @State private var stepperValue = 1
+    @State private var agreementChecked = false
+    @State private var showAddSheet = false
+    
     var body: some View {
         NavigationStack {
             List {
@@ -30,7 +34,7 @@ struct ComponentView: View {
                             description: "Draggable image comparison slider with auto-oscillating animation. Supports custom labels, speed, and aspect ratio."
                         )
                     }
-
+                    
                     NavigationLink {
                         VStack(spacing: 26) {
                             SWTypewriterText(
@@ -38,13 +42,13 @@ struct ComponentView: View {
                                 animationStyle: .spring
                             )
                             .font(.title3.weight(.semibold))
-
+                            
                             SWTypewriterText(
                                 texts: ["Level up your smile game", "AI-powered smile analysis", "Join the glow up era"],
                                 animationStyle: .blur
                             )
                             .font(.title3.weight(.semibold))
-
+                            
                             SWTypewriterText(
                                 texts: ["Hello World", "Welcome Back", "Let's Go"],
                                 animationStyle: .spring,
@@ -61,7 +65,7 @@ struct ComponentView: View {
                             description: "Typing and deleting text animation that cycles through strings. Six animation styles: spring, blur, fade, scale, wave, none."
                         )
                     }
-
+                    
                     NavigationLink {
                         VStack(spacing: 40) {
                             SWShakingIcon(image: Image(systemName: "apple.logo"), height: 20)
@@ -75,7 +79,7 @@ struct ComponentView: View {
                             description: "Periodically zooms in and shakes side-to-side, mimicking the iOS home-screen jiggle effect. Supports SF Symbols and asset images."
                         )
                     }
-
+                    
                     NavigationLink {
                         VStack(spacing: 30) {
                             SWShimmer {
@@ -87,7 +91,7 @@ struct ComponentView: View {
                                 }
                                 .buttonStyle(.borderedProminent)
                             }
-
+                            
                             SWShimmer {
                                 RoundedRectangle(cornerRadius: 12)
                                     .fill(.gray.opacity(0.3))
@@ -103,19 +107,19 @@ struct ComponentView: View {
                             description: "Translucent light band sweep across any view. Commonly used on buttons, skeleton loaders, or cards to draw attention."
                         )
                     }
-
+                    
                     NavigationLink {
                         VStack(spacing: 26) {
                             SWGlowSweep {
                                 Text("Start Scan Today")
                                     .font(.largeTitle.bold())
                             }
-
+                            
                             SWGlowSweep(baseColor: .accentColor, glowColor: .white, duration: 1.5) {
                                 Text("Analyzing...")
                                     .font(.title2.bold())
                             }
-
+                            
                             SWGlowSweep(baseColor: .green.opacity(0.7), glowColor: .black) {
                                 Text("Processing")
                                     .font(.headline)
@@ -129,7 +133,7 @@ struct ComponentView: View {
                             description: "Sweeps a glowing highlight band using the original content shape as mask. Ideal for text, icons, and SF Symbols."
                         )
                     }
-
+                    
                     NavigationLink {
                         VStack(spacing: 26) {
                             SWLightSweep {
@@ -138,7 +142,7 @@ struct ComponentView: View {
                                     .scaledToFit()
                                     .frame(width: 180)
                             }
-
+                            
                             SWLightSweep(lineWidth: 120, duration: 0.5, cornerRadius: 20) {
                                 Image(.smileAfter)
                                     .resizable()
@@ -154,7 +158,7 @@ struct ComponentView: View {
                             description: "Gradient light band that sweeps across content in a rounded rectangle. Great for image cards and thumbnails."
                         )
                     }
-
+                    
                     NavigationLink {
                         VStack(spacing: 20) {
                             SWScanningOverlay {
@@ -164,7 +168,7 @@ struct ComponentView: View {
                                     .frame(width: 180)
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
-
+                            
                             SWScanningOverlay(gridOpacity: 0.1, bandOpacity: 0.1, speed: 3.0) {
                                 Image(.facePicture)
                                     .resizable()
@@ -182,7 +186,7 @@ struct ComponentView: View {
                             description: "Grid lines, sweeping scan band, and noise layer overlay. Conveys an analyzing / processing visual effect."
                         )
                     }
-
+                    
                     NavigationLink {
                         SWAnimatedMeshGradient()
                             .ignoresSafeArea()
@@ -193,7 +197,7 @@ struct ComponentView: View {
                             description: "3x3 mesh gradient background that transitions between two color palettes. Designed as a full-screen or section background."
                         )
                     }
-
+                    
                     NavigationLink {
                         VStack {
                             SWOrbitingLogos(
@@ -206,7 +210,7 @@ struct ComponentView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                                     .offset(y: -5)
                             }
-
+                            
                             SWOrbitingLogos(
                                 images: ["airpods", "business-shoes", "sunglasses", "tshirt", "wide-brimmed-hat", "golf-gloves", "suit", "golf-gloves"]
                             ) {
@@ -228,7 +232,7 @@ struct ComponentView: View {
                         .font(.title3.bold())
                         .textCase(nil)
                 }
-
+                
                 Section {
                     NavigationLink {
                         ScrollView {
@@ -236,7 +240,7 @@ struct ComponentView: View {
                                 Group {
                                     let calendar = Calendar.current
                                     let today = calendar.startOfDay(for: Date())
-
+                                    
                                     let salesData: [SWLineChart<String>.DataPoint] = (0..<14).flatMap { (dayOffset: Int) -> [SWLineChart<String>.DataPoint] in
                                         let date = calendar.date(byAdding: .day, value: -dayOffset, to: today)!
                                         return [
@@ -244,25 +248,25 @@ struct ComponentView: View {
                                             .init(date: date, value: Double.random(in: 20...60), category: "Cost"),
                                         ]
                                     }
-
+                                    
                                     SWLineChart(
                                         dataPoints: salesData,
                                         colorMapping: ["Revenue": .blue, "Cost": .red],
                                         title: "Revenue vs Cost"
                                     )
                                 }
-
+                                
                                 Divider()
-
+                                
                                 Group {
                                     let calendar = Calendar.current
                                     let today = calendar.startOfDay(for: Date())
-
+                                    
                                     let tempData: [SWLineChart<String>.DataPoint] = (0..<10).map { dayOffset in
                                         let date = calendar.date(byAdding: .day, value: -dayOffset, to: today)!
                                         return .init(date: date, value: Double.random(in: 35.5...38.5), category: "Temperature")
                                     }
-
+                                    
                                     SWLineChart(
                                         dataPoints: tempData,
                                         colorMapping: ["Temperature": .orange],
@@ -288,14 +292,14 @@ struct ComponentView: View {
                             description: "Multi-series line chart with horizontal scrolling, reference lines, point markers, and configurable interpolation methods."
                         )
                     }
-
+                    
                     NavigationLink {
                         ScrollView {
                             VStack(spacing: 32) {
                                 Group {
                                     let calendar = Calendar.current
                                     let today = calendar.startOfDay(for: Date())
-
+                                    
                                     let salesData: [SWBarChart<String>.DataPoint] = (0..<10).flatMap { (dayOffset: Int) -> [SWBarChart<String>.DataPoint] in
                                         let date = calendar.date(byAdding: .day, value: -dayOffset, to: today)!
                                         return [
@@ -303,20 +307,20 @@ struct ComponentView: View {
                                             .init(date: date, value: Double.random(in: 30...100), category: "Offline"),
                                         ]
                                     }
-
+                                    
                                     SWBarChart(
                                         dataPoints: salesData,
                                         colorMapping: ["Online": .blue, "Offline": .orange],
                                         title: "Sales by Channel (Grouped)"
                                     )
                                 }
-
+                                
                                 Divider()
-
+                                
                                 Group {
                                     let calendar = Calendar.current
                                     let today = calendar.startOfDay(for: Date())
-
+                                    
                                     let stackedData: [SWBarChart<String>.DataPoint] = (0..<7).flatMap { (dayOffset: Int) -> [SWBarChart<String>.DataPoint] in
                                         let date = calendar.date(byAdding: .day, value: -dayOffset, to: today)!
                                         return [
@@ -325,7 +329,7 @@ struct ComponentView: View {
                                             .init(date: date, value: Double.random(in: 10...40), category: "Entertainment"),
                                         ]
                                     }
-
+                                    
                                     SWBarChart(
                                         dataPoints: stackedData,
                                         colorMapping: ["Food": .green, "Transport": .blue, "Entertainment": .purple],
@@ -346,14 +350,14 @@ struct ComponentView: View {
                             description: "Grouped or stacked bar chart with horizontal scrolling, optional value labels, and configurable bar corner radius."
                         )
                     }
-
+                    
                     NavigationLink {
                         ScrollView {
                             VStack(spacing: 32) {
                                 Group {
                                     let calendar = Calendar.current
                                     let today = calendar.startOfDay(for: Date())
-
+                                    
                                     let trafficData: [SWAreaChart<String>.DataPoint] = (0..<14).flatMap { (dayOffset: Int) -> [SWAreaChart<String>.DataPoint] in
                                         let date = calendar.date(byAdding: .day, value: -dayOffset, to: today)!
                                         return [
@@ -361,7 +365,7 @@ struct ComponentView: View {
                                             .init(date: date, value: Double.random(in: 50...200), category: "Paid"),
                                         ]
                                     }
-
+                                    
                                     SWAreaChart(
                                         dataPoints: trafficData,
                                         colorMapping: ["Organic": .green, "Paid": .blue],
@@ -369,13 +373,13 @@ struct ComponentView: View {
                                         title: "Website Traffic"
                                     )
                                 }
-
+                                
                                 Divider()
-
+                                
                                 Group {
                                     let calendar = Calendar.current
                                     let today = calendar.startOfDay(for: Date())
-
+                                    
                                     let revenueData: [SWAreaChart<String>.DataPoint] = (0..<10).flatMap { (dayOffset: Int) -> [SWAreaChart<String>.DataPoint] in
                                         let date = calendar.date(byAdding: .day, value: -dayOffset, to: today)!
                                         return [
@@ -384,7 +388,7 @@ struct ComponentView: View {
                                             .init(date: date, value: Double.random(in: 20...60), category: "Product C"),
                                         ]
                                     }
-
+                                    
                                     SWAreaChart(
                                         dataPoints: revenueData,
                                         colorMapping: ["Product A": .purple, "Product B": .orange, "Product C": .cyan],
@@ -406,14 +410,14 @@ struct ComponentView: View {
                             description: "Standard or stacked area chart with smooth interpolation, optional line overlay, and configurable area opacity."
                         )
                     }
-
+                    
                     NavigationLink {
                         ScrollView {
                             VStack(spacing: 32) {
                                 Group {
                                     let calendar = Calendar.current
                                     let today = calendar.startOfDay(for: Date())
-
+                                    
                                     let sampleData: [SWScatterChart<String>.DataPoint] = [
                                         .init(date: calendar.date(byAdding: .hour, value: 8, to: today)!, value: 85, category: "Teeth"),
                                         .init(date: calendar.date(byAdding: .hour, value: 12, to: today)!, value: 52, category: "Food"),
@@ -424,27 +428,27 @@ struct ComponentView: View {
                                         .init(date: calendar.date(byAdding: .day, value: -3, to: today)!, value: 45, category: "Food"),
                                         .init(date: calendar.date(byAdding: .day, value: -3, to: today)!, value: 88, category: "Teeth"),
                                     ]
-
+                                    
                                     SWScatterChart(
                                         dataPoints: sampleData,
                                         colorMapping: ["Teeth": .blue, "Food": .orange],
                                         title: "Scan Trends"
                                     )
                                 }
-
+                                
                                 Divider()
-
+                                
                                 Group {
                                     let calendar = Calendar.current
                                     let today = calendar.startOfDay(for: Date())
-
+                                    
                                     let temperatureData: [SWScatterChart<String>.DataPoint] = [
                                         .init(date: calendar.date(byAdding: .hour, value: 6, to: today)!, value: 36.2, category: "Morning"),
                                         .init(date: calendar.date(byAdding: .hour, value: 12, to: today)!, value: 36.8, category: "Noon"),
                                         .init(date: calendar.date(byAdding: .hour, value: 20, to: today)!, value: 37.1, category: "Evening"),
                                         .init(date: calendar.date(byAdding: .day, value: -1, to: today)!, value: 36.5, category: "Morning"),
                                     ]
-
+                                    
                                     SWScatterChart(
                                         dataPoints: temperatureData,
                                         colorMapping: ["Morning": .cyan, "Noon": .yellow, "Evening": .purple],
@@ -464,7 +468,7 @@ struct ComponentView: View {
                             description: "Horizontally scrollable scatter chart with generic category types, color mapping, and configurable axis ranges."
                         )
                     }
-
+                    
                     NavigationLink {
                         SWDonutChart(
                             subjects: {
@@ -493,7 +497,7 @@ struct ComponentView: View {
                             description: "Interactive donut chart with tap-to-select categories. Selected segment expands with center overlay showing count and name."
                         )
                     }
-
+                    
                     NavigationLink {
                         SWRadarChart(data: [
                             .init(label: "Tolerance", value: 75),
@@ -510,7 +514,7 @@ struct ComponentView: View {
                             description: "Animated radar (spider) chart with axis labels, grid rings, and radial lines. Supports 3+ axes with customizable max value."
                         )
                     }
-
+                    
                     NavigationLink {
                         VStack(spacing: 40) {
                             SWRingChart(data: [
@@ -527,9 +531,9 @@ struct ComponentView: View {
                                         .foregroundStyle(.secondary)
                                 }
                             }
-
+                            
                             Divider()
-
+                            
                             SWRingChart(
                                 data: [
                                     .init(label: "Partner", value: 80, color: .accentColor),
@@ -549,7 +553,7 @@ struct ComponentView: View {
                             description: "Apple Watch Activity Rings style concentric ring progress chart. Supports custom center content, dimensions, and animated appear."
                         )
                     }
-
+                    
                     NavigationLink {
                         let timestamps: [Date] = {
                             var dates: [Date] = []
@@ -567,7 +571,7 @@ struct ComponentView: View {
                             }
                             return dates
                         }()
-
+                        
                         NavigationStack {
                             Form {
                                 Section {
@@ -577,7 +581,7 @@ struct ComponentView: View {
                                     )
                                 }
                                 .listRowInsets(EdgeInsets())
-
+                                
                                 Section {
                                     SWActivityHeatmap.HeatmapGrid(
                                         timestamps: timestamps,
@@ -606,7 +610,7 @@ struct ComponentView: View {
                         .font(.title3.bold())
                         .textCase(nil)
                 }
-
+                
                 // MARK: - Display 组件分区
                 Section {
                     // 浮动标签组件 — 图片上方悬浮动画胶囊标签
@@ -626,7 +630,7 @@ struct ComponentView: View {
                             description: "Animated floating capsule labels over an image. Labels fade in/out at specified positions, ideal for feature callouts."
                         )
                     }
-
+                    
                     // 滚动问答组件 — 自动滚动的水平问答胶囊轮播
                     NavigationLink {
                         SWScrollingFAQ(
@@ -649,7 +653,7 @@ struct ComponentView: View {
                             description: "Auto-scrolling horizontal FAQ carousel with alternating row directions. Tapping a pill triggers a callback."
                         )
                     }
-
+                    
                     // 旋转名言组件 — 自动轮播名人名言
                     NavigationLink {
                         ScrollView {
@@ -664,9 +668,9 @@ struct ComponentView: View {
                                     author: "Kobe Bryant"
                                 )
                                 .frame(height: 140)
-
+                                
                                 Divider()
-
+                                
                                 // Single quote (no rotation)
                                 SWRotatingQuote(
                                     quotes: [
@@ -677,9 +681,9 @@ struct ComponentView: View {
                                     authorFont: .title2
                                 )
                                 .frame(height: 100)
-
+                                
                                 Divider()
-
+                                
                                 // Custom style (serif, faster rotation)
                                 SWRotatingQuote(
                                     quotes: [
@@ -705,17 +709,17 @@ struct ComponentView: View {
                             description: "Auto-rotating quote display that cycles through texts with animated transitions and author attribution."
                         )
                     }
-
+                    
                     // 基础展示元素合并页 — BulletPointText + GradientDivider + Label
                     NavigationLink {
                         ScrollView {
                             VStack(alignment: .leading, spacing: 24) {
-
+                                
                                 // 区域一：SWBulletPointText 演示
                                 Text("Bullet Point Text")
                                     .font(.headline)
                                     .padding(.horizontal)
-
+                                
                                 VStack(alignment: .leading, spacing: 10) {
                                     SWBulletPointText(bulletColor: .blue) {
                                         Text("Wealth")
@@ -734,28 +738,28 @@ struct ComponentView: View {
                                     }
                                 }
                                 .padding(.horizontal)
-
+                                
                                 Divider()
-
+                                
                                 // 区域二：SWGradientDivider 演示
                                 Text("Gradient Divider")
                                     .font(.headline)
                                     .padding(.horizontal)
-
+                                
                                 VStack(spacing: 20) {
                                     SWGradientDivider()
                                     SWGradientDivider(color: .purple, opacity: 0.5)
                                     SWGradientDivider(color: .mint, height: 2)
                                 }
                                 .padding(.horizontal)
-
+                                
                                 Divider()
-
+                                
                                 // 区域三：SWLabelWithIcon 演示
                                 Text("Label with Icon")
                                     .font(.headline)
                                     .padding(.horizontal)
-
+                                
                                 VStack(alignment: .leading, spacing: 8) {
                                     SWLabelWithIcon()
                                     SWLabelWithIcon(
@@ -778,9 +782,9 @@ struct ComponentView: View {
                                         bg: .purple,
                                         name: "Subscription"
                                     )
-
+                                    
                                     Divider()
-
+                                    
                                     SWLabelWithImage(
                                         image: .fullpackLogo,
                                         name: "FullPack"
@@ -802,18 +806,18 @@ struct ComponentView: View {
                         .font(.title3.bold())
                         .textCase(nil)
                 }
-
+                
                 // MARK: - Feedback 组件分区
                 Section {
                     // 全局 Toast 弹窗组件 — 支持 info/success/warning/error 四种预设及自定义样式
                     NavigationLink {
                         VStack(spacing: 12) {
                             Spacer()
-
+                            
                             Text("Tap to trigger alerts")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
-
+                            
                             VStack(spacing: 10) {
                                 Button {
                                     SWAlertManager.shared.show(.info, message: "This is an info message")
@@ -822,7 +826,7 @@ struct ComponentView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                                 .tint(.primary)
-
+                                
                                 Button {
                                     SWAlertManager.shared.show(.success, message: "Saved successfully")
                                 } label: {
@@ -830,7 +834,7 @@ struct ComponentView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                                 .tint(.green)
-
+                                
                                 Button {
                                     SWAlertManager.shared.show(.warning, message: "Slow connection")
                                 } label: {
@@ -838,7 +842,7 @@ struct ComponentView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                                 .tint(.orange)
-
+                                
                                 Button {
                                     SWAlertManager.shared.show(.error, message: "Operation failed, please retry")
                                 } label: {
@@ -846,7 +850,7 @@ struct ComponentView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                                 .tint(.red)
-
+                                
                                 Button {
                                     SWAlertManager.shared.show(
                                         icon: "star.fill",
@@ -863,7 +867,7 @@ struct ComponentView: View {
                             }
                             .buttonStyle(.bordered)
                             .controlSize(.large)
-
+                            
                             Spacer()
                         }
                         .padding(.horizontal, 24)
@@ -874,7 +878,7 @@ struct ComponentView: View {
                             description: "Toast-style alert overlay with four preset styles (info, success, warning, error) and custom styling. Auto-dismisses after configurable duration."
                         )
                     }
-
+                    
                     // 全屏加载遮罩组件 — 毛玻璃背景 + 可选图标脉冲动画
                     NavigationLink {
                         ZStack {
@@ -884,12 +888,12 @@ struct ComponentView: View {
                                 endPoint: .bottomTrailing
                             )
                             .ignoresSafeArea()
-
+                            
                             VStack(spacing: 20) {
                                 Text("Page Content")
                                     .font(.largeTitle)
                                     .foregroundStyle(.white)
-
+                                
                                 Button("Show Default Loading") {
                                     SWLoadingManager.shared.show(page: .home, message: "Loading data...")
                                     Task {
@@ -898,7 +902,7 @@ struct ComponentView: View {
                                     }
                                 }
                                 .buttonStyle(.borderedProminent)
-
+                                
                                 Button("Show Loading with Icon") {
                                     SWLoadingManager.shared.show(
                                         page: .home,
@@ -921,7 +925,7 @@ struct ComponentView: View {
                             description: "Fullscreen loading overlay with blur material background, customizable message, optional SF Symbol icon with pulse animation."
                         )
                     }
-
+                    
                     // 思考指示器组件 — 三点弹跳动画，用于聊天输入状态
                     NavigationLink {
                         VStack(spacing: 40) {
@@ -932,7 +936,7 @@ struct ComponentView: View {
                                     .foregroundStyle(.secondary)
                                 SWThinkingIndicator()
                             }
-
+                            
                             // 聊天气泡中使用
                             VStack(spacing: 8) {
                                 Text("Chat Bubble")
@@ -953,7 +957,7 @@ struct ComponentView: View {
                                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
                                 }
                             }
-
+                            
                             // 自定义颜色和大小
                             VStack(spacing: 8) {
                                 Text("Custom (blue, large)")
@@ -973,6 +977,131 @@ struct ComponentView: View {
                     }
                 } header: {
                     Text("Feedback (3)")
+                        .font(.title3.bold())
+                        .textCase(nil)
+                }
+                
+                // MARK: - Input 组件分区
+                Section {
+                    // 胶囊形 Tab 按钮 — 用于自定义分段控件和筛选栏
+                    NavigationLink {
+                        List {
+                            HStack {
+                                SWTabButton(title: "All", isSelected: selectedInputTab == 0) {
+                                    withAnimation(.easeInOut(duration: 0.2)) { selectedInputTab = 0 }
+                                }
+                                SWTabButton(title: "Favorites", isSelected: selectedInputTab == 1) {
+                                    withAnimation(.easeInOut(duration: 0.2)) { selectedInputTab = 1 }
+                                }
+                                SWTabButton(title: "Recent", isSelected: selectedInputTab == 2) {
+                                    withAnimation(.easeInOut(duration: 0.2)) { selectedInputTab = 2 }
+                                }
+                                SWTabButton(title: "Trending", isSelected: selectedInputTab == 3) {
+                                    withAnimation(.easeInOut(duration: 0.2)) { selectedInputTab = 3 }
+                                }
+                            }
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
+                            
+                            Section {
+                                if selectedInputTab == 0 {
+                                    ForEach(["Meeting notes", "Grocery list", "Workout plan", "Travel ideas", "Book wishlist"], id: \.self) { item in
+                                        Label(item, systemImage: "doc.text")
+                                    }
+                                } else if selectedInputTab == 1 {
+                                    ForEach(["Workout plan", "Travel ideas"], id: \.self) { item in
+                                        Label(item, systemImage: "star.fill")
+                                            .foregroundStyle(.orange)
+                                    }
+                                } else if selectedInputTab == 2 {
+                                    ForEach(["Grocery list", "Meeting notes"], id: \.self) { item in
+                                        Label(item, systemImage: "clock")
+                                            .foregroundStyle(.secondary)
+                                    }
+                                } else {
+                                    ForEach(["AI prompts", "Fitness trends", "Recipe hacks"], id: \.self) { item in
+                                        Label(item, systemImage: "flame.fill")
+                                            .foregroundStyle(.red)
+                                    }
+                                }
+                            }
+                        }
+                    } label: {
+                        ListItem(
+                            title: "SWTabButton",
+                            icon: "rectangle.compress.vertical",
+                            description: "Capsule-shaped tab button for custom segmented controls and filter bars. Toggles between selected and unselected states."
+                        )
+                    }
+                    
+                    // 数值步进器 — 带动画过渡和触觉反馈的紧凑步进控件
+                    NavigationLink {
+                        VStack(spacing: 30) {
+                            SWStepper(quantity: $stepperValue)
+                            
+                            Divider()
+                            
+                            HStack {
+                                Text("Quantity")
+                                Spacer()
+                                SWStepper(quantity: $stepperValue)
+                            }
+                            .padding(.horizontal)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } label: {
+                        ListItem(
+                            title: "SWStepper",
+                            icon: "minus.forwardslash.plus",
+                            description: "Compact numeric stepper with animated transitions and haptic feedback. Chevron-style increment/decrement buttons."
+                        )
+                    }
+                    
+                    // 协议勾选框 — 带服务条款和隐私政策链接的复选框
+                    NavigationLink {
+                        VStack {
+                            Spacer()
+                            SWAgreementChecker(agreementChecked: $agreementChecked)
+                                .padding(.horizontal)
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } label: {
+                        ListItem(
+                            title: "SWAgreementChecker",
+                            icon: "checkmark.square",
+                            description: "Agreement checkbox with Terms of Service and Privacy Policy links. Configurable URLs."
+                        )
+                    }
+                    
+                    // 添加表单 — 带文本输入的底部弹出面板
+                    NavigationLink {
+                        VStack {
+                            Spacer()
+                            
+                            Button("Show Add Sheet") {
+                                showAddSheet = true
+                            }
+                            .buttonStyle(.borderedProminent)
+                            
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .sheet(isPresented: $showAddSheet) {
+                            SWAddSheet(isPresented: $showAddSheet) { text in
+                                print("User entered: \(text)")
+                            }
+                        }
+                    } label: {
+                        ListItem(
+                            title: "SWAddSheet",
+                            icon: "plus.rectangle.on.rectangle",
+                            description: "Bottom sheet with text input, cancel and confirm buttons. Presented as medium detent for collecting user input."
+                        )
+                    }
+                } header: {
+                    Text("Input (4)")
                         .font(.title3.bold())
                         .textCase(nil)
                 }

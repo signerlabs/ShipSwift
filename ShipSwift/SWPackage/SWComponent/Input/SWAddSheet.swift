@@ -54,11 +54,8 @@ struct SWAddSheet: View {
                 .padding()
                 .padding(.horizontal)
 
-            ChatInputView(
+            InputField(
                 text: $inputText,
-                onSend: {
-                },
-                isDisabled: false,
                 placeHolderText: placeHolderText,
                 minLines: minLines
             )
@@ -89,41 +86,26 @@ struct SWAddSheet: View {
         .presentationDragIndicator(.visible)
     }
 
-    struct ChatInputView: View {
+    // MARK: - InputField (private)
+
+    private struct InputField: View {
         @Binding var text: String
-        var onSend: () -> Void
-        var isDisabled: Bool = false
         var placeHolderText: LocalizedStringKey = "Enter message..."
         var minLines: Int = 1
 
         @FocusState private var isFocused: Bool
 
         var body: some View {
-            HStack(alignment: .bottom, spacing: 12) {
-                // Input field
-                TextField(placeHolderText, text: $text, axis: .vertical)
-                    .lineLimit(minLines...5)
-                    .focused($isFocused)
-                    .disabled(isDisabled)
-
-                // Send button
-                Button {
-                    guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-                    onSend()
-                } label: {
-                    Image(systemName: "microphone")
-                        .imageScale(.large)
-                        .foregroundColor(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .gray : .blue)
-                }
-                .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isDisabled)
-            }
-            .padding()
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(.primary, lineWidth: 1)
-            )
-            .padding(.horizontal)
-            .padding(.vertical, 8)
+            TextField(placeHolderText, text: $text, axis: .vertical)
+                .lineLimit(minLines...5)
+                .focused($isFocused)
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.primary, lineWidth: 1)
+                )
+                .padding(.horizontal)
+                .padding(.vertical, 8)
         }
     }
 }
@@ -131,7 +113,7 @@ struct SWAddSheet: View {
 #Preview {
     @Previewable @State var isPresented = true
     VStack {
-        Text("Hi")
+        Text("Background")
     }
     .sheet(isPresented: $isPresented) {
         SWAddSheet(isPresented: $isPresented)

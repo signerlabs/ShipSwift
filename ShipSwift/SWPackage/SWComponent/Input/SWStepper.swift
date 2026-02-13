@@ -52,5 +52,20 @@ struct SWStepper: View {
 
 #Preview {
     @Previewable @State var sampleQuantity = 1
-    SWStepper(quantity: $sampleQuantity)
+
+    VStack(spacing: 24) {
+        // 独立 stepper
+        SWStepper(quantity: $sampleQuantity)
+
+        Divider()
+
+        // 带 label 的实际使用场景
+        HStack {
+            Text("Quantity")
+            Spacer()
+            SWStepper(quantity: $sampleQuantity)
+        }
+        .padding(.horizontal)
+    }
+    .padding()
 }
