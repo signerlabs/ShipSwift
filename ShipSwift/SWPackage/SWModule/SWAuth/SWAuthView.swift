@@ -72,9 +72,16 @@ struct SWAuthView: View {
         case signingIn
     }
 
+    // 登录方式枚举，用于顶部按钮切换 Email / Phone
+    private enum SignInMethod: String, CaseIterable {
+        case email = "Email"
+        case phone = "Phone"
+    }
+
     // MARK: - State
 
     @State private var viewMode: ViewMode = .signIn
+    @State private var signInMethod: SignInMethod = .email
     @State private var loadingState: LoadingState = .idle
     @State private var agreementChecked = false
 
@@ -156,6 +163,14 @@ struct SWAuthView: View {
                             .multilineTextAlignment(.center)
                     }
 
+                    // 登录方式切换按钮，仅在 signIn / phoneSignIn 模式下显示
+                    if viewMode == .signIn || viewMode == .phoneSignIn {
+                        HStack(spacing: 12) {
+                            signInMethodButton(.email, icon: "envelope.fill", label: "Email")
+                            signInMethodButton(.phone, icon: "phone.fill", label: "Phone")
+                        }
+                    }
+
                     Spacer(minLength: 20)
 
                     // Display different content based on mode
@@ -177,6 +192,14 @@ struct SWAuthView: View {
                 .padding()
             }
             .scrollDismissesKeyboard(.interactively)
+            .onChange(of: signInMethod) { _, newMethod in
+                withAnimation {
+                    switch newMethod {
+                    case .email: viewMode = .signIn
+                    case .phone: viewMode = .phoneSignIn
+                    }
+                }
+            }
             .sheet(isPresented: $showingCountryPicker) {
                 countryCodePicker
             }
@@ -335,19 +358,6 @@ struct SWAuthView: View {
                     .font(.subheadline)
                     .foregroundStyle(Color.accentColor)
             }
-
-            // Switch to phone sign-in (sign-in mode only)
-            if viewMode == .signIn {
-                Button {
-                    withAnimation {
-                        viewMode = .phoneSignIn
-                    }
-                } label: {
-                    Text("Sign in with phone number")
-                        .font(.subheadline)
-                        .foregroundStyle(Color.accentColor)
-                }
-            }
         }
         .padding(.vertical)
     }
@@ -428,6 +438,7 @@ struct SWAuthView: View {
             // Back to sign in
             Button {
                 withAnimation {
+                    signInMethod = .email
                     viewMode = .signIn
                     verificationCode = ""
                 }
@@ -482,6 +493,7 @@ struct SWAuthView: View {
             // Back to sign in
             Button {
                 withAnimation {
+                    signInMethod = .email
                     viewMode = .signIn
                 }
             } label: {
@@ -587,6 +599,7 @@ struct SWAuthView: View {
             // Back to sign in
             Button {
                 withAnimation {
+                    signInMethod = .email
                     viewMode = .signIn
                     resetCode = ""
                     newPassword = ""
@@ -656,17 +669,6 @@ struct SWAuthView: View {
             }
             .buttonStyle(.swPrimary)
             .disabled(!isValidPhone || loadingState == .sendingCode)
-
-            // Switch to email sign-in
-            Button {
-                withAnimation {
-                    viewMode = .signIn
-                }
-            } label: {
-                Text("Sign in with email instead")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.accentColor)
-            }
 
             // Social sign-in area
             socialSignInSection
@@ -938,6 +940,7 @@ struct SWAuthView: View {
                 try await userManager.confirmResetPassword(email: email, newPassword: newPassword, code: resetCode)
                 SWAlertManager.shared.show(.success, message: "Password reset successfully")
                 withAnimation {
+                    signInMethod = .email
                     viewMode = .signIn
                     resetCode = ""
                     newPassword = ""
@@ -1020,6 +1023,28 @@ struct SWAuthView: View {
             } catch {
                 SWAlertManager.shared.show(.error, message: SWAuthErrorHelper.displayMessage(for: error))
             }
+        }
+    }
+    // MARK: - Helpers
+
+    /// 登录方式切换按钮：选中态为 accentColor + 胶囊背景，未选中态为 secondary
+    private func signInMethodButton(_ method: SignInMethod, icon: String, label: String) -> some View {
+        Button {
+            withAnimation { signInMethod = method }
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                Text(label)
+            }
+            .font(.subheadline)
+            .fontWeight(signInMethod == method ? .medium : .regular)
+            .foregroundStyle(signInMethod == method ? Color.accentColor : .secondary)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(
+                signInMethod == method ? Color.accentColor.opacity(0.1) : Color.clear,
+                in: Capsule()
+            )
         }
     }
 }
