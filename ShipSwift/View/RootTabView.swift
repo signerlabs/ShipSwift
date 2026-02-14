@@ -8,17 +8,28 @@
 import SwiftUI
 
 struct RootTabView: View {
-    @State private var selectedTab = "modules"
+    @State private var selectedTab = "home"
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Tab(value: "modules") {
+            Tab(value: "home") {
+                HomeView()
+            } label: {
+                Label {
+                    Text("ShipSwift")
+                } icon: {
+                    Image(systemName: selectedTab == "home" ? "house.fill" : "house")
+                }
+                .environment(\.symbolVariants, .none)
+            }
+            
+            Tab(value: "module") {
                 ModuleView()
             } label: {
                 Label {
-                    Text("Modules")
+                    Text("Module")
                 } icon: {
-                    Image(systemName: selectedTab == "modules" ? "puzzlepiece.extension.fill" : "puzzlepiece.extension")
+                    Image(systemName: selectedTab == "module" ? "puzzlepiece.extension.fill" : "puzzlepiece.extension")
                 }
                 .environment(\.symbolVariants, .none)
             }
@@ -29,29 +40,29 @@ struct RootTabView: View {
                 Label {
                     Text("Animation")
                 } icon: {
-                    Image(systemName: selectedTab == "animation" ? "sparkles" : "sparkles")
+                    Image(systemName: selectedTab == "animation" ? "sparkles.tv.fill" : "sparkles.tv")
                 }
                 .environment(\.symbolVariants, .none)
             }
 
-            Tab(value: "charts") {
+            Tab(value: "chart") {
                 ChartView()
             } label: {
                 Label {
-                    Text("Charts")
+                    Text("Chart")
                 } icon: {
-                    Image(systemName: selectedTab == "charts" ? "chart.bar.fill" : "chart.bar")
+                    Image(systemName: selectedTab == "chart" ? "chart.bar.fill" : "chart.bar")
                 }
                 .environment(\.symbolVariants, .none)
             }
 
-            Tab(value: "components") {
+            Tab(value: "component") {
                 ComponentView()
             } label: {
                 Label {
-                    Text("Components")
+                    Text("Component")
                 } icon: {
-                    Image(systemName: selectedTab == "components" ? "square.grid.2x2.fill" : "square.grid.2x2")
+                    Image(systemName: selectedTab == "component" ? "square.grid.2x2.fill" : "square.grid.2x2")
                 }
                 .environment(\.symbolVariants, .none)
             }
