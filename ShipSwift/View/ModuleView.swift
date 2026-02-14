@@ -112,6 +112,11 @@ struct ModuleView: View {
         .sheet(isPresented: $showPaywall) {
             SWPaywallDemoView()
         }
+        .fullScreenCover(isPresented: $showChatDemo) {
+            NavigationStack {
+                SWChatDemoView()
+            }
+        }
     }
 }
 
@@ -1177,6 +1182,52 @@ private struct SWPaywallDemoView: View {
             .foregroundStyle(.secondary)
         }
         .padding(.top, 8)
+    }
+}
+
+// MARK: - Chat Demo View (SWChatView with Simulated Response)
+
+/// Demo showcasing SWChatView with a simulated echo-style AI response.
+/// No ASR config is provided so the microphone button is hidden in demo mode.
+private struct SWChatDemoView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var messages: [SWChatMessage] = [
+        SWChatMessage(
+            content: "Welcome! Send a message to see the demo response.",
+            isUser: false
+        ),
+    ]
+    @State private var isWaiting = false
+
+    var body: some View {
+        SWChatView(
+            messages: $messages,
+            isDisabled: isWaiting
+        ) { text in
+            // Simulate AI response with a 1-second delay
+            isWaiting = true
+            Task {
+                try? await Task.sleep(for: .seconds(1))
+                messages.append(
+                    SWChatMessage(
+                        content: "This is a demo response. Connect ShipSwift MCP to enable full AI chat functionality.",
+                        isUser: false
+                    )
+                )
+                isWaiting = false
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
     }
 }
 

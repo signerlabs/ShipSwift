@@ -3,13 +3,22 @@
 //  ShipSwift
 //
 //  Chat text input bar with optional voice recognition (ASR).
-//  Provides a text field, microphone button for speech-to-text,
+//  Provides a text field, optional microphone button for speech-to-text,
 //  audio waveform animation during recording, and a send button.
 //
+//  When asrConfig is nil the microphone button is hidden and the view
+//  works as a pure text input bar.
+//
 //  Usage:
-//    // 1. Basic usage with onSend callback and ASR config
+//    // 1. Text-only input (no voice)
 //    @State private var text = ""
 //
+//    SWChatInputView(text: $text) {
+//        sendMessage(text)
+//        text = ""
+//    }
+//
+//    // 2. With voice input — provide an ASR config
 //    let asrConfig = SWASRConfig(
 //        appId: "YourVolcEngineAppID",
 //        accessToken: "YourAccessToken"
@@ -20,7 +29,7 @@
 //        text = ""
 //    }
 //
-//    // 2. Full chat interface with SWMessageList
+//    // 3. Full chat interface with SWMessageList
 //    VStack(spacing: 0) {
 //        SWMessageList(messages: messages) { message in
 //            SWMessageBubble(isFromUser: message.isUser) {
@@ -33,7 +42,7 @@
 //        }
 //    }
 //
-//    // 3. Customization options
+//    // 4. Customization options
 //    SWChatInputView(
 //        text: $text,
 //        asrConfig: asrConfig,
@@ -44,7 +53,7 @@
 //        onSend()
 //    }
 //
-//    // 4. Voice flow: tap mic -> recording + waveform -> tap stop ->
+//    // 5. Voice flow: tap mic -> recording + waveform -> tap stop ->
 //    //    transcribing -> text appears in field -> tap send
 //
 //  Created by Wei Zhong on 3/1/26.
@@ -54,42 +63,26 @@ import SwiftUI
 
 // MARK: - Chat Input View
 
-/// Chat input view
+/// Chat input view with optional voice recognition.
 ///
-/// Integrates text input and speech recognition, including:
+/// Features:
 /// - Text input field
-/// - Microphone button (tap to start recording)
+/// - Microphone button for speech-to-text (hidden when `asrConfig` is nil)
 /// - Audio waveform animation while recording
 /// - Loading state during transcription
 /// - Send button
 ///
-/// Use with `SWMessageList` to build a complete chat interface:
+/// Text-only usage (no voice):
 /// ```swift
-/// VStack(spacing: 0) {
-///     SWMessageList(messages: messages) { message in
-///         SWMessageBubble(isFromUser: message.isUser) {
-///             Text(message.content)
-///         }
-///     }
-///
-///     SWChatInputView(text: $text, asrConfig: asrConfig) {
-///         sendMessage()
-///     }
+/// SWChatInputView(text: $text) {
+///     sendMessage()
 /// }
 /// ```
 ///
-/// Standalone usage:
+/// With voice input:
 /// ```swift
-/// @State private var text = ""
-///
-/// let asrConfig = SWASRConfig(
-///     appId: "YourAppID",
-///     accessToken: "YourAccessToken"
-/// )
-///
 /// SWChatInputView(text: $text, asrConfig: asrConfig) {
-///     print("Send: \(text)")
-///     text = ""
+///     sendMessage()
 /// }
 /// ```
 public struct SWChatInputView: View {
@@ -98,7 +91,7 @@ public struct SWChatInputView: View {
     public var isDisabled: Bool
     public var placeHolderText: LocalizedStringKey
     public var minLines: Int
-    public let asrConfig: SWASRConfig
+    public let asrConfig: SWASRConfig?
 
     @FocusState private var isFocused: Bool
     @State private var asrState: SWASRState = .idle
@@ -106,7 +99,7 @@ public struct SWChatInputView: View {
 
     public init(
         text: Binding<String>,
-        asrConfig: SWASRConfig,
+        asrConfig: SWASRConfig? = nil,
         isDisabled: Bool = false,
         placeHolderText: LocalizedStringKey = "Type a message...",
         minLines: Int = 1,
@@ -203,34 +196,36 @@ public struct SWChatInputView: View {
 
     @ViewBuilder
     private var microphoneButton: some View {
-        switch asrState {
-        case .idle:
-            // Only show microphone when there is no text
-            if !hasText {
-                Button {
-                    startRecording()
-                } label: {
-                    Image(systemName: "microphone")
-                        .imageScale(.large)
-                        .foregroundStyle(.blue, .secondary)
+        if asrConfig != nil {
+            switch asrState {
+            case .idle:
+                // Only show microphone when there is no text
+                if !hasText {
+                    Button {
+                        startRecording()
+                    } label: {
+                        Image(systemName: "microphone")
+                            .imageScale(.large)
+                            .foregroundStyle(.blue, .secondary)
+                    }
                 }
-            }
 
-        case .recording:
-            // Show stop button while recording
-            Button {
-                stopRecording()
-            } label: {
-                Image(systemName: "stop.circle.fill")
-                    .font(.system(size: 30))
-                    .foregroundColor(.red)
-            }
+            case .recording:
+                // Show stop button while recording
+                Button {
+                    stopRecording()
+                } label: {
+                    Image(systemName: "stop.circle.fill")
+                        .font(.system(size: 30))
+                        .foregroundColor(.red)
+                }
 
-        case .transcribing:
-            // Show grayed-out microphone during transcription
-            Image(systemName: "microphone")
-                .imageScale(.large)
-                .foregroundStyle(.gray)
+            case .transcribing:
+                // Show grayed-out microphone during transcription
+                Image(systemName: "microphone")
+                    .imageScale(.large)
+                    .foregroundStyle(.gray)
+            }
         }
     }
 
@@ -254,6 +249,8 @@ public struct SWChatInputView: View {
     // MARK: - ASR Actions
 
     private func startRecording() {
+        guard let asrConfig else { return }
+
         text = "" // Clear previous text
         asrState = .recording
 
@@ -363,14 +360,20 @@ fileprivate struct SWAudioWaveformView: View {
 
 // MARK: - Previews
 
-#Preview("Idle - Empty") {
+#Preview("Text Only (No ASR)") {
+    SWChatInputView(
+        text: .constant("")
+    ) {}
+}
+
+#Preview("With ASR - Empty") {
     SWChatInputView(
         text: .constant(""),
         asrConfig: SWASRConfig(appId: "test", accessToken: "test")
     ) {}
 }
 
-#Preview("Idle - With Text") {
+#Preview("With ASR - With Text") {
     SWChatInputView(
         text: .constant("Hello"),
         asrConfig: SWASRConfig(appId: "test", accessToken: "test")
@@ -387,10 +390,7 @@ private struct SWChatInputPreview: View {
     var body: some View {
         VStack {
             Spacer()
-            SWChatInputView(
-                text: $text,
-                asrConfig: SWASRConfig(appId: "test", accessToken: "test")
-            ) {
+            SWChatInputView(text: $text) {
                 print("Send: \(text)")
                 text = ""
             }
