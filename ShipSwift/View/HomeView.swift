@@ -11,6 +11,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Binding var selectedTab: String
+
     // MCP command for clipboard copy
     private let mcpCommand = "claude mcp add --transport http shipswift https://api.shipswift.app/mcp"
 
@@ -46,13 +48,10 @@ struct HomeView: View {
         VStack(spacing: 12) {
             SWShakingIcon(
                 image: Image(.shipSwiftLogo),
-                height: 80,
+                height: 120,
                 cornerRadius: 16
             )
-            .padding(.top, 8)
-
-            Text("ShipSwift")
-                .font(.largeTitle.bold())
+            .padding(.vertical, 60)
 
             Text("AI-native iOS component library")
                 .font(.title3)
@@ -123,28 +122,31 @@ struct HomeView: View {
                 title: "Module",
                 count: "5 Frameworks",
                 description: "Auth, Camera, Paywall, Chat, Settings"
-            )
+            ) { selectedTab = "module" }
+
             ModuleCard(
                 icon: "sparkles.tv.fill",
                 color: .orange,
                 title: "Animation",
                 count: "9 Components",
                 description: "Shimmer, TypewriterText, OrbitingLogos, and more"
-            )
+            ) { selectedTab = "animation" }
+
             ModuleCard(
                 icon: "chart.bar.fill",
                 color: .green,
                 title: "Chart",
                 count: "8 Components",
                 description: "Line, Bar, Area, Donut, Radar, Scatter, and more"
-            )
+            ) { selectedTab = "chart" }
+
             ModuleCard(
                 icon: "square.grid.2x2.fill",
                 color: .purple,
                 title: "Component",
                 count: "15 Components",
                 description: "Display, Feedback, Input — ready to use"
-            )
+            ) { selectedTab = "component" }
         }
     }
 
@@ -168,37 +170,44 @@ private struct ModuleCard: View {
     let title: String
     let count: String
     let description: String
+    let onTap: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundStyle(color)
+        Button {
+            onTap()
+        } label: {
+            VStack(alignment: .leading, spacing: 6) {
+                Image(systemName: icon)
+                    .font(.title2)
+                    .foregroundStyle(color)
 
-            Text(title)
-                .font(.headline)
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
 
-            Text(count)
-                .font(.caption)
-                .foregroundStyle(color)
+                Text(count)
+                    .font(.caption)
+                    .foregroundStyle(color)
 
-            Text(description)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(2)
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.secondarySystemGroupedBackground))
+            )
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.secondarySystemGroupedBackground))
-        )
+        .buttonStyle(.plain)
     }
 }
 
 // MARK: - Preview
 
 #Preview {
-    HomeView()
+    HomeView(selectedTab: .constant("home"))
         .swAlert()
 }

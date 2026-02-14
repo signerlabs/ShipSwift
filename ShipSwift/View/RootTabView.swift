@@ -13,7 +13,7 @@ struct RootTabView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab(value: "home") {
-                HomeView()
+                HomeView(selectedTab: $selectedTab)
             } label: {
                 Label {
                     Text("ShipSwift")
