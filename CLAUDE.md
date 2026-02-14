@@ -32,5 +32,5 @@
 - CameraManager uses an `onError` closure instead of directly referencing `SWAlertManager`
 
 ## Code Style
-- All comments and documentation in English
+- All comments and documentation in English (this is a public repo; overrides the global Chinese rule)
 - No external constants file — product IDs, URLs, and config values are inlined or configurable via struct properties
