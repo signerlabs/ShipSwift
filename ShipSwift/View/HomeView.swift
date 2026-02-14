@@ -28,6 +28,7 @@ struct HomeView: View {
                 .padding(.horizontal)
                 .padding(.bottom, 32)
             }
+            .scrollIndicators(.hidden)
             .navigationTitle("ShipSwift")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
@@ -49,7 +50,8 @@ struct HomeView: View {
             SWShakingIcon(
                 image: Image(.shipSwiftLogo),
                 height: 120,
-                cornerRadius: 16
+                cornerRadius: 16,
+                idleDelay: 6
             )
             .padding(.vertical, 60)
 
