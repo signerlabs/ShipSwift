@@ -22,8 +22,8 @@
 //        cornerRadius: 16,         // default 24
 //        speed: 1.2,               // oscillation speed, default 0.8
 //        showLabels: false,         // hide Before/After labels
-//        beforeLabel: "旧",         // custom label text, default "Before"
-//        afterLabel: "新"           // custom label text, default "After"
+//        beforeLabel: "Old",        // custom label text, default "Before"
+//        afterLabel: "New"          // custom label text, default "After"
 //    )
 //
 //    // Supports drag gesture — drag the slider to compare manually,

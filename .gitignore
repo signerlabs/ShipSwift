@@ -6,3 +6,29 @@
 *.xcuserstate
 **/UserInterfaceState.xcuserstate
 xcuserdata/
+DerivedData/
+build/
+*.moved-aside
+*.ipa
+*.dSYM
+*.dSYM.zip
+*.xccheckout
+*.xcscmblueprint
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# CocoaPods (if applicable)
+Pods/
+
+# Claude
+.claude/
+
+# Misc
+*.hmap
+*.o
+*.pch
+timeline.xctimeline
+playground.xcworkspace

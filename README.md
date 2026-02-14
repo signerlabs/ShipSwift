@@ -2,13 +2,36 @@
 
 > AI-native iOS component library — production-ready SwiftUI code that LLMs can use to build real apps.
 
+## Requirements
+
+- iOS 18.0+
+- Swift 5.0+
+- Xcode 16.0+
+
 ## Quick Start
+
+### Option 1: MCP Integration (Recommended)
 
 Connect ShipSwift via MCP so your AI assistant can access components and best practices:
 
 ```bash
 claude mcp add --transport http shipswift https://api.shipswift.app/mcp
 ```
+
+### Option 2: File Copy
+
+1. Clone this repository
+2. Copy the files you need from `ShipSwift/SWPackage/` into your Xcode project
+3. Each component in `SWAnimation/`, `SWChart/`, and `SWComponent/` is self-contained — just copy the file and `SWUtil/` if needed
+
+### Run the Showcase App
+
+```
+git clone https://github.com/anthropics/ship-swift-ios.git
+open ShipSwift.xcodeproj
+```
+
+Select a simulator or device, then press **Cmd+R** to build and run.
 
 ## Open-Source Components
 

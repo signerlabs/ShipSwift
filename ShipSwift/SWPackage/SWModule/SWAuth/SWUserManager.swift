@@ -179,7 +179,7 @@ final class SWUserManager {
 
     // MARK: - Properties
 
-    /// 是否跳过 Amplify 认证检查（用于 Preview 环境）
+    /// Whether to skip the Amplify auth check (used in Preview environments)
     private let skipAuthCheck: Bool
 
     /// User session state

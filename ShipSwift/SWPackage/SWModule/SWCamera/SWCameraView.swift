@@ -52,7 +52,7 @@ struct SWCameraView: View {
                 ZStack {
                     Color.black.ignoresSafeArea()
 
-                    // 相机预览（纵向居中）
+                    // Camera preview (vertically centered)
                     GeometryReader { geometry in
                         let previewWidth = geometry.size.width
                         let previewHeight = previewWidth * 4 / 3
@@ -72,13 +72,13 @@ struct SWCameraView: View {
                     }
                     .onDisappear { cameraManager.stopSession() }
 
-                    // 底部控制栏
+                    // Bottom control bar
                     VStack {
                         Spacer()
                         controlBar
                     }
 
-                    // 左上角关闭按钮
+                    // Top-left close button
                     VStack {
                         HStack {
                             Button { dismiss() } label: {
@@ -186,7 +186,7 @@ struct SWCameraView: View {
             }
             .disabled(!cameraManager.isAuthorized || isCapturing)
 
-            // 翻转镜头
+            // Switch camera
             Button { cameraManager.switchCamera() } label: {
                 controlButton(icon: "camera.rotate.fill")
             }

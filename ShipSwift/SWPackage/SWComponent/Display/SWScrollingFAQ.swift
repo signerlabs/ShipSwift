@@ -19,7 +19,7 @@
 //        ],
 //        title: "Let's talk about new topics"   // optional, nil hides the title
 //    ) { question in
-//        print("User tapped: \(question)")
+//        swDebugLog("User tapped: \(question)")
 //    }
 //
 //  Created by Wei Zhong on 3/1/26.
@@ -210,6 +210,6 @@ struct SWScrollingFAQ: View {
         ],
         title: "Let's talk about new topics"
     ) { question in
-        print("Tapped: \(question)")
+        swDebugLog("Tapped: \(question)")
     }
 }

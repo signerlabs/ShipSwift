@@ -4,7 +4,7 @@
 //
 //  A checkbox row for agreeing to Terms of Service and Privacy Policy.
 //  Displays a toggle circle icon and two tappable links. URLs are configurable
-//  via termsURL and privacyURL parameters (defaults to example.com placeholders).
+//  via termsURL and privacyURL parameters (defaults to https://shipswift.app/terms and /privacy).
 //
 //  Usage:
 //    @State private var agreed = false
@@ -27,8 +27,8 @@
 //
 //  Parameters:
 //    - agreementChecked: Binding<Bool> — Whether the user has checked the agreement checkbox
-//    - termsURL: URL — Link destination for Terms of Service (default: https://example.com/terms)
-//    - privacyURL: URL — Link destination for Privacy Policy (default: https://example.com/privacy)
+//    - termsURL: URL — Link destination for Terms of Service (default: https://shipswift.app/terms)
+//    - privacyURL: URL — Link destination for Privacy Policy (default: https://shipswift.app/privacy)
 //
 //  Notes:
 //    - Tap the circle icon to toggle the checked state

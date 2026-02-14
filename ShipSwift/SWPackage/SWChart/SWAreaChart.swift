@@ -134,15 +134,15 @@ struct SWAreaChart<CategoryType: Hashable & Plottable>: View {
 
     // MARK: - Computed Properties
 
-    /// 基于真实数据计算的 Y 轴范围（动画期间保持不变，避免 Y 轴随数据缩放）
-    /// stacked 模式下取同一日期各系列之和的最大值，standard 模式下取单一数据点最大值
+    /// Y-axis domain computed from real data (stays constant during animation to prevent axis rescaling).
+    /// In stacked mode, uses the max sum of all series per date; in standard mode, uses the max single data point.
     private var effectiveYDomain: ClosedRange<Double>? {
         if let yDomain = yDomain { return yDomain }
         guard !dataPoints.isEmpty else { return nil }
 
         let maxVal: Double
         if stackMode == .stacked {
-            // 按日期（天）分组后求和，取最大值
+            // Group by date (day), sum each group, take the maximum
             let calendar = Calendar.current
             let grouped = Dictionary(grouping: dataPoints) { calendar.startOfDay(for: $0.date) }
             guard let stackMax = grouped.values.map({ $0.reduce(0) { $0 + $1.value } }).max(), stackMax > 0 else { return nil }

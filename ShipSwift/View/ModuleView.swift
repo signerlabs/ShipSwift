@@ -19,7 +19,7 @@ struct ModuleView: View {
     var body: some View {
         NavigationStack {
             List {
-                // Auth demo — fullScreenCover 方式展示 SWAuth 模块（无后端）
+                // Auth demo — presented as fullScreenCover, no backend
                 Button {
                     showAuthDemo = true
                 } label: {
@@ -52,7 +52,7 @@ struct ModuleView: View {
                     )
                 }
 
-                // Paywall demo — sheet 方式展示 SWPaywall 模块
+                // Paywall demo — presented as sheet
                 Button {
                     showPaywall = true
                 } label: {
@@ -63,7 +63,7 @@ struct ModuleView: View {
                     )
                 }
 
-                // Chat demo — fullScreenCover 方式展示 SWChat 模块
+                // Chat demo — presented as fullScreenCover
                 Button {
                     showChatDemo = true
                 } label: {
@@ -140,7 +140,7 @@ private struct SWAuthDemoView: View {
         case phoneVerify
     }
 
-    // 登录方式枚举，用于顶部 Segmented Picker 切换 Email / Phone
+    // Sign-in method enum for the top segmented picker (Email / Phone)
     private enum SignInMethod: String, CaseIterable {
         case email = "Email"
         case phone = "Phone"
@@ -223,7 +223,7 @@ private struct SWAuthDemoView: View {
                         .multilineTextAlignment(.center)
                 }
 
-                // 登录方式切换按钮，仅在 signIn / phoneSignIn 模式下显示
+                // Sign-in method toggle buttons, shown only in signIn / phoneSignIn modes
                 if viewMode == .signIn || viewMode == .phoneSignIn {
                     HStack(spacing: 12) {
                         signInMethodButton(.email, icon: "envelope.fill", label: "Email")
@@ -850,7 +850,7 @@ private struct SWAuthDemoView: View {
                     .foregroundStyle(Color.accentColor)
             }
 
-            // 返回 phoneSignIn，保持 signInMethod = .phone
+            // Go back to phoneSignIn, keeping signInMethod = .phone
             Button {
                 withAnimation {
                     viewMode = .phoneSignIn
@@ -929,7 +929,7 @@ private struct SWAuthDemoView: View {
 
     // MARK: - Helpers
 
-    /// 登录方式切换按钮：选中态为 accentColor + 胶囊背景，未选中态为 secondary
+    /// Sign-in method toggle button: selected state uses accentColor + capsule background; unselected uses secondary
     private func signInMethodButton(_ method: SignInMethod, icon: String, label: String) -> some View {
         Button {
             withAnimation { signInMethod = method }
@@ -963,7 +963,7 @@ private struct SWAuthDemoView: View {
 
 // MARK: - Face Camera Demo View (Real Camera with Face Tracking)
 
-/// SWFaceCameraView 自带关闭按钮，直接展示即可。
+/// SWFaceCameraView includes its own close button — present it directly.
 private struct SWFaceCameraDemoView: View {
     var body: some View {
         SWFaceCameraView()
@@ -972,7 +972,7 @@ private struct SWFaceCameraDemoView: View {
 
 // MARK: - Camera Demo View (Real Camera, No Processing)
 
-/// 使用真实 SWCameraView 的 Demo，拍摄或选择的照片不做任何处理和保存。
+/// Demo using real SWCameraView — captured or selected photos are not processed or saved.
 private struct SWCameraDemoView: View {
     @State private var capturedImage: UIImage?
 
@@ -984,7 +984,7 @@ private struct SWCameraDemoView: View {
 
 // MARK: - Paywall Demo View (Mock SubscriptionStoreView UI)
 
-/// 还原原生 SubscriptionStoreView 的 UI，不依赖 StoreKit，可直接上线展示。
+/// Mock SubscriptionStoreView UI — no StoreKit dependency, ready for showcase.
 private struct SWPaywallDemoView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedPlan: Plan = .yearly
@@ -993,7 +993,7 @@ private struct SWPaywallDemoView: View {
         case monthly, yearly
     }
 
-    // 模拟产品数据
+    // Mock product data
     private let monthlyPrice = "$9.99"
     private let yearlyPrice = "$59.99"
     private let features: [(icon: String, text: String)] = [
@@ -1007,16 +1007,16 @@ private struct SWPaywallDemoView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
-                    // 营销内容
+                    // Marketing content
                     marketingHeader
 
-                    // 订阅选项
+                    // Subscription options
                     subscriptionOptions
 
-                    // 订阅按钮
+                    // Subscribe button
                     subscribeButton
 
-                    // 底部链接
+                    // Footer links
                     footerLinks
                 }
                 .padding()
@@ -1095,7 +1095,7 @@ private struct SWPaywallDemoView: View {
             withAnimation(.easeInOut(duration: 0.2)) { selectedPlan = plan }
         } label: {
             HStack {
-                // 选中指示器
+                // Selection indicator
                 Image(systemName: selectedPlan == plan ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
                     .foregroundStyle(selectedPlan == plan ? .accent : .secondary)

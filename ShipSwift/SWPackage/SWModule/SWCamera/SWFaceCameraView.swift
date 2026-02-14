@@ -65,7 +65,7 @@ struct SWFaceCameraView: View {
                 ZStack {
                     Color.black.ignoresSafeArea()
 
-                    // 相机预览（纵向居中）
+                    // Camera preview (vertically centered)
                     GeometryReader { geometry in
                         let previewWidth = geometry.size.width
                         let previewHeight = previewWidth * 4 / 3
@@ -92,13 +92,13 @@ struct SWFaceCameraView: View {
                         cameraManager.stopSession()
                     }
 
-                    // 底部控制栏
+                    // Bottom control bar
                     VStack {
                         Spacer()
                         controlBar
                     }
 
-                    // 左上角关闭按钮
+                    // Top-left close button
                     VStack {
                         HStack {
                             Button { dismiss() } label: {
@@ -144,14 +144,14 @@ struct SWFaceCameraView: View {
     private var controlBar: some View {
         VStack {
             HStack(spacing: 50) {
-                // 翻转镜头
+                // Switch camera
                 Button {
                     cameraManager.switchCamera()
                 } label: {
                     controlButton(icon: "camera.rotate.fill")
                 }
 
-                // 快门按钮（和 SWCameraView 一致）
+                // Shutter button (same style as SWCameraView)
                 Button {
                     capturePhoto()
                 } label: {
@@ -159,7 +159,7 @@ struct SWFaceCameraView: View {
                 }
                 .disabled(!cameraManager.isAuthorized || isCapturing)
 
-                // 人脸标记开关
+                // Face landmark toggle
                 Button {
                     showLandmarks.toggle()
                 } label: {

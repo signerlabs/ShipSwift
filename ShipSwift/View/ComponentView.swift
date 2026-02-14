@@ -21,9 +21,9 @@ struct ComponentView: View {
     var body: some View {
         NavigationStack {
             List {
-                // MARK: - Display 组件分区
+                // MARK: - Display Components
                 Section {
-                    // 浮动标签组件 — 图片上方悬浮动画胶囊标签
+                    // Floating labels — animated capsule labels hovering over an image
                     NavigationLink {
                         SWFloatingLabels(
                             image: Image(.facePicture),
@@ -41,7 +41,7 @@ struct ComponentView: View {
                         )
                     }
 
-                    // 滚动问答组件 — 自动滚动的水平问答胶囊轮播
+                    // Scrolling FAQ — auto-scrolling horizontal question pill carousel
                     NavigationLink {
                         SWScrollingFAQ(
                             rows: [
@@ -64,7 +64,7 @@ struct ComponentView: View {
                         )
                     }
 
-                    // 旋转名言组件 — 自动轮播名人名言
+                    // Rotating quote — auto-cycling famous quotes display
                     NavigationLink {
                         ScrollView {
                             VStack(spacing: 32) {
@@ -120,12 +120,12 @@ struct ComponentView: View {
                         )
                     }
 
-                    // 基础展示元素合并页 — BulletPointText + GradientDivider + Label
+                    // Basic display elements — BulletPointText + GradientDivider + Label
                     NavigationLink {
                         ScrollView {
                             VStack(alignment: .leading, spacing: 24) {
 
-                                // 区域一：SWBulletPointText 演示
+                                // Section 1: SWBulletPointText demo
                                 Text("Bullet Point Text")
                                     .font(.headline)
                                     .padding(.horizontal)
@@ -151,7 +151,7 @@ struct ComponentView: View {
 
                                 Divider()
 
-                                // 区域二：SWGradientDivider 演示
+                                // Section 2: SWGradientDivider demo
                                 Text("Gradient Divider")
                                     .font(.headline)
                                     .padding(.horizontal)
@@ -165,7 +165,7 @@ struct ComponentView: View {
 
                                 Divider()
 
-                                // 区域三：SWLabelWithIcon 演示
+                                // Section 3: SWLabelWithIcon demo
                                 Text("Label with Icon")
                                     .font(.headline)
                                     .padding(.horizontal)
@@ -211,7 +211,7 @@ struct ComponentView: View {
                             description: "BulletPointText, GradientDivider, and LabelWithIcon — simple building blocks for lists, settings, and content sections."
                         )
                     }
-                    // 引导页 — 多页欢迎流程，支持滑动导航和跳过
+                    // Onboarding — multi-page welcome flow with swipe navigation and skip
                     Button {
                         showOnboarding = true
                     } label: {
@@ -222,7 +222,7 @@ struct ComponentView: View {
                         )
                     }
 
-                    // 订单页 — 动画饮品定制演示
+                    // Order — animated drink customization demo
                     Button {
                         showOrder = true
                     } label: {
@@ -233,7 +233,7 @@ struct ComponentView: View {
                         )
                     }
 
-                    // Tab 页 — TabView 模板
+                    // Tab — TabView template
                     Button {
                         showRootTab = true
                     } label: {
@@ -249,9 +249,9 @@ struct ComponentView: View {
                         .textCase(nil)
                 }
 
-                // MARK: - Feedback 组件分区
+                // MARK: - Feedback Components
                 Section {
-                    // 全局 Toast 弹窗组件 — 支持 info/success/warning/error 四种预设及自定义样式
+                    // Global toast alert — supports info/success/warning/error presets and custom styles
                     NavigationLink {
                         VStack(spacing: 12) {
                             Spacer()
@@ -321,7 +321,7 @@ struct ComponentView: View {
                         )
                     }
 
-                    // 全屏加载遮罩组件 — 毛玻璃背景 + 可选图标脉冲动画
+                    // Fullscreen loading overlay — blur material background + optional icon pulse animation
                     NavigationLink {
                         ZStack {
                             LinearGradient(
@@ -368,10 +368,10 @@ struct ComponentView: View {
                         )
                     }
 
-                    // 思考指示器组件 — 三点弹跳动画，用于聊天输入状态
+                    // Thinking indicator — three-dot bouncing animation for chat typing state
                     NavigationLink {
                         VStack(spacing: 40) {
-                            // 默认样式
+                            // Default style
                             VStack(spacing: 8) {
                                 Text("Default")
                                     .font(.caption)
@@ -379,7 +379,7 @@ struct ComponentView: View {
                                 SWThinkingIndicator()
                             }
 
-                            // 聊天气泡中使用
+                            // Inside a chat bubble
                             VStack(spacing: 8) {
                                 Text("Chat Bubble")
                                     .font(.caption)
@@ -400,7 +400,7 @@ struct ComponentView: View {
                                 }
                             }
 
-                            // 自定义颜色和大小
+                            // Custom color and size
                             VStack(spacing: 8) {
                                 Text("Custom (blue, large)")
                                     .font(.caption)
@@ -423,9 +423,9 @@ struct ComponentView: View {
                         .textCase(nil)
                 }
 
-                // MARK: - Input 组件分区
+                // MARK: - Input Components
                 Section {
-                    // 胶囊形 Tab 按钮 — 用于自定义分段控件和筛选栏
+                    // Capsule tab button — for custom segmented controls and filter bars
                     NavigationLink {
                         List {
                             HStack {
@@ -476,7 +476,7 @@ struct ComponentView: View {
                         )
                     }
 
-                    // 数值步进器 — 带动画过渡和触觉反馈的紧凑步进控件
+                    // Numeric stepper — compact control with animated transitions and haptic feedback
                     NavigationLink {
                         VStack(spacing: 30) {
                             SWStepper(quantity: $stepperValue)
@@ -500,7 +500,7 @@ struct ComponentView: View {
                         )
                     }
 
-                    // 添加表单 — 带文本输入的底部弹出面板
+                    // Add sheet — bottom sheet with text input
                     NavigationLink {
                         VStack {
                             Spacer()

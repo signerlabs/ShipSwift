@@ -124,20 +124,20 @@ struct SWBarChart<CategoryType: Hashable & Plottable>: View {
     /// Title (optional)
     var title: String? = nil
 
-    /// 动画进度（0 到 1），控制柱状图从 0 生长到目标值
+    /// Animation progress (0 to 1), controls bar growth from 0 to target value
     @State private var animationProgress: Double = 0
 
     // MARK: - Computed Properties
 
-    /// 基于真实数据计算的 Y 轴范围（动画期间保持不变，避免 Y 轴随数据缩放）
-    /// stacked 模式下取同一日期各系列之和的最大值，grouped 模式下取单一数据点最大值
+    /// Y-axis domain computed from real data (stays constant during animation to prevent axis rescaling).
+    /// In stacked mode, uses the max sum of all series per date; in grouped mode, uses the max single data point.
     private var effectiveYDomain: ClosedRange<Double>? {
         if let yDomain = yDomain { return yDomain }
         guard !dataPoints.isEmpty else { return nil }
 
         let maxVal: Double
         if stackMode == .stacked {
-            // 按日期（天）分组后求和，取最大值
+            // Group by date (day), sum each group, take the maximum
             let calendar = Calendar.current
             let grouped = Dictionary(grouping: dataPoints) { calendar.startOfDay(for: $0.date) }
             guard let stackMax = grouped.values.map({ $0.reduce(0) { $0 + $1.value } }).max(), stackMax > 0 else { return nil }
@@ -182,7 +182,7 @@ struct SWBarChart<CategoryType: Hashable & Plottable>: View {
                     .fontWeight(.semibold)
             }
 
-            // Chart（y 值乘以 animationProgress 实现从 0 生长的动画效果）
+            // Chart (y values multiplied by animationProgress to animate growth from 0)
             Chart(dataPoints) { point in
                 if stackMode == .grouped {
                     BarMark(

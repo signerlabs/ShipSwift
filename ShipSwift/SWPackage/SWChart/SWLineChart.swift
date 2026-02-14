@@ -147,7 +147,7 @@ struct SWLineChart<CategoryType: Hashable & Plottable>: View {
 
     // MARK: - Computed Properties
 
-    /// 基于真实数据计算的 Y 轴范围（动画期间保持不变，避免 Y 轴随数据缩放）
+    /// Y-axis domain computed from real data (stays constant during animation to prevent axis rescaling)
     private var effectiveYDomain: ClosedRange<Double>? {
         if let yDomain = yDomain { return yDomain }
         let allValues = dataPoints.map(\.value) + referenceLines.map(\.value)

@@ -54,12 +54,12 @@ struct SWStepper: View {
     @Previewable @State var sampleQuantity = 1
 
     VStack(spacing: 24) {
-        // 独立 stepper
+        // Standalone stepper
         SWStepper(quantity: $sampleQuantity)
 
         Divider()
 
-        // 带 label 的实际使用场景
+        // Real-world usage with a label
         HStack {
             Text("Quantity")
             Spacer()

@@ -2,9 +2,9 @@
 //  SettingView.swift
 //  ShipSwift
 //
-//  ShipSwift Showcase App 的设置页面。
-//  包含语言切换、分享应用、法律条款、推荐应用和版本信息。
-//  不含 auth 相关功能（登出、删除账户等）。
+//  Settings page for the ShipSwift Showcase App.
+//  Includes recommended apps, share, legal links, and version info.
+//  Does not include auth features (sign-out, delete account, etc.).
 //
 //  Created by Wei Zhong on 13/2/26.
 //
@@ -19,19 +19,19 @@ struct SettingView: View {
     private let termsURL = URL(string: "https://shipswift.app/terms")!
     private let privacyURL = URL(string: "https://shipswift.app/privacy")!
     
-    // 推荐应用的 App Store 链接
+    // App Store links for recommended apps
     private let appStoreFullpack = "https://apps.apple.com/us/app/fullpack-packing-outfit/id6745692929"
     private let appStoreBrushmo = "https://apps.apple.com/us/app/brushmo/id6744569822"
     private let appStoreUtilityMax = "https://apps.apple.com/us/app/utilitymax%E6%95%88%E5%BA%A6%E5%AE%B6-%E7%BB%88%E8%BA%AB%E8%B4%A2%E5%8A%A1%E6%A8%A1%E6%8B%9F%E4%B8%8E%E9%80%80%E4%BC%91%E8%A7%84%E5%88%92%E5%99%A8/id6758595049"
     private let appStoreJourney = "https://apps.apple.com/us/app/journey-goal-tracker-diary/id6748666816"
     private let appStoreSmileMax = "https://apps.apple.com/us/app/smilemax/id6758947123"
     
-    /// 应用版本号
+    /// App version number
     private var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
     }
     
-    /// 应用构建号
+    /// App build number
     private var buildNumber: String {
         Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
     }
@@ -62,7 +62,7 @@ struct SettingView: View {
                 
                 // MARK: - General Settings
                 Section {
-                    // 分享应用
+                    // Share app
                     ShareLink(item: appStoreURL) {
                         HStack {
                             Text("Share App")

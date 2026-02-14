@@ -72,7 +72,7 @@ struct SWAuthView: View {
         case signingIn
     }
 
-    // 登录方式枚举，用于顶部按钮切换 Email / Phone
+    // Sign-in method enum for the top-bar Email / Phone toggle
     private enum SignInMethod: String, CaseIterable {
         case email = "Email"
         case phone = "Phone"
@@ -163,7 +163,7 @@ struct SWAuthView: View {
                             .multilineTextAlignment(.center)
                     }
 
-                    // 登录方式切换按钮，仅在 signIn / phoneSignIn 模式下显示
+                    // Sign-in method toggle buttons, shown only in signIn / phoneSignIn modes
                     if viewMode == .signIn || viewMode == .phoneSignIn {
                         HStack(spacing: 12) {
                             signInMethodButton(.email, icon: "envelope.fill", label: "Email")
@@ -1027,7 +1027,7 @@ struct SWAuthView: View {
     }
     // MARK: - Helpers
 
-    /// 登录方式切换按钮：选中态为 accentColor + 胶囊背景，未选中态为 secondary
+    /// Sign-in method toggle button: selected state uses accentColor + capsule background; unselected uses secondary
     private func signInMethodButton(_ method: SignInMethod, icon: String, label: String) -> some View {
         Button {
             withAnimation { signInMethod = method }

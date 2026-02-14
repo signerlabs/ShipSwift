@@ -268,7 +268,7 @@ public struct SWChatInputView: View {
         }
 
         service.onError = { error in
-            print("[SWChatInput] ASR error: \(error.localizedDescription)")
+            swDebugLog("[SWChatInput] ASR error: \(error.localizedDescription)")
             self.asrState = .idle
         }
 
@@ -277,7 +277,7 @@ public struct SWChatInputView: View {
             do {
                 try await service.startRecording()
             } catch {
-                print("[SWChatInput] Failed to start recording: \(error.localizedDescription)")
+                swDebugLog("[SWChatInput] Failed to start recording: \(error.localizedDescription)")
                 asrState = .idle
             }
         }
@@ -391,7 +391,7 @@ private struct SWChatInputPreview: View {
         VStack {
             Spacer()
             SWChatInputView(text: $text) {
-                print("Send: \(text)")
+                swDebugLog("Send: \(text)")
                 text = ""
             }
         }
