@@ -8,12 +8,12 @@
   - `SWAnimation/` — Self-contained animation components (9 files, each works independently, may depend on SWUtil only)
   - `SWChart/` — Self-contained chart components (8 files, each works independently, may depend on SWUtil only)
   - `SWComponent/` — Self-contained UI components organized by category:
-    - `Display/` — Display components (FloatingLabels, ScrollingFAQ, RotatingQuote, Labels, Dividers, OnboardingView, OrderView, RootTabView, etc.)
+    - `Display/` — Display components (FloatingLabels, ScrollingFAQ, RotatingQuote, BulletPointText, GradientDivider, Label, OnboardingView, OrderView, RootTabView)
     - `Feedback/` — Feedback components (Alert, Loading, ThinkingIndicator)
-    - `Input/` — Input components (TabButton, Stepper, AgreementChecker, AddSheet)
-  - `SWModule/` — Multi-file frameworks (SWAuth, SWCamera, SWPaywall, SWChat, SWFaceCamera, SWSetting)
+    - `Input/` — Input components (TabButton, Stepper, AddSheet)
+  - `SWModule/` — Multi-file frameworks (SWAuth, SWCamera, SWPaywall, SWChat, SWSetting)
   - `SWUtil/` — Shared utilities (no dependencies on other SWPackage directories)
-- Showcase app views live under `ShipSwift/View/` (AnimationView, ChartView, ComponentView, ModuleView, RootTabView, SettingView)
+- Showcase app views live under `ShipSwift/View/` (HomeView, AnimationView, ChartView, ComponentView, ModuleView, RootTabView, SettingView)
 - Shared app components live under `ShipSwift/Component/` (ListItem)
 
 ## Naming Conventions

@@ -20,19 +20,18 @@ BeforeAfterSlider, TypewriterText, ShakingIcon, Shimmer, GlowSweep, LightSweep, 
 
 LineChart, BarChart, AreaChart, DonutChart, RingChart, RadarChart, ScatterChart, ActivityHeatmap
 
-### SWComponent — 14 UI Components
+### SWComponent — 15 UI Components
 
 **Display:** FloatingLabels, ScrollingFAQ, RotatingQuote, BulletPointText, GradientDivider, Label, OnboardingView, OrderView, RootTabView
 **Feedback:** Alert, Loading, ThinkingIndicator
-**Input:** TabButton, Stepper, AgreementChecker, AddSheet
+**Input:** TabButton, Stepper, AddSheet
 
-### SWModule — 6 Multi-File Frameworks
+### SWModule — 5 Multi-File Frameworks
 
-- **SWAuth** — User authentication (Amplify/Cognito, social login, email/password)
-- **SWCamera** — Camera capture with viewfinder, zoom, and photo picker
+- **SWAuth** — User authentication (Amplify/Cognito, social login, email/password, phone sign-in with country code picker)
+- **SWCamera** — Camera capture with viewfinder, zoom, photo picker, and face detection with Vision landmark tracking
 - **SWPaywall** — Subscription paywall using StoreKit 2
-- **SWChat** — Chat input, message list, and voice recognition (VolcEngine ASR)
-- **SWFaceCamera** — Face detection camera with Vision landmark tracking
+- **SWChat** — All-in-one chat view with message list, text input, and optional voice recognition (VolcEngine ASR)
 - **SWSetting** — Settings page template with language switch, share, legal links, recommended apps
 
 ### SWUtil — 5 Shared Utilities
@@ -46,20 +45,20 @@ ShipSwift/
 ├── SWPackage/
 │   ├── SWAnimation/          # Animation components (9 files)
 │   ├── SWChart/              # Chart components (8 files)
-│   ├── SWComponent/          # UI components (14 files)
-│   │   ├── Display/          #   Display components
-│   │   ├── Feedback/         #   Feedback components
-│   │   └── Input/            #   Input components
-│   ├── SWModule/             # Multi-file frameworks (6 modules)
-│   │   ├── SWAuth/           #   Authentication (3 files)
-│   │   ├── SWCamera/         #   Camera capture (2 files)
+│   ├── SWComponent/          # UI components (15 files)
+│   │   ├── Display/          #   Display components (9)
+│   │   ├── Feedback/         #   Feedback components (3)
+│   │   └── Input/            #   Input components (3)
+│   ├── SWModule/             # Multi-file frameworks (5 modules)
+│   │   ├── SWAuth/           #   Authentication (4 files)
+│   │   ├── SWCamera/         #   Camera + face detection (4 files)
 │   │   ├── SWPaywall/        #   Subscription paywall (2 files)
-│   │   ├── SWChat/           #   Chat + voice input (3 files)
-│   │   ├── SWFaceCamera/     #   Face detection camera (3 files)
+│   │   ├── SWChat/           #   Chat + voice input (4 files)
 │   │   └── SWSetting/        #   Settings page (1 file)
 │   └── SWUtil/               # Shared utilities (5 files)
-├── View/                     # Showcase app views (4-tab layout)
+├── View/                     # Showcase app views
 │   ├── RootTabView.swift     #   Tab container
+│   ├── HomeView.swift        #   Home page
 │   ├── AnimationView.swift   #   Animation showcase
 │   ├── ChartView.swift       #   Chart showcase
 │   ├── ComponentView.swift   #   Component showcase
