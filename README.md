@@ -27,7 +27,8 @@ claude mcp add --transport http shipswift https://api.shipswift.app/mcp
 ### Run the Showcase App
 
 ```
-git clone https://github.com/anthropics/ship-swift-ios.git
+git clone https://github.com/signerlabs/ShipSwift.git
+cd ShipSwift
 open ShipSwift.xcodeproj
 ```
 
