@@ -15,7 +15,7 @@ struct SettingView: View {
     
     // MARK: - Configuration
     
-    private let appStoreURL = URL(string: "https://apps.apple.com/app/id123456789")!
+    private let appStoreURL = URL(string: "https://apps.apple.com/app/id6759209764")!
     private let termsURL = URL(string: "https://shipswift.app/terms")!
     private let privacyURL = URL(string: "https://shipswift.app/privacy")!
     

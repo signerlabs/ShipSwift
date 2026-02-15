@@ -53,9 +53,7 @@ struct ComponentView: View {
                                  "Suggest alternatives", "Pros and cons?", "Help understand", "Walk through"]
                             ],
                             title: "Let's talk about new topics"
-                        ) { question in
-                            print("Tapped: \(question)")
-                        }
+                        ) { _ in }
                     } label: {
                         ListItem(
                             title: "Scrolling FAQ",
@@ -514,9 +512,7 @@ struct ComponentView: View {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .sheet(isPresented: $showAddSheet) {
-                            SWAddSheet(isPresented: $showAddSheet) { text in
-                                print("User entered: \(text)")
-                            }
+                            SWAddSheet(isPresented: $showAddSheet) { _ in }
                         }
                     } label: {
                         ListItem(
