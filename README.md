@@ -28,12 +28,38 @@ Connect ShipSwift via MCP so your AI assistant can access all components and rec
 claude mcp add --transport http shipswift https://api.shipswift.app/mcp
 ```
 
+**Gemini CLI**
+```bash
+gemini mcp add --transport http shipswift https://api.shipswift.app/mcp
+```
+
+**Codex CLI**
+Add to `~/.codex/config.toml`:
+```toml
+[mcp_servers.shipswift]
+url = "https://api.shipswift.app/mcp"
+```
+
+**VS Code Copilot**
+Add to `.vscode/mcp.json`:
+```json
+{
+  "servers": {
+    "shipswift": {
+      "type": "http",
+      "url": "https://api.shipswift.app/mcp"
+    }
+  }
+}
+```
+
 **Cursor**
 Add to `.cursor/mcp.json`:
 ```json
 {
   "mcpServers": {
     "shipswift": {
+      "type": "streamableHttp",
       "url": "https://api.shipswift.app/mcp"
     }
   }
