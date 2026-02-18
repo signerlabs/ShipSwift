@@ -30,8 +30,8 @@ struct ChatService {
     /// Build the history array for the API request from existing messages.
     private func buildHistory(from messages: [ChatMessage]) -> [[String: String]] {
         messages.compactMap { message in
-            // Skip component-only messages (they have no meaningful text for LLM context)
-            if message.componentId != nil && message.content == message.componentId { return nil }
+            // Skip component preview messages (they add no meaningful context for LLM)
+            if message.componentId != nil { return nil }
             return [
                 "role": message.isUser ? "user" : "assistant",
                 "content": message.content

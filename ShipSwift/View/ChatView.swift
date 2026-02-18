@@ -36,11 +36,6 @@ struct ChatMessage: Identifiable, Codable {
         self.componentId = componentId
     }
 
-    /// Convert to SWChatMessage for SWChatView compatibility.
-    var asSWMessage: SWChatMessage {
-        SWChatMessage(id: id, content: content, isUser: isUser, timestamp: timestamp)
-    }
-
     // MARK: - Local Persistence
 
     private static let fileName = "chat_history.json"
@@ -71,7 +66,6 @@ struct ChatMessage: Identifiable, Codable {
 
 struct ChatView: View {
     @State private var messages: [ChatMessage] = []
-    @State private var swMessages: [SWChatMessage] = []
     @State private var isWaiting = false
     @State private var fullScreenComponent: String?
     @State private var sheetComponent: String?
@@ -177,14 +171,12 @@ struct ChatView: View {
         .task {
             if let saved = ChatMessage.loadFromDisk() {
                 messages = saved
-                swMessages = saved.map { $0.asSWMessage }
             } else {
                 let welcome = ChatMessage(
                     content: "Hi! Describe what you need, and I'll show you the best SwiftUI component from our library.",
                     isUser: false
                 )
                 messages = [welcome]
-                swMessages = [welcome.asSWMessage]
             }
         }
         .onChange(of: messages.count) {
@@ -203,7 +195,6 @@ struct ChatView: View {
         // Append user message
         let userMessage = ChatMessage(content: text, isUser: true)
         messages.append(userMessage)
-        swMessages.append(userMessage.asSWMessage)
 
         inputText = ""
         isWaiting = true
@@ -214,7 +205,6 @@ struct ChatView: View {
             // Append AI text reply
             let replyMessage = ChatMessage(content: response.reply, isUser: false)
             messages.append(replyMessage)
-            swMessages.append(replyMessage.asSWMessage)
 
             // If a component was matched, append a component preview message
             if let componentId = response.component, registry.entries[componentId] != nil {
@@ -224,7 +214,6 @@ struct ChatView: View {
                     componentId: componentId
                 )
                 messages.append(componentMessage)
-                swMessages.append(componentMessage.asSWMessage)
             }
 
             isWaiting = false
