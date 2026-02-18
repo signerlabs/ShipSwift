@@ -294,12 +294,7 @@ struct ComponentPreviewBubble: View {
             if let preview = registry.view(for: componentId) {
                 preview
                     .frame(maxHeight: 300)
-                    .frame(maxWidth: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(.systemBackground))
-                    )
                     .allowsHitTesting(false)
             }
 

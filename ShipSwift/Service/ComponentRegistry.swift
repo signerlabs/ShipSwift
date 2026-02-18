@@ -264,7 +264,8 @@ struct ComponentRegistry {
                         before: Image(.smileBefore),
                         after: Image(.smileAfter)
                     )
-                    .frame(height: 200)
+                    .scaledToFit()
+                    .frame(maxWidth: 200, maxHeight: 200)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 )
             },
