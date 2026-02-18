@@ -17,7 +17,7 @@ import SwiftUI
 ///
 /// When `componentId` is non-nil, the chat bubble renders a live SwiftUI
 /// component preview instead of plain text.
-struct ChatMessage: Identifiable {
+struct ChatMessage: Identifiable, Codable {
     let id: UUID
     let content: String
     let isUser: Bool
@@ -40,23 +40,38 @@ struct ChatMessage: Identifiable {
     var asSWMessage: SWChatMessage {
         SWChatMessage(id: id, content: content, isUser: isUser, timestamp: timestamp)
     }
+
+    // MARK: - Local Persistence
+
+    private static let fileName = "chat_history.json"
+
+    private static var fileURL: URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent(fileName)
+    }
+
+    static func loadFromDisk() -> [ChatMessage]? {
+        guard let data = try? Data(contentsOf: fileURL),
+              let messages = try? JSONDecoder().decode([ChatMessage].self, from: data),
+              !messages.isEmpty else { return nil }
+        return messages
+    }
+
+    static func saveToDisk(_ messages: [ChatMessage]) {
+        guard let data = try? JSONEncoder().encode(messages) else { return }
+        try? data.write(to: fileURL, options: .atomic)
+    }
+
+    static func clearDisk() {
+        try? FileManager.default.removeItem(at: fileURL)
+    }
 }
 
 // MARK: - Chat View
 
 struct ChatView: View {
-    @State private var messages: [ChatMessage] = [
-        ChatMessage(
-            content: "Hi! Describe what you need, and I'll show you the best SwiftUI component from our library.",
-            isUser: false
-        )
-    ]
-    @State private var swMessages: [SWChatMessage] = [
-        SWChatMessage(
-            content: "Hi! Describe what you need, and I'll show you the best SwiftUI component from our library.",
-            isUser: false
-        )
-    ]
+    @State private var messages: [ChatMessage] = []
+    @State private var swMessages: [SWChatMessage] = []
     @State private var isWaiting = false
     @State private var fullScreenComponent: String?
     @State private var sheetComponent: String?
@@ -78,7 +93,7 @@ struct ChatView: View {
                                 componentId: componentId,
                                 registry: registry,
                                 onViewFullScreen: { presentFullView(for: componentId) },
-                                onGetCode: { copyMCPCommand(for: componentId) }
+                                onGetCode: { openGitHub() }
                             )
                         } else {
                             // Default text bubble
@@ -88,6 +103,20 @@ struct ChatView: View {
                                 .foregroundStyle(message.isUser ? .white : .primary)
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
                         }
+                    }
+                }
+
+                // Quick suggestions — shown only at initial state
+                if messages.count <= 1 && !isWaiting {
+                    SWScrollingFAQ(
+                        rows: [
+                            ["Paywall", "Auth Flow", "Camera", "Chat UI", "Settings", "Face Camera"],
+                            ["Bar Chart", "Line Chart", "Donut Chart", "Heatmap", "Radar Chart", "Area Chart"],
+                            ["Shimmer", "Onboarding", "Alert", "Loading", "Stepper", "Typewriter Text"]
+                        ]
+                    ) { question in
+                        inputText = question
+                        sendMessage()
                     }
                 }
 
@@ -144,6 +173,22 @@ struct ChatView: View {
             if let view = registry.fullView(for: wrapper.id) {
                 view
             }
+        }
+        .task {
+            if let saved = ChatMessage.loadFromDisk() {
+                messages = saved
+                swMessages = saved.map { $0.asSWMessage }
+            } else {
+                let welcome = ChatMessage(
+                    content: "Hi! Describe what you need, and I'll show you the best SwiftUI component from our library.",
+                    isUser: false
+                )
+                messages = [welcome]
+                swMessages = [welcome.asSWMessage]
+            }
+        }
+        .onChange(of: messages.count) {
+            ChatMessage.saveToDisk(messages)
         }
     }
 
@@ -203,10 +248,10 @@ struct ChatView: View {
 
     // MARK: - Get Code (Copy MCP Command)
 
-    private func copyMCPCommand(for componentId: String) {
-        let command = "claude mcp add --transport http shipswift https://api.shipswift.app/mcp"
-        UIPasteboard.general.string = command
-        SWAlertManager.shared.show(.success, message: "MCP command copied! Use it to get the full source code.")
+    private func openGitHub() {
+        if let url = URL(string: "https://github.com/signerlabs/ShipSwift") {
+            UIApplication.shared.open(url)
+        }
     }
 
     // MARK: - Identifiable Wrappers for sheet/fullScreenCover

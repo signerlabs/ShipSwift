@@ -14,8 +14,40 @@ struct HomeView: View {
     @Binding var selectedTab: String
     @Binding var scrollTarget: String?
 
-    // MCP command for clipboard copy
-    private let mcpCommand = "claude mcp add --transport http shipswift https://api.shipswift.app/mcp"
+    // MCP commands for each AI assistant
+    @State private var selectedMCP = 0
+
+    private let mcpOptions: [(name: String, command: String)] = [
+        ("Claude", "claude mcp add --transport http shipswift https://api.shipswift.app/mcp"),
+        ("Gemini", "gemini mcp add --transport http shipswift https://api.shipswift.app/mcp"),
+        ("Codex", """
+        // ~/.codex/config.toml
+        [mcp_servers.shipswift]
+        url = "https://api.shipswift.app/mcp"
+        """),
+        ("Cursor", """
+        // .cursor/mcp.json
+        {
+          "mcpServers": {
+            "shipswift": {
+              "type": "streamableHttp",
+              "url": "https://api.shipswift.app/mcp"
+            }
+          }
+        }
+        """),
+        ("Copilot", """
+        // .vscode/mcp.json
+        {
+          "servers": {
+            "shipswift": {
+              "type": "http",
+              "url": "https://api.shipswift.app/mcp"
+            }
+          }
+        }
+        """),
+    ]
 
     var body: some View {
         NavigationStack {
@@ -76,16 +108,24 @@ struct HomeView: View {
             Label("Connect via MCP", systemImage: "terminal.fill")
                 .font(.headline)
 
-            Text("Add ShipSwift to your AI assistant and start building production apps with a single command:")
+            Text("Add ShipSwift to your AI assistant and start building production apps:")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
-            // Copyable MCP command
+            // LLM selector
+            Picker("AI Assistant", selection: $selectedMCP) {
+                ForEach(0..<mcpOptions.count, id: \.self) { index in
+                    Text(mcpOptions[index].name).tag(index)
+                }
+            }
+            .pickerStyle(.segmented)
+
+            // Copyable command block
             Button {
-                UIPasteboard.general.string = mcpCommand
+                UIPasteboard.general.string = mcpOptions[selectedMCP].command
                 SWAlertManager.shared.show(.success, message: "Copied to clipboard")
             } label: {
-                Text(mcpCommand)
+                Text(mcpOptions[selectedMCP].command)
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(.primary)
                     .multilineTextAlignment(.leading)
