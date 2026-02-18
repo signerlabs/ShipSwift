@@ -9,11 +9,12 @@ import SwiftUI
 
 struct RootTabView: View {
     @State private var selectedTab = "home"
+    @State private var scrollTarget: String?
 
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab(value: "home") {
-                HomeView(selectedTab: $selectedTab)
+                HomeView(selectedTab: $selectedTab, scrollTarget: $scrollTarget)
             } label: {
                 Label {
                     Text("ShipSwift")
@@ -22,42 +23,20 @@ struct RootTabView: View {
                 }
                 .environment(\.symbolVariants, .none)
             }
-            
-            Tab(value: "module") {
-                ModuleView()
-            } label: {
-                Label {
-                    Text("Module")
-                } icon: {
-                    Image(systemName: selectedTab == "module" ? "puzzlepiece.extension.fill" : "puzzlepiece.extension")
-                }
-                .environment(\.symbolVariants, .none)
-            }
 
-            Tab(value: "animation") {
-                AnimationView()
+            Tab(value: "chat") {
+                ChatView()
             } label: {
                 Label {
-                    Text("Animation")
+                    Text("Chat")
                 } icon: {
-                    Image(systemName: selectedTab == "animation" ? "sparkles.tv.fill" : "sparkles.tv")
-                }
-                .environment(\.symbolVariants, .none)
-            }
-
-            Tab(value: "chart") {
-                ChartView()
-            } label: {
-                Label {
-                    Text("Chart")
-                } icon: {
-                    Image(systemName: selectedTab == "chart" ? "chart.bar.fill" : "chart.bar")
+                    Image(systemName: selectedTab == "chat" ? "bubble.left.and.bubble.right.fill" : "bubble.left.and.bubble.right")
                 }
                 .environment(\.symbolVariants, .none)
             }
 
             Tab(value: "component") {
-                ComponentView()
+                ComponentView(scrollTarget: $scrollTarget)
             } label: {
                 Label {
                     Text("Component")

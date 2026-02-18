@@ -12,6 +12,7 @@ import SwiftUI
 
 struct HomeView: View {
     @Binding var selectedTab: String
+    @Binding var scrollTarget: String?
 
     // MCP command for clipboard copy
     private let mcpCommand = "claude mcp add --transport http shipswift https://api.shipswift.app/mcp"
@@ -122,9 +123,9 @@ struct HomeView: View {
                 icon: "puzzlepiece.extension.fill",
                 color: .blue,
                 title: "Module",
-                count: "5 Frameworks",
-                description: "Auth, Camera, Paywall, Chat, Settings"
-            ) { selectedTab = "module" }
+                count: "6 Frameworks",
+                description: "Auth, Camera, Face Camera, Paywall, Chat, Settings"
+            ) { selectedTab = "component"; scrollTarget = "module" }
 
             ModuleCard(
                 icon: "sparkles.tv.fill",
@@ -132,7 +133,7 @@ struct HomeView: View {
                 title: "Animation",
                 count: "9 Components",
                 description: "Shimmer, TypewriterText, OrbitingLogos, and more"
-            ) { selectedTab = "animation" }
+            ) { selectedTab = "component"; scrollTarget = "animation" }
 
             ModuleCard(
                 icon: "chart.bar.fill",
@@ -140,15 +141,15 @@ struct HomeView: View {
                 title: "Chart",
                 count: "8 Components",
                 description: "Line, Bar, Area, Donut, Radar, Scatter, and more"
-            ) { selectedTab = "chart" }
+            ) { selectedTab = "component"; scrollTarget = "chart" }
 
             ModuleCard(
                 icon: "square.grid.2x2.fill",
                 color: .purple,
                 title: "Component",
-                count: "15 Components",
+                count: "13 Components",
                 description: "Display, Feedback, Input — ready to use"
-            ) { selectedTab = "component" }
+            ) { selectedTab = "component"; scrollTarget = "display" }
         }
     }
 
@@ -210,6 +211,6 @@ private struct ModuleCard: View {
 // MARK: - Preview
 
 #Preview {
-    HomeView(selectedTab: .constant("home"))
+    HomeView(selectedTab: .constant("home"), scrollTarget: .constant(nil))
         .swAlert()
 }

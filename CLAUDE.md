@@ -13,7 +13,8 @@
     - `Input/` — Input components (TabButton, Stepper, AddSheet)
   - `SWModule/` — Multi-file frameworks (SWAuth, SWCamera, SWPaywall, SWChat, SWSetting)
   - `SWUtil/` — Shared utilities (no dependencies on other SWPackage directories)
-- Showcase app views live under `ShipSwift/View/` (HomeView, AnimationView, ChartView, ComponentView, ModuleView, RootTabView, SettingView)
+- Showcase app views live under `ShipSwift/View/` (HomeView, ChatView, ComponentView, RootTabView, SettingView)
+- App services live under `ShipSwift/Service/` (ChatService, ComponentRegistry)
 - Shared app components live under `ShipSwift/Component/` (ListItem)
 
 ## Naming Conventions
