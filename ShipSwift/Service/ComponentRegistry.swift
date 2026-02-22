@@ -2,7 +2,7 @@
 //  ComponentRegistry.swift
 //  ShipSwift
 //
-//  Maps 38 component IDs to SwiftUI views for chat-inline previews
+//  Maps 39 component IDs to SwiftUI views for chat-inline previews
 //  and full-screen demos. Used by ChatView to render real components
 //  inside chat bubbles when the AI recommends a component.
 //
@@ -82,7 +82,7 @@ struct ComponentRegistry {
     private static func buildRegistry() -> [String: ComponentEntry] {
         var reg: [String: ComponentEntry] = [:]
 
-        // -- Module (6) --
+        // -- Module (7) --
 
         reg["auth"] = ComponentEntry(
             title: "Auth",
@@ -249,6 +249,31 @@ struct ComponentRegistry {
                 )
             },
             fullView: { AnyView(SWSettingView()) },
+            presentation: .push
+        )
+
+        reg["tiktok-tracking"] = ComponentEntry(
+            title: "TikTok Tracking",
+            icon: "chart.bar.xaxis.ascending",
+            description: "TikTok App Events SDK with ATT permission flow and event tracking for ad attribution",
+            preview: {
+                AnyView(
+                    VStack(spacing: 12) {
+                        Image(systemName: "chart.bar.xaxis.ascending")
+                            .font(.system(size: 36))
+                            .foregroundStyle(.blue)
+                        Text("Ad Tracking")
+                            .font(.headline)
+                        Text("ATT permission + event tracking for ad attribution")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                )
+            },
+            fullView: { AnyView(ComponentDemoViews.tiktokTrackingDemo()) },
             presentation: .push
         )
 
@@ -1114,6 +1139,11 @@ enum ComponentDemoViews {
     @ViewBuilder
     static func chatDemo() -> some View {
         ComponentViewChatDemo()
+    }
+
+    @ViewBuilder
+    static func tiktokTrackingDemo() -> some View {
+        SWTikTokTrackingView()
     }
 }
 

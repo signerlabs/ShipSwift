@@ -171,6 +171,17 @@ struct ComponentView: View {
                 )
             }
 
+            // TikTok Tracking demo — push
+            NavigationLink {
+                SWTikTokTrackingView()
+            } label: {
+                ListItem(
+                    title: "TikTok Tracking",
+                    icon: "chart.bar.xaxis.ascending",
+                    description: "TikTok App Events SDK with ATT permission flow and event tracking for ad attribution."
+                )
+            }
+
             // Settings module
             NavigationLink {
                 SWSettingView()
@@ -182,7 +193,7 @@ struct ComponentView: View {
                 )
             }
         } header: {
-            Text("Module (6)")
+            Text("Module (7)")
                 .font(.title3.bold())
                 .textCase(nil)
                 .id("module")
