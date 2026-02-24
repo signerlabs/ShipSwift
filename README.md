@@ -9,9 +9,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Swift](https://img.shields.io/badge/Swift-5.0+-F05138.svg)](https://swift.org)
 [![iOS](https://img.shields.io/badge/iOS-18.0+-000000.svg)](https://developer.apple.com/ios/)
-[![MCP](https://img.shields.io/badge/MCP-Enabled-8A2BE2.svg)](https://modelcontextprotocol.io)
+[![Skills](https://img.shields.io/badge/Skills-Powered-8A2BE2.svg)](https://github.com/signerlabs/shipswift-skills)
 
-[Quick Start](#quick-start) · [Components](#components) · [Directory Structure](#directory-structure) · [MCP Recipes](#mcp-recipes) · [Contributing](#contributing)
+[Quick Start](#quick-start) · [Components](#components) · [Directory Structure](#directory-structure) · [Recipes](#recipes) · [Contributing](#contributing)
 
 </div>
 
@@ -19,9 +19,45 @@
 
 ## Quick Start
 
-### Option 1: MCP Integration (Recommended)
+### Option 1: Skills / Plugin (Recommended)
 
-Connect ShipSwift via MCP so your AI assistant can access all components and recipes instantly:
+Install ShipSwift Skills so your AI assistant can access all components and recipes instantly:
+
+**Universal (works with any AI tool)**
+```bash
+npx skills add signerlabs/shipswift-skills
+```
+
+**Claude Code**
+```bash
+/plugin marketplace add signerlabs/shipswift-skills
+/plugin install shipswift
+```
+
+**Platform-Specific**
+
+| Platform | Install Command |
+|----------|----------------|
+| **Cursor** | `npx skills add signerlabs/shipswift-skills -a cursor` |
+| **VS Code Copilot** | `npx skills add signerlabs/shipswift-skills -a github-copilot` |
+| **Windsurf** | `npx skills add signerlabs/shipswift-skills -a windsurf` |
+| **Gemini CLI** | `gemini skills install https://github.com/signerlabs/shipswift-skills.git` |
+
+Then just ask your AI:
+- "Add a shimmer loading animation"
+- "Build an authentication flow with Cognito"
+- "Show me all chart components"
+
+### Option 2: File Copy
+
+1. Clone this repository
+2. Copy the files you need from `ShipSwift/SWPackage/` into your Xcode project
+3. Each component in `SWAnimation/`, `SWChart/`, and `SWComponent/` is self-contained — just copy the file and `SWUtil/` if needed
+
+<details>
+<summary><strong>Advanced: Manual MCP Setup</strong></summary>
+
+If you prefer configuring the MCP server directly instead of using Skills:
 
 **Claude Code**
 ```bash
@@ -33,28 +69,7 @@ claude mcp add --transport http shipswift https://api.shipswift.app/mcp
 gemini mcp add --transport http shipswift https://api.shipswift.app/mcp
 ```
 
-**Codex CLI**
-Add to `~/.codex/config.toml`:
-```toml
-[mcp_servers.shipswift]
-url = "https://api.shipswift.app/mcp"
-```
-
-**VS Code Copilot**
-Add to `.vscode/mcp.json`:
-```json
-{
-  "servers": {
-    "shipswift": {
-      "type": "http",
-      "url": "https://api.shipswift.app/mcp"
-    }
-  }
-}
-```
-
-**Cursor**
-Add to `.cursor/mcp.json`:
+**Cursor** — Add to `.cursor/mcp.json`:
 ```json
 {
   "mcpServers": {
@@ -66,8 +81,19 @@ Add to `.cursor/mcp.json`:
 }
 ```
 
-**Windsurf**
-Add to `~/.codeium/windsurf/mcp_config.json`:
+**VS Code Copilot** — Add to `.vscode/mcp.json`:
+```json
+{
+  "servers": {
+    "shipswift": {
+      "type": "http",
+      "url": "https://api.shipswift.app/mcp"
+    }
+  }
+}
+```
+
+**Windsurf** — Add to `~/.codeium/windsurf/mcp_config.json`:
 ```json
 {
   "mcpServers": {
@@ -78,11 +104,7 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 }
 ```
 
-### Option 2: File Copy
-
-1. Clone this repository
-2. Copy the files you need from `ShipSwift/SWPackage/` into your Xcode project
-3. Each component in `SWAnimation/`, `SWChart/`, and `SWComponent/` is self-contained — just copy the file and `SWUtil/` if needed
+</details>
 
 ### Run the Showcase App
 
@@ -167,9 +189,9 @@ SWModule      ← may depend on SWUtil and SWComponent
 
 ---
 
-## MCP Recipes
+## Recipes
 
-ShipSwift provides **38 free recipes** via [MCP](https://modelcontextprotocol.io) — each recipe includes complete SwiftUI source code, implementation steps, and best practices. Your AI assistant can retrieve any recipe on demand.
+ShipSwift provides **38 free recipes** via Skills — each recipe includes complete SwiftUI source code, implementation steps, and best practices. Your AI assistant can retrieve any recipe on demand.
 
 | Category | Count | Examples |
 |----------|-------|----------|
@@ -178,9 +200,9 @@ ShipSwift provides **38 free recipes** via [MCP](https://modelcontextprotocol.io
 | Component | 15 | Alert, Onboarding, Stepper, FAQ |
 | Module | 6 | Auth, Camera, Chat, Setting, Subscription, Infra CDK |
 
-Three MCP tools are available: `listRecipes`, `getRecipe`, `searchRecipes`.
+Three tools are available: `listRecipes`, `getRecipe`, `searchRecipes`.
 
-Learn more at [shipswift.app](https://shipswift.app)
+Learn more at [shipswift.app](https://shipswift.app) · Skills repo: [signerlabs/shipswift-skills](https://github.com/signerlabs/shipswift-skills)
 
 ---
 
