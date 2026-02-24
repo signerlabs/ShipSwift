@@ -247,3 +247,17 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 Made with ❤️ by [SignerLabs](https://github.com/signerlabs)
 
 </div>
+
+
+## Installation
+
+```bash
+# Installation instructions
+```
+
+
+## Usage
+
+```python
+# Usage examples
+```
