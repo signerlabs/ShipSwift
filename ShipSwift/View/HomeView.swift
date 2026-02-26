@@ -164,7 +164,8 @@ struct HomeView: View {
                 color: .blue,
                 title: "Module",
                 subtitle: "Frameworks",
-                description: "Auth, Camera, Face Camera, Paywall, Chat, Settings"
+                // "Paywall" removed for App Store review — showcase app has no real subscriptions
+                description: "Auth, Camera, Face Camera, Chat, Settings"
             ) { selectedTab = "component"; scrollTarget = "module" }
 
             ModuleCard(

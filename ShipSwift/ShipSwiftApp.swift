@@ -9,12 +9,13 @@ import SwiftUI
 
 @main
 struct ShipSwiftApp: App {
-    @State private var storeManager = SWStoreManager.shared
-    
+    // StoreManager disabled for App Store review — showcase app has no real subscriptions
+//    @State private var storeManager = SWStoreManager.shared
+
     var body: some Scene {
         WindowGroup {
             RootTabView()
-                .environment(storeManager)
+                // .environment(storeManager)
                 .swAlert()
         }
     }
