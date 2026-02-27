@@ -278,8 +278,9 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access is required to capture photos";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Microphone access is required for voice input";
+				INFOPLIST_KEY_NSCameraUsageDescription = "ShipSwift uses the camera to let you try the Camera module demo. For example, you can take a photo to see how the camera component captures and displays images.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "ShipSwift uses the microphone for the voice input demo in the Chat module. For example, you can speak a message to see how voice-to-text works in the chat component.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "ShipSwift includes a TikTok Tracking module demo that shows how ad attribution works. For example, you can view the tracking permission flow and see how events are logged.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -327,8 +328,9 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access is required to capture photos";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Microphone access is required for voice input";
+				INFOPLIST_KEY_NSCameraUsageDescription = "ShipSwift uses the camera to let you try the Camera module demo. For example, you can take a photo to see how the camera component captures and displays images.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "ShipSwift uses the microphone for the voice input demo in the Chat module. For example, you can speak a message to see how voice-to-text works in the chat component.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "ShipSwift includes a TikTok Tracking module demo that shows how ad attribution works. For example, you can view the tracking permission flow and see how events are logged.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
