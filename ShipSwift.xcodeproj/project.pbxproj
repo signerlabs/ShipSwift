@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9B1A79252F51C2C800DDF343 /* TikTokBusinessSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 9B1A79242F51C2C800DDF343 /* TikTokBusinessSDK */; };
 		9B98BB222F27490700CA9857 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 9B98BB212F27490700CA9857 /* AWSAPIPlugin */; };
 		9B98BB242F27490700CA9857 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 9B98BB232F27490700CA9857 /* AWSCognitoAuthPlugin */; };
 		9B98BB262F27490700CA9857 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 9B98BB252F27490700CA9857 /* AWSPluginsCore */; };
@@ -31,6 +32,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B98BB222F27490700CA9857 /* AWSAPIPlugin in Frameworks */,
+				9B1A79252F51C2C800DDF343 /* TikTokBusinessSDK in Frameworks */,
 				9B98BB282F27490700CA9857 /* Amplify in Frameworks */,
 				9B98BB242F27490700CA9857 /* AWSCognitoAuthPlugin in Frameworks */,
 				9B98BB262F27490700CA9857 /* AWSPluginsCore in Frameworks */,
@@ -80,6 +82,7 @@
 				9B98BB232F27490700CA9857 /* AWSCognitoAuthPlugin */,
 				9B98BB252F27490700CA9857 /* AWSPluginsCore */,
 				9B98BB272F27490700CA9857 /* Amplify */,
+				9B1A79242F51C2C800DDF343 /* TikTokBusinessSDK */,
 			);
 			productName = ShipSwift;
 			productReference = B69605ED2EEFD462006F81F3 /* ShipSwift.app */;
@@ -111,6 +114,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				9B98BB202F27490700CA9857 /* XCRemoteSwiftPackageReference "amplify-swift" */,
+				9B1A79232F51C2C800DDF343 /* XCRemoteSwiftPackageReference "tiktok-business-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B69605EE2EEFD462006F81F3 /* Products */;
@@ -179,7 +183,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5GS4D3667R;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -243,7 +247,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5GS4D3667R;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -271,7 +275,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 5GS4D3667R;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -280,7 +283,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "ShipSwift uses the camera to let you try the Camera module demo. For example, you can take a photo to see how the camera component captures and displays images.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "ShipSwift uses the microphone for the voice input demo in the Chat module. For example, you can speak a message to see how voice-to-text works in the chat component.";
-				INFOPLIST_KEY_NSUserTrackingUsageDescription = "ShipSwift includes a TikTok Tracking module demo that shows how ad attribution works. For example, you can view the tracking permission flow and see how events are logged.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use this to measure advertising performance and deliver relevant content to you.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -321,7 +324,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 5GS4D3667R;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -330,7 +332,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "ShipSwift uses the camera to let you try the Camera module demo. For example, you can take a photo to see how the camera component captures and displays images.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "ShipSwift uses the microphone for the voice input demo in the Chat module. For example, you can speak a message to see how voice-to-text works in the chat component.";
-				INFOPLIST_KEY_NSUserTrackingUsageDescription = "ShipSwift includes a TikTok Tracking module demo that shows how ad attribution works. For example, you can view the tracking permission flow and see how events are logged.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use this to measure advertising performance and deliver relevant content to you.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -387,6 +389,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		9B1A79232F51C2C800DDF343 /* XCRemoteSwiftPackageReference "tiktok-business-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tiktok/tiktok-business-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.0;
+			};
+		};
 		9B98BB202F27490700CA9857 /* XCRemoteSwiftPackageReference "amplify-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/aws-amplify/amplify-swift";
@@ -398,6 +408,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		9B1A79242F51C2C800DDF343 /* TikTokBusinessSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9B1A79232F51C2C800DDF343 /* XCRemoteSwiftPackageReference "tiktok-business-ios-sdk" */;
+			productName = TikTokBusinessSDK;
+		};
 		9B98BB212F27490700CA9857 /* AWSAPIPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9B98BB202F27490700CA9857 /* XCRemoteSwiftPackageReference "amplify-swift" */;

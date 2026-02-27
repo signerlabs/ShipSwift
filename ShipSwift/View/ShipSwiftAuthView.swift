@@ -444,6 +444,7 @@ struct ShipSwiftAuthView: View {
         do {
             try await userManager.confirmSignUp(email: email, code: verificationCode)
             try await userManager.signIn(email: email, password: password)
+            SWTikTokTrackingManager.shared.track(.completeRegistration)
         } catch {
             showError(error)
         }

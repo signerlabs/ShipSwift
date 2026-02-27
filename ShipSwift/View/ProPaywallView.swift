@@ -212,6 +212,10 @@ struct ProPaywallView: View {
                 if case .verified(let transaction) = verification {
                     await transaction.finish()
                     await storeManager.updatePurchaseStatus()
+                    SWTikTokTrackingManager.shared.track(.purchase, properties: [
+                        "product_id": product.id,
+                        "price": product.displayPrice
+                    ])
 
                     // If already signed in, auto-sync to server
                     if userManager.sessionState.isSignedIn {

@@ -8,15 +8,18 @@
 import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
+// import TikTokBusinessSDK  // TODO: Uncomment after app is live on App Store
 
 @main
 struct ShipSwiftApp: App {
     @State private var storeManager = SWStoreManager.shared
     @State private var userManager = SWUserManager()
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         configureAmplify()
         configureStore()
+        configureTikTok()
     }
 
     var body: some Scene {
@@ -26,6 +29,11 @@ struct ShipSwiftApp: App {
                 .environment(userManager)
                 .swAlert()
         }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                SWTikTokTrackingManager.shared.requestTrackingAuthorization()
+            }
+        }
     }
 
     private func configureAmplify() {
@@ -34,6 +42,27 @@ struct ShipSwiftApp: App {
             try Amplify.configure(with: .amplifyOutputs)
         } catch {
             swDebugLog("Failed to configure Amplify: \(error)")
+        }
+    }
+
+    private func configureTikTok() {
+        // TODO: After app is live on App Store, uncomment TikTokBusinessSDK import above and enable SDK init:
+        // guard let config = TikTokConfig(
+        //     accessToken: "YOUR_ACCESS_TOKEN",
+        //     appId: "6759209764",
+        //     tiktokAppId: "YOUR_TIKTOK_APP_ID"
+        // ) else { return }
+        // #if DEBUG
+        // config.enableDebugMode()
+        // #endif
+        // TikTokBusiness.initializeSdk(config)
+
+        SWTikTokTrackingManager.shared.configure { eventName, properties in
+            // TODO: Replace with TikTok SDK calls after app is live
+            // let event = TikTokBaseEvent(eventName: eventName)
+            // properties?.forEach { event.addProperty(withKey: $0.key, value: $0.value) }
+            // TikTokBusiness.trackTTEvent(event)
+            swDebugLog("TikTok event: \(eventName) \(properties ?? [:])")
         }
     }
 
