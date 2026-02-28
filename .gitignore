@@ -26,6 +26,9 @@ Pods/
 # Claude
 .claude/
 
+# AWS Amplify
+amplify_outputs.json
+
 # Misc
 *.hmap
 *.o
