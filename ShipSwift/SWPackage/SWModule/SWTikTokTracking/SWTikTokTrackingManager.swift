@@ -129,14 +129,15 @@ final class SWTikTokTrackingManager {
         guard !hasRequestedATT else { return }
         hasRequestedATT = true
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            ATTrackingManager.requestTrackingAuthorization { [weak self] status in
-                Task { @MainActor in
-                    self?.authStatus = SWTikTokTrackingAuthStatus(from: status)
-                    self?.debugLog("ATT status: \(self?.authStatus.rawValue ?? "unknown")")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            ATTrackingManager.requestTrackingAuthorization { status in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    self.authStatus = SWTikTokTrackingAuthStatus(from: status)
+                    self.debugLog("ATT status: \(self.authStatus.rawValue)")
                     // Reset if not determined (e.g., dialog was blocked by network permission)
                     if status == .notDetermined {
-                        self?.hasRequestedATT = false
+                        self.hasRequestedATT = false
                     }
                 }
             }
