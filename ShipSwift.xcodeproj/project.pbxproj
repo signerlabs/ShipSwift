@@ -18,9 +18,22 @@
 		B69605ED2EEFD462006F81F3 /* ShipSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShipSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9B1A7E4B2F57B31600DDF343 /* Exceptions for "ShipSwift" folder in "ShipSwift" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B69605EC2EEFD462006F81F3 /* ShipSwift */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B69605EF2EEFD462006F81F3 /* ShipSwift */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9B1A7E4B2F57B31600DDF343 /* Exceptions for "ShipSwift" folder in "ShipSwift" target */,
+			);
 			path = ShipSwift;
 			sourceTree = "<group>";
 		};
@@ -280,6 +293,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShipSwift/Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "ShipSwift uses the camera to let you try the Camera module demo. For example, you can take a photo to see how the camera component captures and displays images.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "ShipSwift uses the microphone for the voice input demo in the Chat module. For example, you can speak a message to see how voice-to-text works in the chat component.";
@@ -329,6 +343,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShipSwift/Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "ShipSwift uses the camera to let you try the Camera module demo. For example, you can take a photo to see how the camera component captures and displays images.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "ShipSwift uses the microphone for the voice input demo in the Chat module. For example, you can speak a message to see how voice-to-text works in the chat component.";

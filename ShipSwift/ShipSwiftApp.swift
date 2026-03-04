@@ -8,7 +8,7 @@
 import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
-// import TikTokBusinessSDK  // TODO: Uncomment after app is live on App Store
+import TikTokBusinessSDK
 
 @main
 struct ShipSwiftApp: App {
@@ -46,23 +46,20 @@ struct ShipSwiftApp: App {
     }
 
     private func configureTikTok() {
-        // TODO: After app is live on App Store, uncomment TikTokBusinessSDK import above and enable SDK init:
-        // guard let config = TikTokConfig(
-        //     accessToken: "YOUR_ACCESS_TOKEN",
-        //     appId: "6759209764",
-        //     tiktokAppId: "YOUR_TIKTOK_APP_ID"
-        // ) else { return }
-        // #if DEBUG
-        // config.enableDebugMode()
-        // #endif
-        // TikTokBusiness.initializeSdk(config)
+        guard let config = TikTokConfig(
+            accessToken: SWSecrets.TikTok.accessToken,
+            appId: SWSecrets.TikTok.appId,
+            tiktokAppId: SWSecrets.TikTok.tiktokAppId
+        ) else { return }
+        #if DEBUG
+        config.enableDebugMode()
+        #endif
+        TikTokBusiness.initializeSdk(config)
 
         SWTikTokTrackingManager.shared.configure { eventName, properties in
-            // TODO: Replace with TikTok SDK calls after app is live
-            // let event = TikTokBaseEvent(eventName: eventName)
-            // properties?.forEach { event.addProperty(withKey: $0.key, value: $0.value) }
-            // TikTokBusiness.trackTTEvent(event)
-            swDebugLog("TikTok event: \(eventName) \(properties ?? [:])")
+            let event = TikTokBaseEvent(eventName: eventName)
+            properties?.forEach { event.addProperty(withKey: $0.key, value: $0.value) }
+            TikTokBusiness.trackTTEvent(event)
         }
     }
 

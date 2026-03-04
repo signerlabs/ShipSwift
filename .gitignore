@@ -29,6 +29,9 @@ Pods/
 # AWS Amplify
 amplify_outputs.json
 
+# Secrets (never commit real credentials)
+SWSecrets.swift
+
 # Misc
 *.hmap
 *.o

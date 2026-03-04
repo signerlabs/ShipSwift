@@ -2,17 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- Cross-app tracking (TikTok ad attribution — enable after app is live) -->
+	<!-- Cross-app tracking (TikTok ad attribution) -->
 	<key>NSPrivacyTracking</key>
-	<false/>
+	<true/>
 
-	<!-- TikTok SDK tracking domains (uncomment after enabling TikTok SDK) -->
+	<!-- TikTok SDK tracking domains -->
 	<key>NSPrivacyTrackingDomains</key>
 	<array>
-		<!--
 		<string>analytics.tiktok.com</string>
 		<string>business-api.tiktok.com</string>
-		-->
 	</array>
 
 	<!-- Collected data types -->
@@ -44,16 +42,31 @@
 				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
 			</array>
 		</dict>
-		<!-- Product Interaction — app events for analytics -->
+		<!-- Device ID (IDFA/IDFV) — third-party advertising and analytics -->
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeDeviceID</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<true/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising</string>
+				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
+			</array>
+		</dict>
+		<!-- Product Interaction — app events for third-party advertising and analytics -->
 		<dict>
 			<key>NSPrivacyCollectedDataType</key>
 			<string>NSPrivacyCollectedDataTypeProductInteraction</string>
 			<key>NSPrivacyCollectedDataTypeLinked</key>
 			<false/>
 			<key>NSPrivacyCollectedDataTypeTracking</key>
-			<false/>
+			<true/>
 			<key>NSPrivacyCollectedDataTypePurposes</key>
 			<array>
+				<string>NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising</string>
 				<string>NSPrivacyCollectedDataTypePurposeAnalytics</string>
 			</array>
 		</dict>
