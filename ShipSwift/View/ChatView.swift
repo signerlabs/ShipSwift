@@ -235,7 +235,7 @@ struct ChatView: View {
         }
     }
 
-    // MARK: - Get Code (Copy MCP Command)
+    // MARK: - Get Code (Open GitHub)
 
     private func openGitHub() {
         if let url = URL(string: "https://github.com/signerlabs/ShipSwift") {

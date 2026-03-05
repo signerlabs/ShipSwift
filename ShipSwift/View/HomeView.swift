@@ -2,7 +2,7 @@
 //  HomeView.swift
 //  ShipSwift
 //
-//  Showcase App home page — hero section, MCP card, module overview grid,
+//  Showcase App home page — hero section, Skills card, module overview grid,
 //  and footer with link to shipswift.app.
 //
 //  Created by Wei Zhong on 14/2/26.
@@ -17,48 +17,17 @@ struct HomeView: View {
     @Binding var scrollTarget: String?
 
     @State private var showPaywall = false
+    @State private var copied = false
 
-    // MCP commands for each AI assistant
-    @State private var selectedMCP = 0
-
-    private let mcpOptions: [(name: String, command: String)] = [
-        ("Claude", "claude mcp add --transport http shipswift https://api.shipswift.app/mcp"),
-        ("Gemini", "gemini mcp add --transport http shipswift https://api.shipswift.app/mcp"),
-        ("Codex", """
-        // ~/.codex/config.toml
-        [mcp_servers.shipswift]
-        url = "https://api.shipswift.app/mcp"
-        """),
-        ("Cursor", """
-        // .cursor/mcp.json
-        {
-          "mcpServers": {
-            "shipswift": {
-              "type": "streamableHttp",
-              "url": "https://api.shipswift.app/mcp"
-            }
-          }
-        }
-        """),
-        ("Copilot", """
-        // .vscode/mcp.json
-        {
-          "servers": {
-            "shipswift": {
-              "type": "http",
-              "url": "https://api.shipswift.app/mcp"
-            }
-          }
-        }
-        """),
-    ]
+    private let skillsCommand = "npx skills add signerlabs/shipswift-skills"
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
                     heroSection
-                    mcpCard
+                    skillsCard
+                    proStatusRow
                     moduleGrid
                     footer
                 }
@@ -110,61 +79,92 @@ struct HomeView: View {
         .padding(.vertical, 8)
     }
 
-    // MARK: - MCP Card
+    // MARK: - Skills Card (Refined Terminal)
 
-    private var mcpCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label("Connect via MCP", systemImage: "terminal.fill")
-                .font(.headline)
-
-            Text("Add ShipSwift to your AI assistant and start building production apps:")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            // LLM selector
-            Picker("AI Assistant", selection: $selectedMCP) {
-                ForEach(0..<mcpOptions.count, id: \.self) { index in
-                    Text(mcpOptions[index].name).tag(index)
-                }
+    private var skillsCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // -- Header --
+            HStack {
+                // Terminal icon in gradient badge
+                Image(systemName: "terminal.fill")
+                    .foregroundStyle(.accent)
+                
+                Text("Install")
             }
-            .pickerStyle(.segmented)
+            .font(.headline)
 
-            // Copyable command block
+            // -- Command block (tap to copy) --
             Button {
-                UIPasteboard.general.string = mcpOptions[selectedMCP].command
+                UIPasteboard.general.string = skillsCommand
                 SWAlertManager.shared.show(.success, message: "Copied to clipboard")
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    copied = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        copied = false
+                    }
+                }
             } label: {
-                Text(mcpOptions[selectedMCP].command)
-                    .font(.system(.caption, design: .monospaced))
-                    .foregroundStyle(.primary)
-                    .multilineTextAlignment(.leading)
-                    .padding(10)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(.gray.opacity(0.15))
-                    )
+                ZStack(alignment: .topTrailing) {
+                    HStack(alignment: .top, spacing: 0) {
+                        Text("$")
+                            .font(.system(.footnote, design: .monospaced))
+                            .foregroundStyle(Color(hue: 0.38, saturation: 0.7, brightness: 0.75))
+
+                        Spacer(minLength: 6)
+
+                        Text(skillsCommand)
+                            .font(.system(.footnote, design: .monospaced))
+                            .foregroundStyle(.primary)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .padding(.trailing, 24) // Leave room for the copy icon
+
+                    // Copy / checkmark icon overlay
+                    Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                        .font(.caption)
+                        .foregroundStyle(copied ? .green : .secondary)
+                        .contentTransition(.symbolEffect(.replace))
+                        .padding(8)
+                }
+                .background(
+                    Color(.systemGray6).opacity(0.6),
+                    in: RoundedRectangle(cornerRadius: 8)
+                )
             }
             .buttonStyle(.plain)
 
+            // -- Subtitle --
+            Text("Works with Claude Code, Codex, Gemini, Cursor, Copilot, Windsurf, and all other AI tools.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.top, 2)
+        }
+    }
+
+    // MARK: - Pro Status Row
+
+    private var proStatusRow: some View {
+        Group {
             if storeManager.isPro {
                 Label("Pro Recipes unlocked", systemImage: "checkmark.seal.fill")
-                    .font(.caption)
-                    .foregroundStyle(.green)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 4)
             } else {
-                Button {
-                    showPaywall = true
-                } label: {
-                    Label("Upgrade to unlock Pro Recipes", systemImage: "star.fill")
-                        .font(.caption)
+                Button { showPaywall = true } label: {
+                    Label("Unlock Pro Recipes", systemImage: "lock.open.fill")
+                        .foregroundStyle(.secondary)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 4)
             }
         }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.secondarySystemGroupedBackground))
-        )
     }
 
     // MARK: - Module Grid
