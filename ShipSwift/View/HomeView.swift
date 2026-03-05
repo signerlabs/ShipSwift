@@ -26,8 +26,9 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     heroSection
-                    skillsCard
                     proStatusRow
+                    skillsCard
+                    linksRow
                     moduleGrid
                     footer
                 }
@@ -147,6 +148,28 @@ struct HomeView: View {
         }
     }
 
+    // MARK: - Links Row
+
+    private var linksRow: some View {
+        HStack(spacing: 12) {
+            Link(destination: URL(string: "https://shipswift.app")!) {
+                Label("Website", systemImage: "globe")
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .tint(.secondary)
+
+            Link(destination: URL(string: "https://github.com/signerlabs/ShipSwift")!) {
+                Label("GitHub", systemImage: "chevron.left.forwardslash.chevron.right")
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .tint(.secondary)
+        }
+    }
+
     // MARK: - Pro Status Row
 
     private var proStatusRow: some View {
@@ -154,15 +177,11 @@ struct HomeView: View {
             if storeManager.isPro {
                 Label("Pro Recipes unlocked", systemImage: "checkmark.seal.fill")
                     .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 4)
             } else {
                 Button { showPaywall = true } label: {
                     Label("Unlock Pro Recipes", systemImage: "lock.open.fill")
                         .foregroundStyle(.secondary)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 4)
             }
         }
     }
