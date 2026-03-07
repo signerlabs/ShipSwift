@@ -62,6 +62,12 @@ import Amplify
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
 
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
+
 // MARK: - Session State
 
 /// User session state
@@ -303,8 +309,7 @@ final class SWUserManager {
     func signInWithApple() async throws {
         swDebugLog("🍎 [Auth] Starting Apple Sign In...")
 
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first else {
+        guard let window = SWWindowHelper.keyWindow else {
             swDebugLog("🍎 [Auth] ❌ Cannot get window")
             throw SWServiceError.unknown("Cannot get window")
         }
@@ -325,8 +330,7 @@ final class SWUserManager {
 
     /// Google Sign In
     func signInWithGoogle() async throws {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first else {
+        guard let window = SWWindowHelper.keyWindow else {
             throw SWServiceError.unknown("Cannot get window")
         }
 
@@ -508,11 +512,15 @@ final class SWUserManager {
     }
 
     private func requestReview() async {
+        #if os(iOS)
         guard let scene = UIApplication.shared.connectedScenes
             .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
         else { return }
 
         AppStore.requestReview(in: scene)
+        #elseif os(macOS)
+        // Review request via StoreKit scene API not available on macOS
+        #endif
 
         hasRequestedReview = true
         lastReviewRequestDate = .now
@@ -741,4 +749,22 @@ actor SWAuthService {
             confirmationCode: code
         )
     }
+}
+
+// MARK: - Window Helper
+
+/// Cross-platform helper to retrieve the key window for auth presentation anchors
+private enum SWWindowHelper {
+    #if os(iOS)
+    static var keyWindow: UIWindow? {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+    }
+    #elseif os(macOS)
+    static var keyWindow: NSWindow? {
+        NSApplication.shared.keyWindow ?? NSApplication.shared.windows.first
+    }
+    #endif
 }

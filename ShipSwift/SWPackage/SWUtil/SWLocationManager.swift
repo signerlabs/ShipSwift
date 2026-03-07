@@ -38,7 +38,11 @@
 //
 
 import CoreLocation
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 @MainActor
 @Observable
@@ -87,10 +91,11 @@ final class SWLocationManager: NSObject {
     @ObservationIgnored
     private let geocoder = CLGeocoder()
 
-    private static let authorizedStatuses: Set<CLAuthorizationStatus> = [
-        .authorizedAlways,
-        .authorizedWhenInUse
-    ]
+    #if os(iOS)
+    private static let authorizedStatuses: Set<CLAuthorizationStatus> = [.authorizedAlways, .authorizedWhenInUse]
+    #else
+    private static let authorizedStatuses: Set<CLAuthorizationStatus> = [.authorizedAlways]
+    #endif
 
     // MARK: - Initialization
 
@@ -115,8 +120,12 @@ final class SWLocationManager: NSObject {
     }
 
     func openSettings() {
+        #if os(iOS)
         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(url)
+        #elseif os(macOS)
+        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:")!)
+        #endif
     }
 
     // MARK: - Private Methods

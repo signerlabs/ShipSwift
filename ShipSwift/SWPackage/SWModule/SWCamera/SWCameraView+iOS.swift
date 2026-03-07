@@ -1,5 +1,5 @@
 //
-//  SWCameraView.swift
+//  SWCameraView+iOS.swift
 //  ShipSwift
 //
 //  Camera capture view with photo picker and zoom control.
@@ -78,22 +78,6 @@ struct SWCameraView: View {
                         controlBar
                     }
 
-                    // Top-left close button
-                    VStack {
-                        HStack {
-                            Button { dismiss() } label: {
-                                Image(systemName: "xmark")
-                                    .font(.title3)
-                                    .foregroundStyle(.white)
-                                    .frame(width: 44, height: 44)
-                                    .background(.black.opacity(0.4), in: Circle())
-                            }
-                            Spacer()
-                        }
-                        .padding(.leading, 16)
-                        .padding(.top, 8)
-                        Spacer()
-                    }
                 }
             } else {
                 unauthorizedView
@@ -295,3 +279,4 @@ class SWPreviewView: UIView {
             SWAlertManager.shared.show(.error, message: "Camera permission denied")
         }
 }
+

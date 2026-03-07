@@ -248,7 +248,7 @@ struct ComponentRegistry {
                     .frame(maxWidth: .infinity)
                 )
             },
-            fullView: { AnyView(SWSettingView()) },
+            fullView: { AnyView(SWSettingView(isDemo: true)) },
             presentation: .push
         )
 
@@ -681,6 +681,7 @@ struct ComponentRegistry {
             presentation: .push
         )
 
+        #if os(iOS)
         reg["scrolling-faq"] = ComponentEntry(
             title: "Scrolling FAQ",
             icon: "bubble.left.and.text.bubble.right",
@@ -713,6 +714,7 @@ struct ComponentRegistry {
             },
             presentation: .push
         )
+        #endif
 
         reg["rotating-quote"] = ComponentEntry(
             title: "Rotating Quote",
@@ -1118,32 +1120,50 @@ struct ComponentRegistry {
 enum ComponentDemoViews {
     @ViewBuilder
     static func authDemo() -> some View {
-        ComponentViewAuthDemo()
+        SWAuthView(isDemo: true)
+            .environment(SWUserManager(skipAuthCheck: true))
     }
 
     @ViewBuilder
     static func cameraDemo() -> some View {
+        #if os(iOS)
         ComponentViewCameraDemo()
+        #else
+        EmptyView()
+        #endif
     }
 
     @ViewBuilder
     static func faceCameraDemo() -> some View {
+        #if os(iOS)
         SWFaceCameraView()
+        #else
+        EmptyView()
+        #endif
     }
 
     @ViewBuilder
     static func paywallDemo() -> some View {
-        ProPaywallView()
+        SWPaywallView(isDemo: true)
+            .environment(SWStoreManager.shared)
     }
 
     @ViewBuilder
     static func chatDemo() -> some View {
+        #if os(iOS)
         ComponentViewChatDemo()
+        #else
+        EmptyView()
+        #endif
     }
 
     @ViewBuilder
     static func tiktokTrackingDemo() -> some View {
+        #if os(iOS)
         SWTikTokTrackingView()
+        #else
+        EmptyView()
+        #endif
     }
 }
 

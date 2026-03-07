@@ -13,6 +13,12 @@ import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
 
+#if os(iOS)
+private typealias SWTextContentType = UITextContentType
+#else
+private typealias SWTextContentType = NSTextContentType
+#endif
+
 struct ShipSwiftAuthView: View {
 
     // MARK: - Environment
@@ -86,10 +92,12 @@ struct ShipSwiftAuthView: View {
             }
             .padding()
         }
+        #if os(iOS)
         .scrollDismissesKeyboard(.interactively)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button { dismiss() } label: {
                     Image(systemName: "xmark")
                         .foregroundStyle(.secondary)
@@ -328,9 +336,13 @@ struct ShipSwiftAuthView: View {
             Image(systemName: "envelope")
                 .foregroundStyle(.secondary)
             TextField("Email", text: $email)
+                #if os(iOS)
                 .keyboardType(.emailAddress)
+                #endif
                 .textContentType(.emailAddress)
+                #if os(iOS)
                 .textInputAutocapitalization(.never)
+                #endif
                 .autocorrectionDisabled()
         }
         .padding(.horizontal, 16)
@@ -339,7 +351,7 @@ struct ShipSwiftAuthView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
-    private func passwordField(text: Binding<String>, placeholder: String, contentType: UITextContentType) -> some View {
+    private func passwordField(text: Binding<String>, placeholder: String, contentType: SWTextContentType) -> some View {
         HStack {
             Image(systemName: "lock")
                 .foregroundStyle(.secondary)
@@ -354,7 +366,9 @@ struct ShipSwiftAuthView: View {
 
     private func codeField(text: Binding<String>) -> some View {
         TextField("000000", text: text)
+            #if os(iOS)
             .keyboardType(.numberPad)
+            #endif
             .textContentType(.oneTimeCode)
             .focused($isCodeFocused)
             .multilineTextAlignment(.center)
@@ -444,7 +458,9 @@ struct ShipSwiftAuthView: View {
         do {
             try await userManager.confirmSignUp(email: email, code: verificationCode)
             try await userManager.signIn(email: email, password: password)
+            #if os(iOS)
             SWTikTokTrackingManager.shared.track(.completeRegistration)
+            #endif
         } catch {
             showError(error)
         }

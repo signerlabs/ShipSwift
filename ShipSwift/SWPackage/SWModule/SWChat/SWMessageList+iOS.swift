@@ -1,5 +1,5 @@
 //
-//  SWMessageList.swift
+//  SWMessageList+iOS.swift
 //  ShipSwift
 //
 //  Scrollable chat message list with bubble styling.
@@ -41,7 +41,8 @@
 //
 
 import SwiftUI
-import UIKit
+
+private let swMessageBubbleBackground = Color(UIColor.systemGray6)
 
 // MARK: - Flip Modifier
 
@@ -128,12 +129,19 @@ public struct SWMessageList<Message: Identifiable, Content: View>: View {
                     .swFlipped()
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
+                    .selectionDisabled()
+                    #if os(iOS)
                     .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
+                    #else
+                    .listRowInsets(EdgeInsets(top: 4, leading: 160, bottom: 4, trailing: 160))
+                    #endif
             }
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
+        #if os(iOS)
         .scrollDismissesKeyboard(.immediately)
+        #endif
         .swFlipped()
     }
 }
@@ -191,7 +199,7 @@ private struct PreviewMessage: Identifiable {
         SWMessageBubble(isFromUser: message.isUser) {
             Text(message.content)
                 .padding(12)
-                .background(message.isUser ? Color.accentColor : Color(UIColor.systemGray6))
+                .background(message.isUser ? Color.accentColor : swMessageBubbleBackground)
                 .foregroundStyle(message.isUser ? .white : .primary)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
         }

@@ -12,6 +12,19 @@ struct RootTabView: View {
     @State private var scrollTarget: String?
 
     var body: some View {
+        #if os(iOS)
+        iOSBody
+        #else
+        macOSBody
+        #endif
+    }
+}
+
+// MARK: - iOS Body
+
+#if os(iOS)
+extension RootTabView {
+    var iOSBody: some View {
         TabView(selection: $selectedTab) {
             Tab(value: "home") {
                 HomeView(selectedTab: $selectedTab, scrollTarget: $scrollTarget)
@@ -49,6 +62,19 @@ struct RootTabView: View {
         .sensoryFeedback(.increase, trigger: selectedTab)
     }
 }
+#endif
+
+// MARK: - macOS Body
+
+#if os(macOS)
+extension RootTabView {
+    var macOSBody: some View {
+        ComponentView(scrollTarget: $scrollTarget)
+    }
+}
+#endif
+
+// MARK: - Preview
 
 #Preview {
     RootTabView()

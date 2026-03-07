@@ -1,5 +1,5 @@
 //
-//  SWChatInputView.swift
+//  SWChatInputView+iOS.swift
 //  ShipSwift
 //
 //  Chat text input bar with optional voice recognition (ASR).
@@ -164,6 +164,7 @@ public struct SWChatInputView: View {
         case .idle:
             // Normal text input
             TextField(placeHolderText, text: $text, axis: .vertical)
+                .textFieldStyle(.plain)
                 .lineLimit(minLines...5)
                 .focused($isFocused)
                 .disabled(isDisabled)

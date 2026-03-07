@@ -2,12 +2,14 @@
 //  ChatView.swift
 //  ShipSwift
 //
-//  Chat tab — AI-powered component discovery and preview.
+//  Chat tab (iOS only) — AI-powered component discovery and preview.
 //  Users describe what they need in natural language, and the AI
 //  recommends matching SwiftUI components rendered inline as real views.
 //
 //  Created by Wei Zhong on 18/2/26.
 //
+
+#if os(iOS)
 
 import SwiftUI
 
@@ -67,10 +69,6 @@ struct ChatMessage: Identifiable, Codable {
 struct ChatView: View {
     @State private var messages: [ChatMessage] = []
     @State private var isWaiting = false
-    @State private var fullScreenComponent: String?
-    @State private var sheetComponent: String?
-    @State private var pushComponent: String?
-    @State private var showPushDestination = false
 
     private let chatService = ChatService()
     private let registry = ComponentRegistry()
@@ -85,9 +83,7 @@ struct ChatView: View {
                            registry.entries[componentId] != nil {
                             ComponentPreviewBubble(
                                 componentId: componentId,
-                                registry: registry,
-                                onViewFullScreen: { presentFullView(for: componentId) },
-                                onGetCode: { openGitHub() }
+                                registry: registry
                             )
                         } else {
                             // Default text bubble
@@ -140,32 +136,20 @@ struct ChatView: View {
                 ) {
                     sendMessage()
                 }
+                .frame(maxWidth: 760)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal)
             }
             .navigationTitle("ShipSwift AI")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     NavigationLink {
                         SettingView()
                     } label: {
                         Image(systemName: "gearshape.fill")
                     }
                 }
-            }
-            .navigationDestination(isPresented: $showPushDestination) {
-                if let id = pushComponent, let view = registry.fullView(for: id) {
-                    view
-                }
-            }
-        }
-        .fullScreenCover(item: fullScreenComponentBinding) { wrapper in
-            if let view = registry.fullView(for: wrapper.id) {
-                view
-            }
-        }
-        .sheet(item: sheetComponentBinding) { wrapper in
-            if let view = registry.fullView(for: wrapper.id) {
-                view
             }
         }
         .task {
@@ -220,111 +204,59 @@ struct ChatView: View {
         }
     }
 
-    // MARK: - Full View Presentation
-
-    private func presentFullView(for componentId: String) {
-        let presentation = registry.presentation(for: componentId)
-        switch presentation {
-        case .push:
-            pushComponent = componentId
-            showPushDestination = true
-        case .sheet:
-            sheetComponent = componentId
-        case .fullScreenCover:
-            fullScreenComponent = componentId
-        }
-    }
-
-    // MARK: - Get Code (Open GitHub)
-
-    private func openGitHub() {
-        if let url = URL(string: "https://github.com/signerlabs/ShipSwift") {
-            UIApplication.shared.open(url)
-        }
-    }
-
-    // MARK: - Identifiable Wrappers for sheet/fullScreenCover
-
-    @State private var fullScreenComponentWrapper: IdentifiableString?
-    @State private var sheetComponentWrapper: IdentifiableString?
-
-    private var fullScreenComponentBinding: Binding<IdentifiableString?> {
-        Binding(
-            get: { fullScreenComponent.map { IdentifiableString(id: $0) } },
-            set: { fullScreenComponent = $0?.id }
-        )
-    }
-
-    private var sheetComponentBinding: Binding<IdentifiableString?> {
-        Binding(
-            get: { sheetComponent.map { IdentifiableString(id: $0) } },
-            set: { sheetComponent = $0?.id }
-        )
-    }
-}
-
-/// Identifiable wrapper for String used by sheet/fullScreenCover(item:).
-private struct IdentifiableString: Identifiable {
-    let id: String
 }
 
 // MARK: - Component Preview Bubble
 
 /// Renders a live SwiftUI component preview inside a chat bubble.
 ///
-/// Includes the component title, a compact preview area (max height 300pt),
-/// and action buttons for full-screen viewing and getting the code.
+/// Tapping the bubble opens the full component view in a sheet.
 struct ComponentPreviewBubble: View {
     let componentId: String
     let registry: ComponentRegistry
-    let onViewFullScreen: () -> Void
-    let onGetCode: () -> Void
+
+    @State private var showSheet = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            // Header with icon and title
-            HStack(spacing: 8) {
-                Image(systemName: registry.icon(for: componentId))
-                    .foregroundStyle(.accent)
-                Text(registry.title(for: componentId))
-                    .font(.headline)
-            }
-
-            // Component preview area
-            if let preview = registry.view(for: componentId) {
-                preview
-                    .frame(maxHeight: 300)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .allowsHitTesting(false)
-            }
-
-            // Action buttons
-            HStack(spacing: 12) {
-                Button {
-                    onViewFullScreen()
-                } label: {
-                    HStack {
-                        Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        Text("View")
-                    }
-                    .font(.footnote)
+        Button {
+            showSheet = true
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                // Header with icon and title
+                HStack(spacing: 8) {
+                    Image(systemName: registry.icon(for: componentId))
+                        .foregroundStyle(.accent)
+                    Text(registry.title(for: componentId))
+                        .font(.headline)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.footnote)
+                        .foregroundStyle(.tertiary)
                 }
 
-                Button {
-                    onGetCode()
-                } label: {
-                    HStack {
-                        Image(systemName: "doc.on.doc")
-                        Text("Get Code")
-                    }
-                    .font(.footnote)
+                // Component preview area
+                if let preview = registry.view(for: componentId) {
+                    preview
+                        .frame(maxHeight: 300)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .allowsHitTesting(false)
                 }
             }
-            .buttonStyle(.bordered)
+            .padding(12)
+            .background(Color(UIColor.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+            )
+            .contentShape(Rectangle())
         }
-        .padding(12)
-        .background(Color(UIColor.systemGray6))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .buttonStyle(.plain)
+        .sheet(isPresented: $showSheet) {
+            registry.fullView(for: componentId)
+                .presentationDragIndicator(.visible)
+                .presentationCornerRadius(44)
+        }
     }
 }
 
@@ -334,3 +266,5 @@ struct ComponentPreviewBubble: View {
     ChatView()
         .swAlert()
 }
+
+#endif

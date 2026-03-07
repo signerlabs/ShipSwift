@@ -55,14 +55,23 @@ struct SWOrderView: View {
     var body: some View {
         ZStack {
             backgroundGradient
+            #if os(macOS)
+            ScrollView {
+                contentView
+                    .padding(.vertical)
+            }
+            #else
             contentView
+            #endif
         }
     }
     
     private var backgroundGradient: some View {
         LinearGradient(colors: [.black, bg],
                        startPoint: .top, endPoint: .bottom)
+        #if os(iOS)
         .ignoresSafeArea()
+        #endif
         .animation(.easeInOut, value: flavor)
     }
     
@@ -82,7 +91,11 @@ struct SWOrderView: View {
                 SWCupView(idx: i, count: qty, img: flavor, size: size)
             }
         }
+        #if os(macOS)
+        .frame(height: 280)
+        #else
         .frame(height: 500)
+        #endif
         .animation(.spring(), value: qty)
     }
     

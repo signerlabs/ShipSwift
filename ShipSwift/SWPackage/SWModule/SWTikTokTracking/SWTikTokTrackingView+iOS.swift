@@ -1,5 +1,5 @@
 //
-//  SWTikTokTrackingView.swift
+//  SWTikTokTrackingView+iOS.swift
 //  ShipSwift
 //
 //  Informational page for the SWTikTokTracking module.
@@ -152,3 +152,4 @@ struct SWTikTokTrackingView: View {
         SWTikTokTrackingView()
     }
 }
+

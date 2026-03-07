@@ -32,14 +32,16 @@ struct HomeView: View {
                     moduleGrid
                     footer
                 }
+                .frame(maxWidth: 680)
+                .frame(maxWidth: .infinity)
                 .padding(.horizontal)
                 .padding(.bottom, 32)
             }
-            .scrollIndicators(.hidden)
+            .scrollIndicators(.never)
             .navigationTitle("ShipSwift")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     NavigationLink {
                         SettingView()
                     } label: {
@@ -96,7 +98,12 @@ struct HomeView: View {
 
             // -- Command block (tap to copy) --
             Button {
+                #if os(iOS)
                 UIPasteboard.general.string = skillsCommand
+                #else
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(skillsCommand, forType: .string)
+                #endif
                 SWAlertManager.shared.show(.success, message: "Copied to clipboard")
                 withAnimation(.easeInOut(duration: 0.2)) {
                     copied = true
@@ -134,7 +141,7 @@ struct HomeView: View {
                         .padding(8)
                 }
                 .background(
-                    Color(.systemGray6).opacity(0.6),
+                    Color.accentColor.opacity(0.1),
                     in: RoundedRectangle(cornerRadius: 8)
                 )
             }
@@ -278,7 +285,11 @@ private struct ModuleCard: View {
             .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.secondarySystemGroupedBackground))
+                    #if canImport(UIKit)
+                    .fill(Color(UIColor.secondarySystemGroupedBackground))
+                    #else
+                    .fill(Color(NSColor.controlBackgroundColor))
+                    #endif
             )
         }
         .buttonStyle(.plain)

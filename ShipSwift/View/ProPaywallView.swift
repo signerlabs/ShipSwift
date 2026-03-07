@@ -40,22 +40,27 @@ struct ProPaywallView: View {
                 .padding()
                 .padding(.bottom, 20)
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { dismiss() } label: {
-                        Image(systemName: "xmark")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
+            #if canImport(UIKit)
+            .background(Color(UIColor.systemGroupedBackground))
+            #else
+            .background(Color(NSColor.windowBackgroundColor))
+            #endif
+            .toolbarTitleDisplayMode(.inline)
+            #if os(iOS)
             .fullScreenCover(isPresented: $showAuth) {
                 NavigationStack {
                     ShipSwiftAuthView()
                         .environment(userManager)
                 }
             }
+            #else
+            .sheet(isPresented: $showAuth) {
+                NavigationStack {
+                    ShipSwiftAuthView()
+                        .environment(userManager)
+                }
+            }
+            #endif
             .onChange(of: userManager.sessionState) { _, newState in
                 if newState.isSignedIn {
                     showAuth = false
@@ -212,10 +217,12 @@ struct ProPaywallView: View {
                 if case .verified(let transaction) = verification {
                     await transaction.finish()
                     await storeManager.updatePurchaseStatus()
+                    #if os(iOS)
                     SWTikTokTrackingManager.shared.track(.purchase, properties: [
                         "product_id": product.id,
                         "price": product.displayPrice
                     ])
+                    #endif
 
                     // If already signed in, auto-sync to server
                     if userManager.sessionState.isSignedIn {

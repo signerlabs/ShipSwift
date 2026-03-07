@@ -66,12 +66,21 @@ struct SettingView: View {
                     .environment(storeManager)
                     .environment(userManager)
             }
+            #if os(iOS)
             .fullScreenCover(isPresented: $showAuth) {
                 NavigationStack {
                     ShipSwiftAuthView()
                         .environment(userManager)
                 }
             }
+            #else
+            .sheet(isPresented: $showAuth) {
+                NavigationStack {
+                    ShipSwiftAuthView()
+                        .environment(userManager)
+                }
+            }
+            #endif
             .onChange(of: userManager.sessionState) { _, newState in
                 if newState.isSignedIn {
                     showAuth = false
@@ -327,7 +336,12 @@ struct SettingView: View {
         do {
             let service = ShipSwiftAPIService()
             let key = try await service.revealApiKey(idToken: idToken)
+            #if os(iOS)
             UIPasteboard.general.string = key
+            #else
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(key, forType: .string)
+            #endif
             SWAlertManager.shared.show(.success, message: "API Key copied to clipboard")
         } catch {
             SWAlertManager.shared.show(.error, message: "Failed to copy API key")

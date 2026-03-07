@@ -1,5 +1,5 @@
 //
-//  SWChatView.swift
+//  SWChatView+iOS.swift
 //  ShipSwift
 //
 //  All-in-one chat view that combines SWMessageList, SWMessageBubble,
@@ -60,6 +60,8 @@
 //
 
 import SwiftUI
+
+private let swChatBubbleBackground = Color(UIColor.systemGray6)
 
 // MARK: - Chat Message Model
 
@@ -205,7 +207,7 @@ public struct SWChatView<BubbleContent: View>: View {
     private func defaultBubble(for message: SWChatMessage) -> some View {
         Text(message.content)
             .padding(12)
-            .background(message.isUser ? Color.accentColor : Color(UIColor.systemGray6))
+            .background(message.isUser ? Color.accentColor : swChatBubbleBackground)
             .foregroundStyle(message.isUser ? .white : .primary)
             .clipShape(RoundedRectangle(cornerRadius: 16))
     }

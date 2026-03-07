@@ -1,5 +1,5 @@
 //
-//  SWCameraManager.swift
+//  SWCameraManager+iOS.swift
 //  ShipSwift
 //
 //  Unified AVCaptureSession manager with photo capture, zoom control,

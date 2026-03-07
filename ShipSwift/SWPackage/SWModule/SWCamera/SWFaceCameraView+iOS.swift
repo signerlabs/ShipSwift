@@ -1,5 +1,5 @@
 //
-//  SWFaceCameraView.swift
+//  SWFaceCameraView+iOS.swift
 //  ShipSwift
 //
 //  Face camera view with real-time landmark overlay.
@@ -54,7 +54,6 @@ struct SWFaceCameraView: View {
     /// Landmark color scheme
     var landmarkColors: SWFaceLandmarkColors = .default
 
-    @Environment(\.dismiss) private var dismiss
     @State private var cameraManager = SWCameraManager(position: .front)
     @State private var isCapturing = false
     @State private var showLandmarks = true
@@ -98,22 +97,6 @@ struct SWFaceCameraView: View {
                         controlBar
                     }
 
-                    // Top-left close button
-                    VStack {
-                        HStack {
-                            Button { dismiss() } label: {
-                                Image(systemName: "xmark")
-                                    .font(.title3)
-                                    .foregroundStyle(.white)
-                                    .frame(width: 44, height: 44)
-                                    .background(.black.opacity(0.4), in: Circle())
-                            }
-                            Spacer()
-                        }
-                        .padding(.leading, 16)
-                        .padding(.top, 8)
-                        Spacer()
-                    }
                 }
             } else {
                 unauthorizedView
@@ -347,3 +330,4 @@ struct SWFaceLandmarkColors {
 #Preview {
     SWFaceCameraView()
 }
+

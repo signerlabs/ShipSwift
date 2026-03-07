@@ -61,8 +61,10 @@ struct SWOnboardingView: View {
                     .padding(.horizontal)
                 }
             }
+            #if os(iOS)
             .tabViewStyle(.page(indexDisplayMode: .always))
             .indexViewStyle(.page(backgroundDisplayMode: .always))
+            #endif
 
             // Bottom confirm button
             Button {

@@ -1,5 +1,5 @@
 //
-//  SWScrollingFAQ.swift
+//  SWScrollingFAQ+iOS.swift
 //  ShipSwift
 //
 //  Auto-scrolling horizontal FAQ carousel that displays rows of
@@ -213,3 +213,4 @@ struct SWScrollingFAQ: View {
         swDebugLog("Tapped: \(question)")
     }
 }
+

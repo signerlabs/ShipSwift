@@ -1,5 +1,5 @@
 //
-//  SWAuthView.swift
+//  SWAuthView+iOS.swift
 //  ShipSwift
 //
 //  Authentication view with email, phone, Apple, and Google sign-in.
@@ -46,6 +46,8 @@ import Amplify
 import AWSCognitoAuthPlugin
 
 struct SWAuthView: View {
+
+    var isDemo: Bool = false
 
     // MARK: - Environment
 
@@ -268,8 +270,8 @@ struct SWAuthView: View {
                     .foregroundStyle(.secondary)
                 TextField("Email", text: $email)
                     .keyboardType(.emailAddress)
-                    .textContentType(.emailAddress)
                     .textInputAutocapitalization(.never)
+                    .textContentType(.emailAddress)
                     .autocorrectionDisabled()
             }
             .padding(.horizontal, 16)
@@ -466,8 +468,8 @@ struct SWAuthView: View {
                     .foregroundStyle(.secondary)
                 TextField("Email", text: $email)
                     .keyboardType(.emailAddress)
-                    .textContentType(.emailAddress)
                     .textInputAutocapitalization(.never)
+                    .textContentType(.emailAddress)
                     .autocorrectionDisabled()
             }
             .padding(.horizontal, 16)
@@ -793,7 +795,7 @@ struct SWAuthView: View {
             .navigationTitle("Select Country")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         countrySearchText = ""
                         showingCountryPicker = false
@@ -856,7 +858,14 @@ struct SWAuthView: View {
 
     // MARK: - Actions
 
+    private func demoGuard() -> Bool {
+        guard isDemo else { return false }
+        SWAlertManager.shared.show(.info, message: "UI Demo — auth actions are not functional")
+        return true
+    }
+
     private func signInWithEmail() {
+        guard !demoGuard() else { return }
         guard agreementChecked else {
             SWAlertManager.shared.show(.error, message: "Please agree to the Terms of Service and Privacy Policy")
             return
@@ -873,6 +882,7 @@ struct SWAuthView: View {
     }
 
     private func signUpWithEmail() {
+        guard !demoGuard() else { return }
         guard agreementChecked else {
             SWAlertManager.shared.show(.error, message: "Please agree to the Terms of Service and Privacy Policy")
             return
@@ -892,6 +902,7 @@ struct SWAuthView: View {
     }
 
     private func confirmSignUp() {
+        guard !demoGuard() else { return }
         loadingState = .verifying
         Task {
             defer { loadingState = .idle }
@@ -905,6 +916,7 @@ struct SWAuthView: View {
     }
 
     private func resendEmailCode() {
+        guard !demoGuard() else { return }
         loadingState = .sendingCode
         Task {
             defer { loadingState = .idle }
@@ -918,6 +930,7 @@ struct SWAuthView: View {
     }
 
     private func sendResetCode() {
+        guard !demoGuard() else { return }
         loadingState = .sendingCode
         Task {
             defer { loadingState = .idle }
@@ -933,6 +946,7 @@ struct SWAuthView: View {
     }
 
     private func confirmResetPassword() {
+        guard !demoGuard() else { return }
         loadingState = .verifying
         Task {
             defer { loadingState = .idle }
@@ -956,6 +970,7 @@ struct SWAuthView: View {
     // MARK: - Phone Actions
 
     private func sendPhoneCode() {
+        guard !demoGuard() else { return }
         guard agreementChecked else {
             SWAlertManager.shared.show(.error, message: "Please agree to the Terms of Service and Privacy Policy")
             return
@@ -974,6 +989,7 @@ struct SWAuthView: View {
     }
 
     private func verifyPhoneCode() {
+        guard !demoGuard() else { return }
         loadingState = .verifying
         Task {
             defer { loadingState = .idle }
@@ -986,6 +1002,7 @@ struct SWAuthView: View {
     }
 
     private func resendPhoneCode() {
+        guard !demoGuard() else { return }
         isResending = true
         Task {
             defer { isResending = false }
@@ -999,6 +1016,7 @@ struct SWAuthView: View {
     }
 
     private func signInWithApple() {
+        guard !demoGuard() else { return }
         guard agreementChecked else {
             SWAlertManager.shared.show(.error, message: "Please agree to the Terms of Service and Privacy Policy")
             return
@@ -1013,6 +1031,7 @@ struct SWAuthView: View {
     }
 
     private func signInWithGoogle() {
+        guard !demoGuard() else { return }
         guard agreementChecked else {
             SWAlertManager.shared.show(.error, message: "Please agree to the Terms of Service and Privacy Policy")
             return

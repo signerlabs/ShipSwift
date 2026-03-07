@@ -8,6 +8,8 @@
 //  Created by Wei Zhong on 18/2/26.
 //
 
+#if os(iOS)
+
 import Foundation
 
 // MARK: - Chat Response Model
@@ -77,3 +79,5 @@ struct ChatService {
         }
     }
 }
+
+#endif

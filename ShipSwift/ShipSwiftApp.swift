@@ -8,7 +8,9 @@
 import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
+#if os(iOS)
 import TikTokBusinessSDK
+#endif
 
 @main
 struct ShipSwiftApp: App {
@@ -19,7 +21,9 @@ struct ShipSwiftApp: App {
     init() {
         configureAmplify()
         configureStore()
+        #if os(iOS)
         configureTikTok()
+        #endif
     }
 
     var body: some Scene {
@@ -28,12 +32,20 @@ struct ShipSwiftApp: App {
                 .environment(storeManager)
                 .environment(userManager)
                 .swAlert()
+                #if os(macOS)
+                .frame(minWidth: 900, minHeight: 600)
+                #endif
         }
+        #if os(macOS)
+        .defaultSize(width: 1100, height: 700)
+        #endif
+        #if os(iOS)
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active {
                 SWTikTokTrackingManager.shared.requestTrackingAuthorization()
             }
         }
+        #endif
     }
 
     private func configureAmplify() {
@@ -45,6 +57,7 @@ struct ShipSwiftApp: App {
         }
     }
 
+    #if os(iOS)
     private func configureTikTok() {
         guard let config = TikTokConfig(
             accessToken: SWSecrets.TikTok.accessToken,
@@ -62,6 +75,7 @@ struct ShipSwiftApp: App {
             TikTokBusiness.trackTTEvent(event)
         }
     }
+    #endif
 
     private func configureStore() {
         storeManager.config.lifetimeProductID = "com.signerlabs.shipswift.lifetime"

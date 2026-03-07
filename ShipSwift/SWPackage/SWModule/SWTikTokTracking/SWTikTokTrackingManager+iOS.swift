@@ -1,5 +1,5 @@
 //
-//  SWTikTokTrackingManager.swift
+//  SWTikTokTrackingManager+iOS.swift
 //  ShipSwift
 //
 //  TikTok ad attribution and event tracking manager with ATT permission flow.
@@ -185,3 +185,4 @@ final class SWTikTokTrackingManager {
         #endif
     }
 }
+

@@ -46,32 +46,27 @@ struct SWAgreementChecker: View {
     var privacyURL: URL = URL(string: "https://shipswift.app/privacy")!
 
     var body: some View {
-        HStack {
+        HStack(spacing: 6) {
             Button {
                 agreementChecked.toggle()
             } label: {
                 Image(systemName: agreementChecked ? "checkmark.circle.fill" : "circle")
                     .imageScale(.small)
             }
+            .buttonStyle(.plain)
 
-            HStack {
-                Text("By signing in, you agree to")
+            HStack(spacing: 4) {
+                Text("I agree to")
                     .foregroundStyle(.secondary)
-
-                Link(destination: termsURL) {
-                    Text("Terms of Service")
-                }
-
+                Link("Terms of Service", destination: termsURL)
                 Text("and")
                     .foregroundStyle(.secondary)
-
-                Link(destination: privacyURL) {
-                    Text("Privacy Policy")
-                }
+                Link("Privacy Policy", destination: privacyURL)
             }
             .font(.caption2)
+            .lineLimit(1)
         }
-        .padding(.top)
+        .padding(.top, 4)
     }
 }
 

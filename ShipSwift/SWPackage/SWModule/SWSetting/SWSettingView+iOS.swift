@@ -1,5 +1,5 @@
 //
-//  SWSettingView.swift
+//  SWSettingView+iOS.swift
 //  ShipSwift
 //
 //  Generic settings page template with language switching, share app, legal links,
@@ -35,10 +35,13 @@
 import SwiftUI
 
 struct SWSettingView: View {
-    
+
     // MARK: - State
-    
+
+    var isDemo: Bool = false
+
     @AppStorage("appLanguage") private var appLanguage = "en"
+    @State private var selectedLanguage = UserDefaults.standard.string(forKey: "appLanguage") ?? "en"
     @State private var showDeleteConfirmation = false
     @State private var showSignOutConfirmation = false
     @State private var isDeleting = false
@@ -76,9 +79,17 @@ struct SWSettingView: View {
                 // MARK: - General Settings
                 Section {
                     // Language switcher
-                    Picker("Language", selection: $appLanguage) {
+                    Picker("Language", selection: $selectedLanguage) {
                         Text("English").tag("en")
                         Text("简体中文").tag("zh-Hans")
+                    }
+                    .onChange(of: selectedLanguage) { _, newValue in
+                        if isDemo {
+                            selectedLanguage = appLanguage
+                            SWAlertManager.shared.show(.info, message: "UI Demo — language switching is not functional")
+                        } else {
+                            appLanguage = newValue
+                        }
                     }
                     
                     // Share App
