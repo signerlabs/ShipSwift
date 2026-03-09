@@ -85,6 +85,7 @@ LineChart · BarChart · AreaChart · DonutChart · RingChart · RadarChart · S
 - **SWPaywall** — Subscription paywall using StoreKit 2 — *iOS client included free. Full-stack recipe (backend + compliance + pitfalls) → [Pro](https://shipswift.app/#pricing)*
 - **SWChat** — All-in-one chat view with message list, text input, and optional voice recognition (VolcEngine ASR)
 - **SWSetting** — Settings page template with language switch, share, legal links, recommended apps
+- **SWSubjectLifting** — Background removal using VisionKit ImageAnalysis
 - **SWTikTokTracking** — TikTok Events API integration for attribution tracking — *iOS client included free. Full-stack recipe (backend + compliance + pitfalls) → [Pro](https://shipswift.app/#pricing)*
 
 ### SWUtil — Shared Utilities
@@ -110,9 +111,11 @@ ShipSwift/
 │   │   ├── SWPaywall/        #   Subscription paywall
 │   │   ├── SWChat/           #   Chat + voice input
 │   │   ├── SWSetting/        #   Settings page
+│   │   ├── SWSubjectLifting/ #   Background removal
 │   │   └── SWTikTokTracking/ #   TikTok attribution
 │   └── SWUtil/               # Shared utilities
 ├── View/                     # Showcase app views
+├── Service/                  # App services
 └── Component/                # Shared app components
 ```
 
