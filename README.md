@@ -211,6 +211,12 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ---
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=signerlabs/ShipSwift&type=Date)](https://star-history.com/#signerlabs/ShipSwift&Date)
+
+---
+
 <div align="center">
 
 Made with ❤️ by [SignerLabs](https://github.com/signerlabs)
