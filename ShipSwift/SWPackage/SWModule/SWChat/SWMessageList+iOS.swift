@@ -3,9 +3,14 @@
 //  ShipSwift
 //
 //  Scrollable chat message list with bubble styling.
-//  Uses the flip technique (industry standard for chat apps) to anchor
-//  scroll position at the bottom. Avoids ScrollView + LazyVStack which
+//  Uses List + ScrollViewReader with throttled auto-scroll to keep
+//  the latest message visible. Avoids ScrollView + LazyVStack which
 //  causes 100% CPU from infinite layout loops during streaming updates.
+//
+//  Advantages over the old flip technique:
+//  - Text is selectable (no coordinate system inversion)
+//  - Smooth, throttled scrolling during streaming (no jank)
+//  - Standard coordinate system — no mental overhead for consumers
 //
 //  Usage:
 //    // 1. Basic message list (messages in chronological order, oldest first)
@@ -34,9 +39,6 @@
 //        Text("Hi!")     // left-aligned bubble
 //    }
 //
-//    // 4. The .swFlipped() modifier is available for manual implementations
-//    //    if you need custom List behavior (see doc comments in source).
-//
 //  Created by Wei Zhong on 3/1/26.
 //
 
@@ -44,35 +46,19 @@ import SwiftUI
 
 private let swMessageBubbleBackground = Color(UIColor.systemGray6)
 
-// MARK: - Flip Modifier
-
-extension View {
-    /// Flips the view to display the chat list starting from the bottom
-    ///
-    /// How it works:
-    /// 1. Flip the entire List -> the original top becomes the bottom
-    /// 2. Flip each item -> content direction is restored
-    /// 3. Reverse the message array -> newest messages appear at the bottom
-    ///
-    /// Reference: https://www.swiftwithvincent.com/blog/building-the-inverted-scroll-of-a-messaging-app
-    func swFlipped() -> some View {
-        rotationEffect(.radians(.pi))
-            .scaleEffect(x: -1, y: 1, anchor: .center)
-    }
-}
-
 // MARK: - Message List View
 
-/// Message list view
+/// Scrollable chat message list with automatic bottom-anchoring.
 ///
 /// ## Best Practices
 ///
 /// ### 1. Use List instead of ScrollView + LazyVStack
-/// LazyVStack causes infinite layout calculation loops during frequent updates, CPU 100%
+/// LazyVStack causes infinite layout calculation loops during frequent updates, CPU 100%.
 ///
-/// ### 2. Use flip technique to start from the bottom
-/// `defaultScrollAnchor(.bottom)` is unreliable with List's lazy rendering.
-/// The flip technique is the industry standard for chat apps (Messages, WhatsApp, etc.)
+/// ### 2. Throttled auto-scroll keeps the latest message visible
+/// When `messages.count` changes, the list scrolls to the bottom anchor.
+/// Scrolling is throttled (max once per 400ms) with a 450ms trailing
+/// guarantee, preventing jank during fast streaming updates.
 ///
 /// ## Bad Example (causes CPU 100%)
 /// ```swift
@@ -91,24 +77,13 @@ extension View {
 ///     MessageBubble(message: message)
 /// }
 /// ```
-///
-/// ## Manual Implementation (without the component)
-/// ```swift
-/// List {
-///     ForEach(messages.reversed()) { message in
-///         MessageBubble(message: message)
-///             .swFlipped()  // Flip each item
-///             .listRowSeparator(.hidden)
-///             .listRowBackground(Color.clear)
-///     }
-/// }
-/// .listStyle(.plain)
-/// .scrollContentBackground(.hidden)
-/// .swFlipped()  // Flip the entire List
-/// ```
 public struct SWMessageList<Message: Identifiable, Content: View>: View {
     let messages: [Message]
     let content: (Message) -> Content
+
+    // Throttle state for auto-scroll
+    @State private var lastScrollTime: Date = .distantPast
+    @State private var trailingScrollTask: Task<Void, Never>?
 
     /// Initialize the message list
     /// - Parameters:
@@ -123,26 +98,60 @@ public struct SWMessageList<Message: Identifiable, Content: View>: View {
     }
 
     public var body: some View {
-        List {
-            ForEach(messages.reversed()) { message in
-                content(message)
-                    .swFlipped()
+        ScrollViewReader { proxy in
+            List {
+                ForEach(messages) { message in
+                    content(message)
+                        .id(message.id)
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .selectionDisabled()
+                        #if os(iOS)
+                        .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
+                        #else
+                        .listRowInsets(EdgeInsets(top: 4, leading: 160, bottom: 4, trailing: 160))
+                        #endif
+                }
+
+                // Bottom anchor — invisible spacer for scroll targeting
+                Color.clear
+                    .frame(height: 1)
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
-                    .selectionDisabled()
-                    #if os(iOS)
-                    .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
-                    #else
-                    .listRowInsets(EdgeInsets(top: 4, leading: 160, bottom: 4, trailing: 160))
-                    #endif
+                    .listRowInsets(EdgeInsets())
+                    .id("sw-chat-bottom")
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            #if os(iOS)
+            .scrollDismissesKeyboard(.immediately)
+            #endif
+            .onChange(of: messages.count) {
+                throttleScroll(proxy: proxy)
             }
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-        #if os(iOS)
-        .scrollDismissesKeyboard(.immediately)
-        #endif
-        .swFlipped()
+    }
+
+    /// Throttled scroll to bottom anchor.
+    ///
+    /// - Fires immediately if >= 400ms since last scroll (leading edge).
+    /// - Always schedules a 450ms trailing task to guarantee the final
+    ///   position is correct after a burst of rapid updates.
+    private func throttleScroll(proxy: ScrollViewProxy) {
+        let now = Date()
+        if now.timeIntervalSince(lastScrollTime) >= 0.4 {
+            lastScrollTime = now
+            proxy.scrollTo("sw-chat-bottom", anchor: .bottom)
+        }
+
+        // Cancel any pending trailing scroll and schedule a new one
+        trailingScrollTask?.cancel()
+        trailingScrollTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(450))
+            guard !Task.isCancelled else { return }
+            lastScrollTime = .now
+            proxy.scrollTo("sw-chat-bottom", anchor: .bottom)
+        }
     }
 }
 

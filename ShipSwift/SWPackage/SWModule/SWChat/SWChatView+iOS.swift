@@ -96,7 +96,7 @@ public struct SWChatMessage: Identifiable {
 /// into a single component. The view:
 /// - Maintains input text state internally
 /// - Appends user messages to the binding automatically on send
-/// - Displays messages using the flip-based `SWMessageList`
+/// - Displays messages using `SWMessageList` with throttled auto-scroll
 /// - Provides default bubble styling (accent for user, gray for AI)
 /// - Optionally supports ASR voice input when `asrConfig` is provided
 ///

@@ -76,7 +76,7 @@ struct ChatView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Message list using flip-based SWMessageList
+                // Message list
                 SWMessageList(messages: messages) { message in
                     SWMessageBubble(isFromUser: message.isUser) {
                         if let componentId = message.componentId,
