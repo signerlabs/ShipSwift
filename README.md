@@ -213,8 +213,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ## Star History
 
-## Star History
-
 <a href="https://www.star-history.com/?repos=signerlabs%2FShipSwift&type=date&legend=top-left">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=signerlabs/ShipSwift&type=date&theme=dark&legend=top-left" />
