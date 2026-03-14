@@ -54,7 +54,22 @@ For Cursor, VS Code Copilot, Windsurf, and other tools, see the [Skills repo](ht
 - "Build an authentication flow with Cognito"
 - "Show me all chart components"
 
-### Option 2: File Copy
+### Option 2: Local Skills (No MCP Required)
+
+Install skills that read source files directly from this repo — works offline, no server needed:
+
+```bash
+npx skills add signerlabs/ShipSwift
+```
+
+Your AI can then browse the component catalog and read source code locally. Try:
+- "Explore ShipSwift recipes"
+- "Add a shimmer animation"
+- "Build a chat feature"
+
+> **Tip**: If you also connect the MCP server (Option 1), your AI gets access to additional Pro recipes (backend guides, compliance templates, pitfall docs).
+
+### Option 3: File Copy
 
 1. Clone this repository
 2. Copy the files you need from `ShipSwift/SWPackage/` into your Xcode project
