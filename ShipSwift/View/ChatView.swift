@@ -86,12 +86,20 @@ struct ChatView: View {
                                 registry: registry
                             )
                         } else {
-                            // Default text bubble
-                            Text(message.content)
-                                .padding(12)
-                                .background(message.isUser ? Color.accentColor : Color(UIColor.systemGray6))
-                                .foregroundStyle(message.isUser ? .white : .primary)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            // Default text bubble — accent for user, shared surface for AI
+                            if message.isUser {
+                                Text(message.content)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 10)
+                                    .foregroundStyle(.white)
+                                    .background(
+                                        Color.accentColor,
+                                        in: RoundedRectangle(cornerRadius: SWRadius.large, style: .continuous)
+                                    )
+                            } else {
+                                Text(message.content)
+                                    .swCardStyle(cornerRadius: SWRadius.large, padding: 12)
+                            }
                         }
                     }
                 }
@@ -113,15 +121,18 @@ struct ChatView: View {
                 // Thinking indicator when waiting for AI response
                 if isWaiting {
                     HStack {
-                        HStack(spacing: 4) {
+                        HStack(spacing: 6) {
                             Text("Thinking")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                             SWThinkingIndicator()
                         }
                         .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                        .padding(.vertical, 10)
+                        .background(
+                            .ultraThinMaterial,
+                            in: RoundedRectangle(cornerRadius: SWRadius.large, style: .continuous)
+                        )
                         Spacer()
                     }
                     .padding(.horizontal, 12)
@@ -223,11 +234,11 @@ struct ComponentPreviewBubble: View {
         } label: {
             VStack(alignment: .leading, spacing: 10) {
                 // Header with icon and title
-                HStack(spacing: 8) {
+                HStack(spacing: SWSpacing.iconTitleGap) {
                     Image(systemName: registry.icon(for: componentId))
                         .foregroundStyle(.accent)
                     Text(registry.title(for: componentId))
-                        .font(.headline)
+                        .font(.swCardTitle)
                     Spacer()
                     Image(systemName: "chevron.right")
                         .font(.footnote)
@@ -238,17 +249,11 @@ struct ComponentPreviewBubble: View {
                 if let preview = registry.view(for: componentId) {
                     preview
                         .frame(maxHeight: 300)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: SWRadius.card, style: .continuous))
                         .allowsHitTesting(false)
                 }
             }
-            .padding(12)
-            .background(Color(UIColor.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.primary.opacity(0.08), lineWidth: 1)
-            )
+            .swCardStyle(cornerRadius: SWRadius.large, padding: 12)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

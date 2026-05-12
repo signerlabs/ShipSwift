@@ -163,8 +163,9 @@ struct SettingView: View {
                     HStack {
                         Label {
                             Text(masked)
-                                .font(.system(.subheadline, design: .monospaced))
+                                .font(.system(.body, design: .monospaced))
                                 .lineLimit(1)
+                                .truncationMode(.middle)
                         } icon: {
                             Image(systemName: "key.fill")
                         }
@@ -211,7 +212,6 @@ struct SettingView: View {
                 showDeleteConfirmation = true
             } label: {
                 Label("Delete Account", systemImage: "trash")
-                    .foregroundStyle(.red)
             }
         }
     }
@@ -221,22 +221,22 @@ struct SettingView: View {
     private var recommendedAppsSection: some View {
         Section("Apps Built with ShipSwift") {
             Link(destination: URL(string: appStoreSmileMax)!) {
-                labelWithImage(.smileMaxLogo, name: "SmileMax - Glow Up Coach")
+                appRow(.smileMaxLogo, name: "SmileMax", tagline: "Glow Up Coach")
             }
             Link(destination: URL(string: appStoreFullpack)!) {
-                labelWithImage(.fullpackLogo, name: "Fullpack - Packing & Outfit")
+                appRow(.fullpackLogo, name: "Fullpack", tagline: "Packing & Outfit")
             }
             Link(destination: URL(string: appStoreBrushmo)!) {
-                labelWithImage(.brushmoLogo, name: "Brushmo - Oral Health Companion")
+                appRow(.brushmoLogo, name: "Brushmo", tagline: "Oral Health Companion")
             }
             Link(destination: URL(string: appStoreLifebang)!) {
-                labelWithImage(.lifebangLogo, name: "Lifebang - Pro Cleaner")
+                appRow(.lifebangLogo, name: "Lifebang", tagline: "Pro Cleaner")
             }
             Link(destination: URL(string: appStoreUtilityMax)!) {
-                labelWithImage(.utilityMaxLogo, name: "UtilityMax - Financial Simulator")
+                appRow(.utilityMaxLogo, name: "UtilityMax", tagline: "Financial Simulator")
             }
             Link(destination: URL(string: appStoreJourney)!) {
-                labelWithImage(.journeyLogo, name: "Spark - Goal Tracker & Diary")
+                appRow(.journeyLogo, name: "Spark", tagline: "Goal Tracker & Diary")
             }
         }
     }
@@ -260,7 +260,7 @@ struct SettingView: View {
                 HStack {
                     Text("Terms of Service")
                     Spacer()
-                    Image(systemName: "chevron.right")
+                    Image(systemName: "arrow.up.right")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -270,7 +270,7 @@ struct SettingView: View {
                 HStack {
                     Text("Privacy Policy")
                     Spacer()
-                    Image(systemName: "chevron.right")
+                    Image(systemName: "arrow.up.right")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -290,15 +290,25 @@ struct SettingView: View {
     // MARK: - Helpers
 
     @ViewBuilder
-    private func labelWithImage(_ image: ImageResource, name: LocalizedStringResource) -> some View {
-        HStack {
+    private func appRow(
+        _ image: ImageResource,
+        name: LocalizedStringResource,
+        tagline: LocalizedStringResource
+    ) -> some View {
+        HStack(spacing: 12) {
             Image(image)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 32, height: 32)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-                .padding(5)
-            Text(name)
+                .frame(width: 36, height: 36)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(name)
+                    .foregroundStyle(.primary)
+                Text(tagline)
+                    .font(.swMeta)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 

@@ -52,7 +52,7 @@ extension RootTabView {
                 ComponentView(scrollTarget: $scrollTarget)
             } label: {
                 Label {
-                    Text("Component")
+                    Text("Components")
                 } icon: {
                     Image(systemName: selectedTab == "component" ? "square.grid.2x2.fill" : "square.grid.2x2")
                 }
