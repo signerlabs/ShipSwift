@@ -37,3 +37,34 @@
 ## Code Style
 - All comments and documentation in English (this is a public repo; overrides the global Chinese rule)
 - No external constants file — product IDs, URLs, and config values are inlined or configurable via struct properties
+
+## Visual System
+The app's visual system lives in `SWPackage/SWUtil/SWViewExtension.swift`. Always use these tokens and modifiers; do not invent new card backgrounds, corner radii, or font sizes at callsites.
+
+### Surfaces (containers)
+- `.swCardStyle()` — standard info/summary card. Default `background: .swCardBackground`, radius `SWRadius.card`, padding `SWSpacing.cardPadding`.
+- `.swAccentCardStyle()` — accent-tinted card for one CTA per screen.
+- Inline `RoundedRectangle` + raw `systemGroupedBackground` is **not allowed** for new cards.
+
+### Buttons
+- `.buttonStyle(.swPrimary)` — single primary action per screen.
+- `.buttonStyle(.swSecondary)` — secondary action.
+- List rows and inline link/text actions use `.plain`.
+- Do **not** mix `.bordered`, custom `.tint`, or `.plain` with hand-rolled background fills.
+
+### Typography
+Only these five roles:
+- `.swSectionTitle` — section header inside a page.
+- `.swCardTitle` — card / row title.
+- `.swBody` — body / description text.
+- `.swMeta` — caption + `.foregroundStyle(.secondary)`.
+- Plus the system navigation title (`.navigationTitle`).
+
+Do not use `.caption` for primary content.
+
+### Spacing & Radius
+- Use `SWSpacing` (`pageBottomInset`, `sectionGap`, `cardPadding`, `iconTitleGap`, `titleDescriptionGap`) instead of raw numbers.
+- Use `SWRadius` (`small`, `card`, `large`) instead of inline values. The legal radii are 10 / 14 / 18 — nothing else.
+
+### List rows
+- `Component/ListItem.swift` is the canonical row primitive: 30×30 tinted icon badge + `.swCardTitle` + `.swMeta` description. Pass a `color:` to vary the icon tint by category.

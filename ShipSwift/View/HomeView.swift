@@ -24,7 +24,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
+                VStack(spacing: SWSpacing.sectionGap) {
                     heroSection
                     proStatusRow
                     skillsCard
@@ -35,7 +35,7 @@ struct HomeView: View {
                 .frame(maxWidth: 680)
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal)
-                .padding(.bottom, 32)
+                .padding(.bottom, SWSpacing.pageBottomInset)
             }
             .scrollIndicators(.never)
             .navigationTitle("ShipSwift")
@@ -60,41 +60,40 @@ struct HomeView: View {
     // MARK: - Hero Section
 
     private var heroSection: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 14) {
             SWShakingIcon(
                 image: Image(.shipSwiftLogo),
                 height: 120,
                 cornerRadius: 16,
                 idleDelay: 6
             )
-            .padding(.vertical, 60)
+            .padding(.vertical, 48)
 
             Text("AI-native iOS component library")
                 .font(.title3)
                 .foregroundStyle(.secondary)
 
-            Text("Production-ready SwiftUI components that LLMs can use to build real apps. Every component you see here is open-source.")
-                .font(.subheadline)
+            Text("Production-ready SwiftUI components LLMs can use to build real apps. Every one is open-source.")
+                .font(.swBody)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 8)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 4)
     }
 
     // MARK: - Skills Card (Refined Terminal)
 
     private var skillsCard: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 14) {
             // -- Header --
             HStack {
-                // Terminal icon in gradient badge
                 Image(systemName: "terminal.fill")
                     .foregroundStyle(.accent)
-                
+
                 Text("Install")
             }
-            .font(.headline)
+            .font(.swCardTitle)
 
             // -- Command block (tap to copy) --
             Button {
@@ -131,9 +130,8 @@ struct HomeView: View {
                     }
                     .padding(.horizontal, 14)
                     .padding(.vertical, 12)
-                    .padding(.trailing, 24) // Leave room for the copy icon
+                    .padding(.trailing, 24)
 
-                    // Copy / checkmark icon overlay
                     Image(systemName: copied ? "checkmark" : "doc.on.doc")
                         .font(.caption)
                         .foregroundStyle(copied ? .green : .secondary)
@@ -141,40 +139,36 @@ struct HomeView: View {
                         .padding(8)
                 }
                 .background(
-                    Color.accentColor.opacity(0.1),
-                    in: RoundedRectangle(cornerRadius: 8)
+                    Color.accentColor.opacity(0.12),
+                    in: RoundedRectangle(cornerRadius: 10, style: .continuous)
                 )
             }
             .buttonStyle(.plain)
 
-            // -- Subtitle --
             Text("Works with Claude Code, Codex, Gemini, Cursor, Copilot, Windsurf, and all other AI tools.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .padding(.top, 2)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .swCardStyle()
     }
 
     // MARK: - Links Row
 
     private var linksRow: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 24) {
             Link(destination: URL(string: "https://shipswift.app")!) {
                 Label("Website", systemImage: "globe")
                     .font(.subheadline)
-                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.bordered)
-            .tint(.secondary)
 
             Link(destination: URL(string: "https://github.com/signerlabs/ShipSwift")!) {
                 Label("GitHub", systemImage: "chevron.left.forwardslash.chevron.right")
                     .font(.subheadline)
-                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.bordered)
-            .tint(.secondary)
         }
+        .foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity)
     }
 
     // MARK: - Pro Status Row
@@ -230,7 +224,7 @@ struct HomeView: View {
             ModuleCard(
                 icon: "square.grid.2x2.fill",
                 color: .purple,
-                title: "Component",
+                title: "Toolkit",
                 subtitle: "Components",
                 description: "Display, Feedback, Input — ready to use"
             ) { selectedTab = "component"; scrollTarget = "display" }
@@ -263,13 +257,16 @@ private struct ModuleCard: View {
         Button {
             onTap()
         } label: {
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: SWSpacing.iconTitleGap) {
                 Image(systemName: icon)
                     .font(.title2)
                     .foregroundStyle(color)
+                    .frame(width: 32, height: 32)
+                    .background(color.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .padding(.bottom, 2)
 
                 Text(title)
-                    .font(.headline)
+                    .font(.swCardTitle)
                     .foregroundStyle(.primary)
 
                 Text(subtitle)
@@ -277,20 +274,12 @@ private struct ModuleCard: View {
                     .foregroundStyle(color)
 
                 Text(description)
-                    .font(.caption)
+                    .font(.swMeta)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(12)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    #if canImport(UIKit)
-                    .fill(Color(UIColor.secondarySystemGroupedBackground))
-                    #else
-                    .fill(Color(NSColor.controlBackgroundColor))
-                    #endif
-            )
+            .swCardStyle(cornerRadius: 12, padding: 14)
         }
         .buttonStyle(.plain)
     }

@@ -284,7 +284,7 @@ struct ComponentView: View {
                     .hideTabBar()
             } label: {
                 ListItem(
-                    title: "Setting",
+                    title: "Settings",
                     icon: "gearshape.fill",
                     description: "Generic settings page with language switch, share, legal links, and account actions. Pushed via NavigationLink."
                 )
