@@ -55,14 +55,10 @@ struct SWOrderView: View {
     var body: some View {
         ZStack {
             backgroundGradient
-            #if os(macOS)
             ScrollView {
                 contentView
                     .padding(.vertical)
             }
-            #else
-            contentView
-            #endif
         }
     }
     
