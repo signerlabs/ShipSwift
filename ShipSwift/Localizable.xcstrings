@@ -17,6 +17,9 @@
     "%lld" : {
 
     },
+    "%lld prerequisites in total" : {
+
+    },
     "•" : {
 
     },
@@ -33,6 +36,9 @@
 
     },
     "000000" : {
+
+    },
+    "1 prerequisite in total" : {
 
     },
     "1x" : {
@@ -1123,6 +1129,9 @@
     "Classic" : {
 
     },
+    "Clear All" : {
+
+    },
     "Cloud" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1370,6 +1379,9 @@
           }
         }
       }
+    },
+    "Filter" : {
+
     },
     "Foil" : {
 
@@ -1695,6 +1707,9 @@
         }
       }
     },
+    "Graph Filters" : {
+
+    },
     "Grid" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1704,6 +1719,9 @@
           }
         }
       }
+    },
+    "Groups (%lld)" : {
+
     },
     "Halftone" : {
       "localizations" : {
@@ -2205,6 +2223,9 @@
 
     },
     "Noise" : {
+
+    },
+    "nothing yet" : {
 
     },
     "Notifications" : {
@@ -2789,6 +2810,9 @@
 
     },
     "Search..." : {
+
+    },
+    "Select All" : {
 
     },
     "Select Country" : {

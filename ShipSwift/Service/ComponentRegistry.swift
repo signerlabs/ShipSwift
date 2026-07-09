@@ -1310,7 +1310,7 @@ struct ComponentRegistry {
         )
         #endif
 
-        // -- Chart (8) --
+        // -- Chart (9) --
 
         reg["line-chart"] = ComponentEntry(
             title: "Line Chart",
@@ -1381,6 +1381,15 @@ struct ComponentRegistry {
             description: "GitHub-style activity heatmap with streak tracking",
             preview: { AnyView(ChartPreviews.activityHeatmap) },
             fullView: { AnyView(ChartPreviews.activityHeatmapFull) },
+            presentation: .push
+        )
+
+        reg["network-graph"] = ComponentEntry(
+            title: "Network Graph",
+            icon: "point.3.connected.trianglepath.dotted",
+            description: "Interactive 3D dependency graph on a single Canvas — funnel layout with perspective projection, idle auto-spin, drag-to-orbit, pinch-to-zoom, tap-to-highlight full prerequisite lineage with camera focus tween, a group-filter sheet with Select All / Clear All, and a native detail sheet. Ships with the open Marble curriculum dataset (1,590 topics, 3,221 edges)",
+            preview: { AnyView(ChartPreviews.networkGraph) },
+            fullView: { AnyView(ChartPreviews.networkGraphFull) },
             presentation: .push
         )
 
@@ -2504,6 +2513,27 @@ private enum ChartPreviews {
             }
             .navigationTitle("Activity")
         }
+    }
+
+    // MARK: - Network Graph
+
+    static var networkGraph: some View {
+        SWNetworkGraph(
+            nodes: SWNetworkGraph.sampleNodes,
+            edges: SWNetworkGraph.sampleEdges,
+            showsLegend: false,
+            showsCard: false
+        )
+        .frame(height: 150)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    static var networkGraphFull: some View {
+        SWNetworkGraph(
+            nodes: SWNetworkGraphData.nodes,
+            edges: SWNetworkGraphData.edges
+        )
+        .ignoresSafeArea()
     }
 }
 

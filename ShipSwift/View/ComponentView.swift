@@ -1216,6 +1216,20 @@ struct ComponentView: View {
                     description: "GitHub-style activity heatmap with streak tracking. Includes StreakCard, HeatmapGrid, HeatmapLegend sub-components."
                 )
             }
+
+            ComponentNavigationLink {
+                SWNetworkGraph(
+                    nodes: SWNetworkGraphData.nodes,
+                    edges: SWNetworkGraphData.edges
+                )
+                .ignoresSafeArea()
+            } label: {
+                ListItem(
+                    title: "Network Graph",
+                    icon: "point.3.connected.trianglepath.dotted",
+                    description: "Interactive 3D dependency graph on a single Canvas — drag to orbit, pinch to zoom, tap a dot to highlight its full prerequisite lineage with camera focus, plus a group-filter sheet and a native detail sheet. Ships with the open Marble curriculum dataset (1,590 topics)."
+                )
+            }
         } header: {
             #if os(iOS)
             Text("Chart")
