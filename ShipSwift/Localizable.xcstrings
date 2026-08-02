@@ -4,6 +4,12 @@
     "" : {
 
     },
+    ".swShake(trigger:)" : {
+
+    },
+    ".transition(.sw%@)" : {
+
+    },
     "%@%.1f%% %@" : {
       "localizations" : {
         "en" : {
@@ -26,7 +32,7 @@
     "|" : {
 
     },
-    "🎉 Confetti" : {
+    "🏀" : {
 
     },
     "$" : {
@@ -47,9 +53,6 @@
     "60 × 60, radius 12 (cart row)" : {
 
     },
-    "160 × 160, radius 22" : {
-
-    },
     "200 × 200, radius 24" : {
 
     },
@@ -63,18 +66,6 @@
 
     },
     "Ad Attribution & Conversion Tracking" : {
-
-    },
-    "Ad Tracking" : {
-
-    },
-    "Add sample.mp4 to bundle" : {
-
-    },
-    "Add sample.mp4 to bundle to preview" : {
-
-    },
-    "Add Sheet" : {
 
     },
     "Add to Cart   ¥%lld" : {
@@ -114,9 +105,6 @@
         }
       }
     },
-    "Animated drink customization with cup animations" : {
-
-    },
     "Animated Loop" : {
       "localizations" : {
         "zh-Hans" : {
@@ -147,12 +135,6 @@
 
     },
     "At least 8 characters" : {
-
-    },
-    "ATT permission + event tracking for ad attribution" : {
-
-    },
-    "Auth Module" : {
 
     },
     "auth.alert.code_sent" : {
@@ -962,9 +944,6 @@
     "Bold" : {
 
     },
-    "Bottom sheet with text input and confirm button" : {
-
-    },
     "Browse and manage your outfit collections here." : {
 
     },
@@ -975,9 +954,6 @@
 
     },
     "Camera" : {
-
-    },
-    "Camera Module" : {
 
     },
     "Camera permission denied" : {
@@ -1002,6 +978,9 @@
 
     },
     "Cells" : {
+
+    },
+    "Change Effects" : {
 
     },
     "Channel 1" : {
@@ -1040,82 +1019,8 @@
     "Char Sphere Controls" : {
 
     },
-    "Chart" : {
-
-    },
     "Chat Bubble" : {
 
-    },
-    "Chat Module" : {
-
-    },
-    "chat.placeholder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Describe a component..."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "描述你需要的组件……"
-          }
-        }
-      }
-    },
-    "chat.thinking" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thinking"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "思考中"
-          }
-        }
-      }
-    },
-    "chat.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ShipSwift AI"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ShipSwift AI"
-          }
-        }
-      }
-    },
-    "chat.welcome" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hi! Describe what you need, and I'll show you the best SwiftUI component from our library."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你好！描述你的需求，我会从组件库里挑出最合适的 SwiftUI 组件给你。"
-          }
-        }
-      }
     },
     "Choose Effect" : {
 
@@ -1216,9 +1121,6 @@
           }
         }
       }
-    },
-    "ColorSet fallback when image asset is missing or still loading." : {
-
     },
     "Components" : {
 
@@ -1334,10 +1236,10 @@
     "Edge Highlight" : {
 
     },
-    "Email" : {
+    "Effect" : {
 
     },
-    "Email / Phone / Apple / Google sign-in with verification flow" : {
+    "Email" : {
 
     },
     "English" : {
@@ -1350,9 +1252,6 @@
 
     },
     "Error" : {
-
-    },
-    "Extract subject with background removed via VisionKit" : {
 
     },
     "Extracting subject..." : {
@@ -1611,9 +1510,6 @@
     "Front" : {
 
     },
-    "Full-stack iOS + AWS backend" : {
-
-    },
     "Full-stack iOS + AWS backend, battle-tested" : {
 
     },
@@ -1750,9 +1646,6 @@
 
     },
     "Health" : {
-
-    },
-    "Heatmap" : {
 
     },
     "Heavy" : {
@@ -2069,9 +1962,6 @@
     "Inverted" : {
 
     },
-    "iOS 18+ TabView with haptic feedback" : {
-
-    },
     "Kobe Bryant" : {
 
     },
@@ -2147,9 +2037,6 @@
     "Medium" : {
 
     },
-    "Message bubbles, text input, voice recording waveform" : {
-
-    },
     "Metaballs" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2176,9 +2063,6 @@
     "Mid (web)" : {
 
     },
-    "Module" : {
-
-    },
     "Monthly Revenue" : {
 
     },
@@ -2191,9 +2075,6 @@
           }
         }
       }
-    },
-    "Multi-page swipe flow with skip support" : {
-
     },
     "Name" : {
 
@@ -2231,16 +2112,7 @@
     "Notifications" : {
 
     },
-    "Onboarding View" : {
-
-    },
     "One MCP command — zero downloads, instant access" : {
-
-    },
-    "One MCP command, instant access" : {
-
-    },
-    "One-time purchase" : {
 
     },
     "Open Settings" : {
@@ -2265,9 +2137,6 @@
 
     },
     "Order list example" : {
-
-    },
-    "Order View" : {
 
     },
     "Original Colors" : {
@@ -2313,6 +2182,9 @@
           }
         }
       }
+    },
+    "Particle Transitions" : {
+
     },
     "Password" : {
 
@@ -2706,6 +2578,9 @@
     "Photo capture failed" : {
 
     },
+    "PIN 0000" : {
+
+    },
     "Plasma" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2739,6 +2614,9 @@
     "Plates" : {
 
     },
+    "points" : {
+
+    },
     "Polished Aluminum" : {
 
     },
@@ -2752,6 +2630,9 @@
 
     },
     "Privacy Policy" : {
+
+    },
+    "PRO" : {
 
     },
     "Processing" : {
@@ -2773,6 +2654,9 @@
 
     },
     "Regular" : {
+
+    },
+    "Replay" : {
 
     },
     "Resend Code" : {
@@ -3333,9 +3217,6 @@
     "Show Default Loading" : {
 
     },
-    "Show Loading" : {
-
-    },
     "Show Loading with Icon" : {
 
     },
@@ -3499,39 +3380,36 @@
     "Swirl Controls" : {
 
     },
-    "Tab View Template" : {
-
-    },
-    "tab.chat" : {
+    "tab.animation" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chat"
+            "value" : "Animation"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI 助手"
+            "value" : "动画"
           }
         }
       }
     },
-    "tab.component" : {
+    "tab.charts" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Component"
+            "value" : "Charts"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "组件"
+            "value" : "图表"
           }
         }
       }
@@ -3552,6 +3430,43 @@
           }
         }
       }
+    },
+    "tab.modules" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modules"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模块"
+          }
+        }
+      }
+    },
+    "tab.ui" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UI"
+          }
+        }
+      }
+    },
+    "Tap any row to fire its effect" : {
+
     },
     "Tap to celebrate" : {
 
@@ -3630,6 +3545,9 @@
         }
       }
     },
+    "Transitions" : {
+
+    },
     "Trending" : {
 
     },
@@ -3658,9 +3576,6 @@
 
     },
     "Unnamed Category" : {
-
-    },
-    "Upgrade Now" : {
 
     },
     "UtilityMax - Financial Simulator" : {
@@ -3692,12 +3607,6 @@
 
     },
     "Version" : {
-
-    },
-    "Viewfinder overlay, pinch-to-zoom, photo library picker" : {
-
-    },
-    "Vision face landmark detection with front/back switching" : {
 
     },
     "Voronoi" : {

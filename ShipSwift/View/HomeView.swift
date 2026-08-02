@@ -15,7 +15,6 @@ struct HomeView: View {
     @Environment(SWUserManager.self) private var userManager
     @Environment(\.openURL) private var openURL
     @Binding var selectedTab: String
-    @Binding var scrollTarget: String?
 
     @State private var showPaywall = false
     @State private var copied = false
@@ -209,34 +208,34 @@ struct HomeView: View {
             ModuleCard(
                 icon: "puzzlepiece.extension.fill",
                 color: .blue,
-                title: "Module",
+                title: "Modules",
                 subtitle: "Frameworks",
                 description: "Auth, Camera, Face Camera, Chat, Paywall, Settings"
-            ) { selectedTab = "component"; scrollTarget = "module" }
+            ) { selectedTab = "modules" }
 
             ModuleCard(
                 icon: "sparkles.tv.fill",
                 color: .orange,
                 title: "Animation",
                 subtitle: "Components",
-                description: "Shimmer, TypewriterText, OrbitingLogos, and more"
-            ) { selectedTab = "component"; scrollTarget = "animation" }
+                description: "Transitions, Change Effects, Shimmer, and more"
+            ) { selectedTab = "animation" }
 
             ModuleCard(
                 icon: "chart.bar.fill",
                 color: .green,
-                title: "Chart",
+                title: "Charts",
                 subtitle: "Components",
                 description: "Line, Bar, Area, Donut, Radar, Scatter, and more"
-            ) { selectedTab = "component"; scrollTarget = "chart" }
+            ) { selectedTab = "charts" }
 
             ModuleCard(
                 icon: "square.grid.2x2.fill",
                 color: .purple,
-                title: "Component",
+                title: "UI",
                 subtitle: "Components",
                 description: "Display, Feedback, Input — ready to use"
-            ) { selectedTab = "component"; scrollTarget = "display" }
+            ) { selectedTab = "ui" }
         }
     }
 
@@ -418,7 +417,7 @@ private struct ModuleCard: View {
 // MARK: - Preview
 
 #Preview {
-    HomeView(selectedTab: .constant("home"), scrollTarget: .constant(nil))
+    HomeView(selectedTab: .constant("home"))
         .environment(SWStoreManager.shared)
         .environment(SWUserManager(skipAuthCheck: true))
         .swAlert()
