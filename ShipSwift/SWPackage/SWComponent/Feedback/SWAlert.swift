@@ -6,6 +6,13 @@
 //  the screen. Supports four preset styles (info, success, warning, error)
 //  and fully custom styling. Auto-dismisses after a configurable duration.
 //
+//  Presentation (2026-08-07): on iOS the toast renders in a dedicated
+//  top-level UIWindow (windowLevel = .alert + 1, hit-test passthrough), so it
+//  is never covered by sheets or fullScreenCovers — alerts fired from inside
+//  a sheet show instantly, no need to wait for the dismiss animation.
+//  On macOS it stays a root-view overlay (no full-screen sheet occlusion there).
+//  Public API is unchanged.
+//
 //  Usage:
 //    1. Attach the modifier at your App entry point (once):
 //
@@ -54,6 +61,9 @@
 //
 
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 // MARK: - SWAlertType
 
@@ -242,18 +252,80 @@ private struct SWAlertView: View {
     }
 }
 
+// MARK: - Top-Level Window Host (iOS)
+
+#if canImport(UIKit)
+/// Passthrough window: only the toast itself receives touches;
+/// everything else falls through to the windows below.
+private final class SWAlertPassthroughWindow: UIWindow {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        // The hosting controller's container view itself = empty area → pass through
+        return view == rootViewController?.view ? nil : view
+    }
+}
+
+/// Dedicated top-level window (windowLevel above system alerts) so sheets and
+/// fullScreenCovers can never cover the toast. Mounted once, app-lifetime.
+@MainActor
+private enum SWAlertWindowHost {
+    static var window: UIWindow?
+
+    static func mountIfNeeded() {
+        guard window == nil,
+              let scene = UIApplication.shared.connectedScenes
+                  .compactMap({ $0 as? UIWindowScene })
+                  .first(where: { $0.activationState == .foregroundActive })
+                  ?? UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first
+        else { return }
+        let host = UIHostingController(rootView: SWAlertOverlayRoot())
+        host.view.backgroundColor = .clear
+        let window = SWAlertPassthroughWindow(windowScene: scene)
+        window.windowLevel = .alert + 1
+        window.backgroundColor = .clear
+        window.rootViewController = host
+        window.isHidden = false
+        self.window = window
+    }
+}
+
+/// Root view inside the dedicated window: reads the singleton, top-aligned.
+private struct SWAlertOverlayRoot: View {
+    let alertManager = SWAlertManager.shared
+
+    var body: some View {
+        VStack {
+            SWAlertView()
+                .padding(.top, 40)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .animation(.spring(duration: 0.3), value: alertManager.isShowing)
+    }
+}
+#endif
+
 // MARK: - View Modifier
 
 private struct SWAlertModifier: ViewModifier {
     let alertManager = SWAlertManager.shared
 
     func body(content: Content) -> some View {
+        #if canImport(UIKit)
+        // iOS: render in a dedicated top-level window — never covered by
+        // sheets/fullScreenCovers, no need to delay until dismiss animations end.
+        content
+            .onAppear { SWAlertWindowHost.mountIfNeeded() }
+        #else
+        // macOS: keep the root-view overlay (sheets attach inside the window
+        // there, so full-screen occlusion is not a concern).
         content
             .overlay(alignment: .top) {
                 SWAlertView()
                     .padding(.top, 40)
             }
             .animation(.spring(duration: 0.3), value: alertManager.isShowing)
+        #endif
     }
 }
 
