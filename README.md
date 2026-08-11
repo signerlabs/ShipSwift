@@ -1,5 +1,7 @@
 # ShipSwift
 
+[![MCP Toplist](https://mcptoplist.com/badge/io.github.signerlabs%2Fshipswift.svg)](https://mcptoplist.com/server/io.github.signerlabs%2Fshipswift)
+
 <div align="center">
 
 ![ShipSwift Banner](assets/banner.jpg)
