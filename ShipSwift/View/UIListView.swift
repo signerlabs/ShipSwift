@@ -19,6 +19,11 @@ struct UIListView: View {
     // Display section state
     @State private var showAddSheet = false
 
+    /// Sample remote photos for the Cached Image demo (Lorem Picsum, stable by id)
+    private static let cachedImageURLs: [URL] = [64, 65, 91, 177, 338, 433, 453, 548].compactMap {
+        URL(string: "https://picsum.photos/id/\($0)/400/400")
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -391,6 +396,74 @@ struct UIListView: View {
                     title: "Image Thumbnail",
                     icon: "photo.fill",
                     description: "Square image tile with same-named ColorSet fallback. Renders the tint while the image decodes or when the asset is missing."
+                )
+            }
+
+            // Cached Image — AsyncImage drop-in with memory + disk cache, no placeholder flash on re-render
+            ComponentNavigationLink {
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Both views get a new identity every second, like a list re-rendering under a countdown
+                        TimelineView(.periodic(from: .now, by: 1)) { context in
+                            let tick = Int(context.date.timeIntervalSinceReferenceDate)
+                            HStack(spacing: 32) {
+                                VStack(spacing: 8) {
+                                    AsyncImage(url: Self.cachedImageURLs[0]) { image in
+                                        image.resizable().scaledToFill()
+                                    } placeholder: {
+                                        Color.secondary.opacity(0.2)
+                                    }
+                                    .frame(width: 96, height: 96)
+                                    .clipShape(Circle())
+                                    .id(tick)
+                                    Text("AsyncImage")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+
+                                VStack(spacing: 8) {
+                                    SWCachedImage(url: Self.cachedImageURLs[0]) { image in
+                                        image.resizable().scaledToFill()
+                                    } placeholder: {
+                                        Color.secondary.opacity(0.2)
+                                    }
+                                    .frame(width: 96, height: 96)
+                                    .clipShape(Circle())
+                                    .id(tick)
+                                    Text("SWCachedImage")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+
+                        Text("Both are rebuilt every second. AsyncImage starts over from its placeholder each time; SWCachedImage shows the decoded image from memory on the first frame.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+
+                        Divider()
+
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 72), spacing: 12)], spacing: 12) {
+                            ForEach(Self.cachedImageURLs, id: \.self) { url in
+                                SWCachedImage(url: url) { image in
+                                    image.resizable().scaledToFill()
+                                } placeholder: {
+                                    Color.secondary.opacity(0.2)
+                                }
+                                .frame(width: 72, height: 72)
+                                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            }
+                        }
+                    }
+                    .padding()
+                }
+            } label: {
+                ListItem(
+                    title: "Cached Image",
+                    icon: "photo.on.rectangle.angled",
+                    description: "AsyncImage drop-in with memory and disk cache. A re-created view shows its image on the first frame instead of flashing the placeholder."
                 )
             }
 

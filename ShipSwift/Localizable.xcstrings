@@ -134,6 +134,9 @@
     "Apps Built with ShipSwift" : {
 
     },
+    "AsyncImage" : {
+
+    },
     "At least 8 characters" : {
 
     },
@@ -942,6 +945,9 @@
 
     },
     "Bold" : {
+
+    },
+    "Both are rebuilt every second. AsyncImage starts over from its placeholder each time; SWCachedImage shows the decoded image from memory on the first frame." : {
 
     },
     "Browse and manage your outfit collections here." : {
@@ -3373,6 +3379,9 @@
           }
         }
       }
+    },
+    "SWCachedImage" : {
+
     },
     "Swirl" : {
 
