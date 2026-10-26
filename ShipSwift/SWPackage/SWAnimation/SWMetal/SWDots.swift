@@ -7,7 +7,7 @@
 //  with a single enum and reuse the same 11-parameter knob set across all
 //  variants. Optionally render an in-place control panel for live tuning.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Each style is implemented in its own `.metal` file under `SWMetal/`,

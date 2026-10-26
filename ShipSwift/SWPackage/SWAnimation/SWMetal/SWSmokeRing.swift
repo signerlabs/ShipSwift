@@ -11,7 +11,7 @@
 //  smoke perpetually re-rolls without visible looping; the noise
 //  warps the polar UV so the ring's silhouette billows.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`, `colorEffect`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`, `colorEffect`,
 //  Metal `stitchable`).
 //
 //  Usage:

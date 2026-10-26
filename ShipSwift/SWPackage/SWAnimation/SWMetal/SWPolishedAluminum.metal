@@ -21,7 +21,7 @@
 //
 //  Paired with: SWPolishedAluminum.swift
 //  Entry point: `swPolishedAluminum` — invoked via SwiftUI `.layerEffect(...)`.
-//  Requires iOS 17+ / macOS 14+.
+//  Requires iOS 18+ / macOS 15+.
 //
 
 #include <metal_stdlib>

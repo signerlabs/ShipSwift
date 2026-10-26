@@ -2,7 +2,7 @@
 //  SWTransition.swift
 //  ShipSwift
 //
-//  A collection of 16 modern view transitions built on the iOS 17+
+//  A collection of 16 modern view transitions built on SwiftUI's
 //  `Transition` protocol. Covers filter effects (blur, film exposure,
 //  snapshot flash), 3D motion (flip, rotate, swoosh), elastic motion
 //  (boing, skid, move), and animatable mask reveals (iris, wipe, blinds,

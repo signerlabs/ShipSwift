@@ -14,7 +14,7 @@
 //  Paired with: SWInkSmoke.swift
 //  Entry point: `swInkSmoke` — invoked via SwiftUI `.colorEffect(...)`.
 //
-//  Requires iOS 17+ / macOS 14+.
+//  Requires iOS 18+ / macOS 15+.
 //
 
 #include <metal_stdlib>

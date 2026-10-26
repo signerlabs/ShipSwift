@@ -47,7 +47,6 @@
 
 import SwiftUI
 
-@available(iOS 18.0, *)
 struct SWFullScreenButton: View {
     var title: String = "ShipSwift"
     var subtitle: String = "Fullstack AI toolkit"
@@ -140,7 +139,6 @@ struct SWFullScreenButton: View {
 /// expanded card calls `dismiss()`, which pops the navigation stack and
 /// triggers the reverse zoom animation. The standard edge-swipe-back
 /// gesture also still works as a system-provided dismiss path.
-@available(iOS 18.0, *)
 private struct SWFullScreenButtonExpandedView: View {
     let title: String
     let subtitle: String
@@ -183,7 +181,6 @@ private struct SWFullScreenButtonExpandedView: View {
     }
 }
 
-@available(iOS 18.0, *)
 #Preview {
     NavigationStack {
         SWFullScreenButton()

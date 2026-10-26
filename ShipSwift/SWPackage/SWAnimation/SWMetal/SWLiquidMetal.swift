@@ -10,7 +10,7 @@
 //  effect uses the source's red channel as its edge mask, so vector
 //  shapes against transparent background work cleanest.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

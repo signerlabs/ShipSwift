@@ -18,7 +18,7 @@
 //    - Color wave fade: each dot's transition is delayed by its
 //      vertical position so the palette appears to wash up the sphere.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `TimelineView`, `Canvas`).
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `TimelineView`, `Canvas`).
 //
 //  Usage:
 //    // Default — 800 dots, 5-color palette cycle on black

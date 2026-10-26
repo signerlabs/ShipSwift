@@ -12,7 +12,7 @@
 //  noise; finally mapped across 1...10 palette colors with
 //  `fwidth()`-based anti-aliased band edges.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`, `colorEffect`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`, `colorEffect`,
 //  Metal `stitchable`).
 //
 //  Usage:

@@ -31,7 +31,7 @@
 //      total prerequisite count and tappable "builds on" / "unlocks" rows
 //      plus a back stack.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `TimelineView`, `Canvas`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `TimelineView`, `Canvas`,
 //  `MagnifyGesture`).
 //
 //  Usage:

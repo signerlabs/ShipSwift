@@ -8,7 +8,7 @@
 //  adds film grain so the surface reads as designed rather than flat —
 //  the 2025-era staple of Apple Music posters and Spotify hero cards.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

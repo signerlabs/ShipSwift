@@ -11,7 +11,7 @@
 //  and composites the surviving fragment. Two interleaved sets
 //  (forward / reverse rotation) keep the wheel continuous.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`, `colorEffect`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`, `colorEffect`,
 //  Metal `stitchable`).
 //
 //  Usage:

@@ -8,7 +8,7 @@
 //  cloud colors are mixed by the warped FBM, with an optional warm tint
 //  layered on top of the unwarped pass for ambient lift.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

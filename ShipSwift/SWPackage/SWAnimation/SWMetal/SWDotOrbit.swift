@@ -6,7 +6,7 @@
 //  each orbiting around its own Voronoi-cell center, mapped onto a 1–10
 //  color step-discretized gradient.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

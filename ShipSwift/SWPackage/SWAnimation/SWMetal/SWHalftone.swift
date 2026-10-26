@@ -16,7 +16,7 @@
 //    • `.cmyk`        — 4-channel CMYK ink at 15° / 75° / 0° / 45°,
 //                       multiplicatively layered on a paper background
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

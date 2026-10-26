@@ -9,7 +9,7 @@
 //  Algorithm: 15 iterations of rotated UV + scale-doubling sine/cosine
 //  accumulation.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

@@ -21,7 +21,7 @@
 //    4. Bloom       — two stacked `.shadow` halos (one wide soft, one tight)
 //                     that breathe slowly, giving the logo an outer cool glow.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary` / `Shader` /
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary` / `Shader` /
 //  `layerEffect`, Metal `stitchable`, `MeshGradient`, `TimelineView`).
 //
 //  Usage:

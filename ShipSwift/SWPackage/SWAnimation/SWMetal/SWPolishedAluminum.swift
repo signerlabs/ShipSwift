@@ -13,7 +13,7 @@
 //  gradient, a diagonal rainbow iridescence band, and a tilt-tracking
 //  specular hotspot. Feed `tilt` from a `DragGesture` to rotate the metal.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

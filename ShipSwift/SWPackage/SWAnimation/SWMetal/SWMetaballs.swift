@@ -6,7 +6,7 @@
 //  overlap, over a flat background, via a SwiftUI Metal stitchable shader.
 //  No spherical lighting / rim / specular — straight 2D shape blending.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

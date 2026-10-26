@@ -8,7 +8,7 @@
 //  diamond / hexagon / star). All four styles share the same parameter
 //  surface; Neon adds three angular-wobble parameters on top.
 //
-//  Requires iOS 17+ / macOS 14+.
+//  Requires iOS 18+ / macOS 15+.
 //
 //  Usage:
 //    // Default — Shape style, circle, red/green/blue rings on black

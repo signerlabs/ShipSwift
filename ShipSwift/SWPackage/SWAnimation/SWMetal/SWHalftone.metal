@@ -20,7 +20,7 @@
 //  `fwidth`-based smoothstep across cell edges.
 //
 //  Paired with: SWHalftone.swift
-//  Requires iOS 17+ / macOS 14+.
+//  Requires iOS 18+ / macOS 15+.
 //
 
 #include <metal_stdlib>

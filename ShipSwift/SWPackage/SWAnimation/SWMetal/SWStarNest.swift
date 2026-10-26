@@ -13,7 +13,7 @@
 //  fractal field — a deep-space nebula of drifting stars and dark voids,
 //  generated entirely in the shader with no texture or view sampling.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

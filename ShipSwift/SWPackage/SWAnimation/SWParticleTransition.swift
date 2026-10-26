@@ -2,7 +2,7 @@
 //  SWParticleTransition.swift
 //  ShipSwift
 //
-//  Three particle-powered view transitions built on the iOS 17+
+//  Three particle-powered view transitions built on SwiftUI's
 //  `Transition` protocol, each with a self-contained Canvas burst engine:
 //
 //    - swPoof:  the view disappears (or appears) in a cartoon puff of

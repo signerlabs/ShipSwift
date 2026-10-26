@@ -13,7 +13,7 @@
 //  term adds glints, and a `tilt` vector lets the caller rotate the
 //  highlight (e.g. from a `DragGesture`) for a "trading-card foil" feel.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

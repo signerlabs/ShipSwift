@@ -20,7 +20,7 @@
 //    - One-axis perspective projection:
 //        screen = world · (focal / (focal + z))
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `TimelineView`, `Canvas`).
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `TimelineView`, `Canvas`).
 //
 //  Usage:
 //    // Default — 240 "道" glyphs, white/cyan/pink wave on black

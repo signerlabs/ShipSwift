@@ -6,7 +6,7 @@
 //  shader. Each layer is a hashed grid of stars sliding downward at its
 //  own parallax speed; back layers are finer-grained and dimmer.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

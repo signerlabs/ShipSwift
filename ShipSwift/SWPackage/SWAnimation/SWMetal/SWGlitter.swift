@@ -12,7 +12,7 @@
 //  `layerEffect` — a hashed grid scatters twinkling rainbow-tinted points
 //  whose phase responds to a `tilt` vector (e.g. from a `DragGesture`).
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:

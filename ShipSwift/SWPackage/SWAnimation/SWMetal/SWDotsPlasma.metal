@@ -9,7 +9,7 @@
 //  Paired with: SWDots.swift (style = .plasma)
 //  Entry point: `swDotsPlasma` — invoked via SwiftUI `.colorEffect(...)`.
 //
-//  Requires iOS 17+ / macOS 14+.
+//  Requires iOS 18+ / macOS 15+.
 //
 
 #include <metal_stdlib>

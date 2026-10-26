@@ -15,7 +15,7 @@
 //  Demo / showcase only — not a reusable SWPackage component. It exists to
 //  demonstrate the foil shaders on real artwork inside the component gallery.
 //
-//  Requires iOS 17+ / macOS 14+.
+//  Requires iOS 18+ / macOS 15+.
 //
 
 import SwiftUI

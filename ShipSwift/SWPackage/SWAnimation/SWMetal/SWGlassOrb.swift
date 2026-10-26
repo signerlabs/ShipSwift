@@ -21,7 +21,7 @@
 //  Inferno's Warping Loupe contributes the core refraction maths; the sphere
 //  cues (Fresnel rim, specular, dispersion, contact shadow) are added here.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`, Metal `stitchable`).
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`, Metal `stitchable`).
 //
 //  Usage:
 //    // Default gradient orb — draggable, with a slowly flowing hue.

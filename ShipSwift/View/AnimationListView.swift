@@ -21,7 +21,7 @@ struct AnimationListView: View {
                     ListItem(
                         title: "Transitions",
                         icon: "square.stack.3d.forward.dottedline",
-                        description: "16 modern view transitions on the iOS 17 Transition protocol: boing, skid, swoosh, flip, iris, wipe, blinds, clock, glare, dissolve, flicker, film exposure and more."
+                        description: "16 modern view transitions on SwiftUI's Transition protocol: boing, skid, swoosh, flip, iris, wipe, blinds, clock, glare, dissolve, flicker, film exposure and more."
                     )
                 }
 

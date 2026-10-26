@@ -8,7 +8,7 @@
 //  style swaps both the shader and the palette so the call site sees the
 //  intended look in one line.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  All five shader entry points live in `SWPlasma.metal` and share the

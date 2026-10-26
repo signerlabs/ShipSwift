@@ -3,7 +3,7 @@
 //  ShipSwift
 //
 //  Eight micro-interaction effects that fire whenever an Equatable value
-//  changes, built on modern iOS 17+ APIs (KeyframeAnimator, PhaseAnimator,
+//  changes, built on modern SwiftUI APIs (KeyframeAnimator, PhaseAnimator,
 //  sensoryFeedback, Canvas). Attach one modifier, change the trigger
 //  value, and the effect plays once:
 //

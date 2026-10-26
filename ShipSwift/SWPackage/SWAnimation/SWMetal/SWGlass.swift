@@ -18,7 +18,7 @@
 //  gradient fill); `SWGlass` instead glasses over *arbitrary* content with a
 //  flat sheet and a far larger control surface.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`, Metal `stitchable`).
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`, Metal `stitchable`).
 //
 //  Usage:
 //    // Glass a circle over your own content.

@@ -8,7 +8,7 @@
 //  Analyzes a UIImage, detects the primary subject, and returns
 //  a background-removed PNG image.
 //
-//  Requirements: iOS 17+, VisionKit framework.
+//  Requirements: iOS 18+, VisionKit framework.
 //
 //  Usage:
 //    @State private var manager = SWSubjectLiftingManager()

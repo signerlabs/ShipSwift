@@ -13,7 +13,7 @@
 //  three moving hotspots and layered sparkles, all driven by a `tilt`
 //  vector (e.g. from a `DragGesture`) for a "secret-rare card" look.
 //
-//  Requires iOS 17+ / macOS 14+ (SwiftUI `ShaderLibrary`,
+//  Requires iOS 18+ / macOS 15+ (SwiftUI `ShaderLibrary`,
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:
