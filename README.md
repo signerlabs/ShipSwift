@@ -14,21 +14,21 @@
 [![Skills](https://img.shields.io/badge/Skills-Powered-8A2BE2.svg)](https://github.com/signerlabs/shipswift-skills)
 [![ShipSwift MCP server](https://glama.ai/mcp/servers/signerlabs/ShipSwift/badges/score.svg)](https://glama.ai/mcp/servers/signerlabs/ShipSwift)
 
-[Quick Start](#quick-start) · [Components](#components) · [Custom Dev — $5K, 4 weeks](#need-a-custom-app-built-we-do-that-too) · [Recipes](#recipes)
+[Quick Start](#quick-start) · [Components](#components) · [Custom Dev — $5K, 4 weeks](#need-a-custom-app-built-we-do-that-too) · [Skills](#skills)
 
 </div>
 
 ## What is ShipSwift?
 
-One command gives your AI everything it needs — production-ready SwiftUI components, full-stack recipes, and the context to build real apps without guessing.
+One command gives your AI everything it needs — production-ready SwiftUI components, full-stack skills, and the context to build real apps without guessing.
 
-> **Browse every recipe live at [shipswift.app](https://www.shipswift.app/)** — searchable catalog, copy-paste source, live previews.
+> **Browse every skill live at [shipswift.app](https://www.shipswift.app/)** — searchable catalog, copy-paste source, live previews.
 
 Download the [Showcase App](https://apps.apple.com/us/app/shipswift-mcp-codebase/id6759209764) to preview every component on your device.
 
 ## Need a custom app built? We do that too.
 
-ShipSwift gets your AI 80% of the way. If you need the last 20% — your unique features, your brand, your backend — wired up by the people who wrote the recipes, **we ship it for you**.
+ShipSwift gets your AI 80% of the way. If you need the last 20% — your unique features, your brand, your backend — wired up by the people who wrote the skills, **we ship it for you**.
 
 | | |
 |---|---|
@@ -42,7 +42,7 @@ Built on the same component library you see in this repo, so you keep ownership 
 
 ## Quick Start
 
-### Option 1: Skills + Recipe Server (Recommended)
+### Option 1: Skills + MCP Server (Recommended)
 
 **Step 1** — Install ShipSwift Skills:
 
@@ -50,7 +50,7 @@ Built on the same component library you see in this repo, so you keep ownership 
 npx skills add signerlabs/shipswift-skills
 ```
 
-**Step 2** — Connect the recipe server so your AI can fetch recipes:
+**Step 2** — Connect the MCP server so your AI can fetch skills:
 
 ```bash
 # Claude Code
@@ -76,11 +76,11 @@ npx skills add signerlabs/ShipSwift
 ```
 
 Your AI can then browse the component catalog and read source code locally. Try:
-- "Explore ShipSwift recipes"
+- "Explore ShipSwift skills"
 - "Add a shimmer animation"
 - "Build a chat feature"
 
-> **Tip**: If you also connect the MCP server (Option 1), your AI gets access to additional Pro recipes (backend guides, compliance templates, pitfall docs).
+> **Tip**: If you also connect the MCP server (Option 1), your AI gets access to additional Pro skills (backend guides, compliance templates, pitfall docs).
 
 ### Option 3: File Copy
 
@@ -126,11 +126,11 @@ LineChart · BarChart · AreaChart · DonutChart · RingChart · RadarChart · S
 
 - **SWAuth** — User authentication (Amplify/Cognito, social login, email/password, phone sign-in with country code picker)
 - **SWCamera** — Camera capture with viewfinder, zoom, photo picker, and face detection with Vision landmark tracking
-- **SWPaywall** — Subscription paywall using StoreKit 2 — *iOS client included free. Full-stack recipe (backend + compliance + pitfalls) → [Pro](https://shipswift.app/#pricing)*
+- **SWPaywall** — Subscription paywall using StoreKit 2 — *iOS client included free. Full-stack skill (backend + compliance + pitfalls) → [Pro](https://shipswift.app/#pricing)*
 - **SWChat** — All-in-one chat view with message list, text input, and optional voice recognition (VolcEngine ASR)
 - **SWSetting** — Settings page template with language switch, share, legal links, recommended apps
 - **SWSubjectLifting** — Background removal using VisionKit ImageAnalysis
-- **SWTikTokTracking** — TikTok Events API integration for attribution tracking — *iOS client included free. Full-stack recipe (backend + compliance + pitfalls) → [Pro](https://shipswift.app/#pricing)*
+- **SWTikTokTracking** — TikTok Events API integration for attribution tracking — *iOS client included free. Full-stack skill (backend + compliance + pitfalls) → [Pro](https://shipswift.app/#pricing)*
 
 ### SWUtil — Shared Utilities
 
@@ -176,9 +176,9 @@ SWComponent   ← may depend on SWUtil only
 SWModule      ← may depend on SWUtil and SWComponent
 ```
 
-## Recipes
+## Skills
 
-ShipSwift provides **free and pro recipes** via Skills — each recipe includes complete SwiftUI source code, implementation steps, and best practices. Your AI assistant can retrieve any recipe on demand.
+ShipSwift provides **free and Pro skills** — each skill includes complete SwiftUI source code, implementation steps, and best practices. Your AI assistant can retrieve any skill on demand.
 
 | Category | Examples |
 |----------|----------|
@@ -187,23 +187,23 @@ ShipSwift provides **free and pro recipes** via Skills — each recipe includes 
 | Component | Alert, Onboarding, Stepper, FAQ |
 | Module | Auth, Camera, Chat, Setting, Infra CDK, Subscription\*, TikTok Tracking\*, Export & Share\* |
 
-\* Pro recipes — includes full backend, compliance templates, and pitfall guides. *Coming soon: Push Notifications, Analytics Dashboard.*
+\* Pro skills — include full backend, compliance templates, and pitfall guides. *Coming soon: Push Notifications, Analytics Dashboard.*
 
-Three tools are available: `listRecipes`, `getRecipe`, `searchRecipes`.
+Three tools are available: `listSkills`, `getSkill`, `searchSkills`.
 
 Learn more at [shipswift.app](https://shipswift.app) · Skills repo: [signerlabs/shipswift-skills](https://github.com/signerlabs/shipswift-skills)
 
 ## Free vs Pro
 
-All iOS client code is open-source under the MIT license. Pro recipes add everything you need to go from prototype to production.
+All iOS client code is open-source under the MIT license. Pro skills add everything you need to go from prototype to production.
 
-| | Free (Open Source) | Pro Recipe |
+| | Free (Open Source) | Pro Skill |
 |---|---|---|
 | iOS client code | Full source | Enhanced version |
 | Backend implementation | — | Hono routes, DB schema, webhooks |
 | Integration guides | — | End-to-end setup checklists |
 | Compliance templates | — | Privacy manifest, App Store labels |
-| Known pitfalls | — | 10+ battle-tested tips per recipe |
+| Known pitfalls | — | 10+ battle-tested tips per skill |
 
 See [pricing](https://shipswift.app/#pricing) for details.
 

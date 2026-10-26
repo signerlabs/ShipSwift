@@ -113,7 +113,7 @@ enum OnboardingPage: CaseIterable {
     var title: String {
         switch self {
         case .shipFast: "AI-First Development"
-        case .components: "Production-Ready Recipes"
+        case .components: "Production-Ready Skills"
         case .modular: "One Command Setup"
         case .launch: "Ship 10x Faster"
         }
@@ -121,8 +121,8 @@ enum OnboardingPage: CaseIterable {
 
     var description: String {
         switch self {
-        case .shipFast: "Recipes structured for AI models — Claude, Cursor, Windsurf get production-grade context instantly."
-        case .components: "Auth, camera, AI chat, in-app purchase — every recipe battle-tested in real App Store apps."
+        case .shipFast: "Skills structured for AI models — Claude, Cursor, Windsurf get production-grade context instantly."
+        case .components: "Auth, camera, AI chat, in-app purchase — every skill battle-tested in real App Store apps."
         case .modular: "Connect via MCP with one command. No downloads, no setup, no dependencies to manage."
         case .launch: "Stop rebuilding auth and payments from scratch. Focus on what makes your app unique."
         }

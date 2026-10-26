@@ -83,10 +83,10 @@ struct ShipSwiftApp: App {
         storeManager.config.privacyPolicyURL = "https://shipswift.app/privacy"
         storeManager.config.termsOfServiceURL = "https://shipswift.app/terms"
         storeManager.config.features = [
-            .init(icon: "cpu.fill", text: "AI-optimized recipes for Claude, Cursor & Windsurf"),
+            .init(icon: "cpu.fill", text: "AI-optimized skills for Claude, Cursor & Windsurf"),
             .init(icon: "checkmark.seal.fill", text: "Full-stack iOS + AWS backend, battle-tested"),
             .init(icon: "terminal.fill", text: "One MCP command — zero downloads, instant access"),
-            .init(icon: "arrow.triangle.branch", text: "Lifetime updates & new recipes included"),
+            .init(icon: "arrow.triangle.branch", text: "Lifetime updates & new skills included"),
         ]
     }
 }

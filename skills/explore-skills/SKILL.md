@@ -1,12 +1,12 @@
 ---
-name: explore-recipes
+name: explore-skills
 description: >
   Explore and browse available ShipSwift components. Use when the user says
-  "explore", "browse", "show recipes", "list components", "what's available",
+  "explore", "browse", "show skills", "list components", "what's available",
   or wants to discover what ShipSwift offers.
 ---
 
-# Explore ShipSwift Recipes
+# Explore ShipSwift Skills
 
 Browse the full catalog of ShipSwift components — production-ready SwiftUI implementations.
 

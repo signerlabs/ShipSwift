@@ -36,6 +36,6 @@ Build production-ready iOS features by combining ShipSwift components — copy-p
 - For modules (`SWModule/`), copy the entire module folder.
 - Support Dark Mode and Dynamic Type by default.
 
-## Pro Recipes (MCP)
+## Pro Skills (MCP)
 
-Some full-stack recipes (backend + compliance + pitfall guides) are available via the MCP server at `https://api.shipswift.app/mcp`. If MCP tools (`listRecipes`, `searchRecipes`, `getRecipe`) are available, use them for extended content. The local source code works independently.
+Some full-stack skills (backend + compliance + pitfall guides) are available via the MCP server at `https://api.shipswift.app/mcp`. If MCP tools (`listSkills`, `searchSkills`, `getSkill`) are available, use them for extended content. The local source code works independently.

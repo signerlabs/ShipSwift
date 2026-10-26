@@ -209,7 +209,7 @@ struct ProPaywallView: View {
             .font(.subheadline)
 
             // Secondary entry point to Founder Services (custom development).
-            // Users who don't want a DIY recipe-based path can request a turnkey MVP.
+            // Users who don't want a DIY skill-based path can request a turnkey MVP.
             HStack(spacing: 6) {
                 Text("paywall.founder.line")
                     .font(.caption)

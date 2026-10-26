@@ -1,4 +1,4 @@
-# ShipSwift Recipe Catalog
+# ShipSwift Skill Catalog
 
 All source files are under `ShipSwift/SWPackage/`. Each component is self-contained — copy the file(s) plus `SWUtil/` into your project.
 

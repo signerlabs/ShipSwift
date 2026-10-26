@@ -64,7 +64,7 @@
 | `SWComponent/`（Display / Feedback / Input） | `UIListView.swift` |
 
 - 展示页更新后统一评审
-- 组件变更后，ShipSwift 服务端的 Recipe 定义也需一并同步（由维护者处理，不在本 repo）
+- 组件变更后，ShipSwift 服务端的 skill 文档也需一并同步（由维护者处理，不在本 repo）
 
 ## 关联项目
 

@@ -756,12 +756,12 @@
         }
       }
     },
-    "AI-optimized recipes for Claude, Cursor & Windsurf" : {
+    "AI-optimized skills for Claude, Cursor & Windsurf" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "为 Claude、Cursor 和 Windsurf 优化的 AI Recipe"
+            "value" : "为 Claude、Cursor 和 Windsurf 优化的 AI Skill"
           }
         }
       }
@@ -4309,13 +4309,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unlock Pro Recipes"
+            "value" : "Unlock Pro Skills"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "解锁 Pro Recipe"
+            "value" : "解锁 Pro Skill"
           }
         }
       }
@@ -4326,13 +4326,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pro Recipes unlocked"
+            "value" : "Pro Skills unlocked"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pro Recipe 已解锁"
+            "value" : "Pro Skill 已解锁"
           }
         }
       }
@@ -4791,12 +4791,12 @@
         }
       }
     },
-    "Lifetime updates & new recipes included" : {
+    "Lifetime updates & new skills included" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "终身免费更新，含新增 Recipe"
+            "value" : "终身免费更新，含新增 Skill"
           }
         }
       }
@@ -5859,13 +5859,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI-optimized recipes for all LLMs"
+            "value" : "AI-optimized skills for all LLMs"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI 优化 Recipe，兼容所有大模型"
+            "value" : "AI 优化 Skill，兼容所有大模型"
           }
         }
       }
