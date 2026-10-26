@@ -2,13 +2,238 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
+      "shouldTranslate" : false
     },
     ".swShake(trigger:)" : {
-
+      "shouldTranslate" : false
     },
     ".transition(.sw%@)" : {
-
+      "shouldTranslate" : false
+    },
+    "/month" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/月"
+          }
+        }
+      }
+    },
+    "%@ / month" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ / 月"
+          }
+        }
+      }
+    },
+    "%@ billed %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ billed %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@计费 %1$@"
+          }
+        }
+      }
+    },
+    "%@ every %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ every %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每 %2$@ %1$@"
+          }
+        }
+      }
+    },
+    "%@ for the first %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ for the first %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首%2$@ %1$@"
+          }
+        }
+      }
+    },
+    "%@ free, then %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ free, then %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@免费，之后 %2$@"
+          }
+        }
+      }
+    },
+    "%@ once" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次性 %@"
+          }
+        }
+      }
+    },
+    "%@, billed %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, billed %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@，%2$@计费"
+          }
+        }
+      }
+    },
+    "%@, then %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, then %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@，之后 %2$@"
+          }
+        }
+      }
+    },
+    "%@, then %@." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, then %2$@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@，之后 %2$@。"
+          }
+        }
+      }
+    },
+    "%@, then %@. Cancel anytime." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, then %2$@. Cancel anytime."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@，之后 %2$@。可随时取消。"
+          }
+        }
+      }
+    },
+    "%@/%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@/%2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@/%2$@"
+          }
+        }
+      }
+    },
+    "%@/%@ for %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@/%2$@ for %3$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前 %3$@ %1$@/%2$@"
+          }
+        }
+      }
+    },
+    "%@/mo" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@/月"
+          }
+        }
+      }
+    },
+    "%@/wk" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@/周"
+          }
+        }
+      }
     },
     "%@%.1f%% %@" : {
       "localizations" : {
@@ -18,82 +243,599 @@
             "value" : "%1$@%2$.1f%% %3$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%lld" : {
-
+      "shouldTranslate" : false
+    },
+    "%lld Credits" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 积分"
+          }
+        }
+      }
+    },
+    "%lld days" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 天"
+          }
+        }
+      }
+    },
+    "%lld mo" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个月"
+          }
+        }
+      }
+    },
+    "%lld months" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个月"
+          }
+        }
+      }
     },
     "%lld prerequisites in total" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "共 %lld 个前置知识点"
+          }
+        }
+      }
+    },
+    "%lld weeks" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 周"
+          }
+        }
+      }
+    },
+    "%lld wk" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 周"
+          }
+        }
+      }
+    },
+    "%lld years" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 年"
+          }
+        }
+      }
+    },
+    "%lld yr" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 年"
+          }
+        }
+      }
+    },
+    "%lld-day free trial" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 天免费试用"
+          }
+        }
+      }
+    },
+    "%lld-Day Free Trial" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 天免费试用"
+          }
+        }
+      }
+    },
+    "%lld-month free trial" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个月免费试用"
+          }
+        }
+      }
+    },
+    "%lld-Month Free Trial" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个月免费试用"
+          }
+        }
+      }
+    },
+    "%lld-year free trial" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 年免费试用"
+          }
+        }
+      }
+    },
+    "%lld-Year Free Trial" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 年免费试用"
+          }
+        }
+      }
     },
     "•" : {
-
+      "shouldTranslate" : false
     },
     "|" : {
-
+      "shouldTranslate" : false
+    },
+    "≈ %lld images" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "约 %lld 张图片"
+          }
+        }
+      }
     },
     "🏀" : {
-
+      "shouldTranslate" : false
     },
     "$" : {
-
+      "shouldTranslate" : false
     },
     "$2.50 / month billed annually" : {
 
     },
     "000000" : {
-
+      "shouldTranslate" : false
+    },
+    "1 / 12 / ∞ duration cards mixing subscriptions with a lifetime unlock, plus review carousel." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 / 12 / ∞ 时长卡片，把订阅和永久买断放在一起，附用户评价轮播。"
+          }
+        }
+      }
+    },
+    "1 day" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 天"
+          }
+        }
+      }
+    },
+    "1 month" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 个月"
+          }
+        }
+      }
     },
     "1 prerequisite in total" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "共 1 个前置知识点"
+          }
+        }
+      }
+    },
+    "1 week" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 周"
+          }
+        }
+      }
+    },
+    "1 year" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 年"
+          }
+        }
+      }
     },
     "1x" : {
-
+      "shouldTranslate" : false
+    },
+    "2 tiers" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 档"
+          }
+        }
+      }
+    },
+    "3D flyovers of every route" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每条路线都能 3D 飞览"
+          }
+        }
+      }
+    },
+    "3x3 mesh gradient background that transitions between two color palettes. Designed as a full-screen or section background." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3×3 网格渐变背景，在两套配色之间过渡，可用作全屏或区块背景。"
+          }
+        }
+      }
+    },
+    "6 Months" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "半年付"
+          }
+        }
+      }
+    },
+    "7-day trial" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 天试用"
+          }
+        }
+      }
+    },
+    "11 paywalls: Apple's SubscriptionStoreView plus 10 templates covering weekly, monthly, quarterly, yearly, lifetime and consumable plans, free trials, intro offers and tiers." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "11 个付费墙：苹果原生 SubscriptionStoreView，外加 10 个模板，覆盖周付、月付、季付、年付、永久买断、消耗型商品，以及免费试用、首期优惠和多档位。"
+          }
+        }
+      }
+    },
+    "16 modern view transitions on SwiftUI's Transition protocol: boing, skid, swoosh, flip, iris, wipe, blinds, clock, glare, dissolve, flicker, film exposure and more." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "基于 SwiftUI Transition 协议的 16 种现代转场：弹跳、滑移、飞掠、翻转、光圈、擦除、百叶窗、时钟、炫光、溶解、闪烁、胶片曝光等。"
+          }
+        }
+      }
+    },
+    "25K ratings" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2.5 万评分"
+          }
+        }
+      }
     },
     "60 × 60, radius 12 (cart row)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "60 × 60，圆角 12（购物车行）"
+          }
+        }
+      }
     },
     "200 × 200, radius 24" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "200 × 200，圆角 24"
+          }
+        }
+      }
     },
     "2026" : {
-
+      "shouldTranslate" : false
+    },
+    "A frosted-glass SF Symbol (apple.logo by default) glowing on a near-black canvas with flowing cool/warm light trapped inside it. Four composited passes: black canvas, a slowly rotating tri-color MeshGradient with drifting diagonal stripes, the light masked to the symbol and run through a Metal layerEffect (alpha-gradient surface normal → subtle refraction + frosted blur + cool Fresnel rim, clipped to the shape), and a breathing two-layer bloom. Tap the gear to live-tune refraction, frost, thickness, edge softness, Fresnel rim, and flow speed." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "近黑画布上一枚发光的磨砂玻璃 SF Symbol（默认 apple.logo），内部流动着冷暖光。四层合成：黑色画布；缓慢旋转的三色 MeshGradient 叠加漂移的斜条纹；光线遮罩到符号形状并经 Metal layerEffect 处理（由透明度梯度得出表面法线 → 轻微折射 + 磨砂模糊 + 冷色菲涅尔边缘，裁切到形状内）；以及呼吸式双层辉光。点齿轮可实时调节折射、磨砂、厚度、边缘柔和度、菲涅尔边缘和流动速度。"
+          }
+        }
+      }
+    },
+    "A quieter mind,\nwritten daily." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每天写一点，\n心更安静。"
+          }
+        }
+      }
+    },
+    "A yearly reflection, ready to print" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年度回顾，可直接打印"
+          }
+        }
+      }
     },
     "Account" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "账号"
+          }
+        }
+      }
     },
     "Activity" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "活动"
+          }
+        }
+      }
     },
     "Ad Attribution & Conversion Tracking" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "广告归因与转化追踪"
+          }
+        }
+      }
+    },
+    "Ad-free interactive sky map" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无广告互动星图"
+          }
+        }
+      }
+    },
+    "Adaptive training plans" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自适应训练计划"
+          }
+        }
+      }
+    },
+    "Add credits" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "充值积分"
+          }
+        }
+      }
     },
     "Add to Cart   ¥%lld" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入购物车   ¥%lld"
+          }
+        }
+      }
     },
     "Adjust preferences, account, and app configuration." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "调整偏好、账号和 App 配置。"
+          }
+        }
+      }
+    },
+    "AI coaching that adapts after every run." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 教练，每跑一次都为你调整计划。"
+          }
+        }
+      }
+    },
+    "AI study plans" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 学习计划"
+          }
+        }
+      }
     },
     "AI-optimized recipes for Claude, Cursor & Windsurf" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为 Claude、Cursor 和 Windsurf 优化的 AI Recipe"
+          }
+        }
+      }
     },
     "All" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部"
+          }
+        }
+      }
     },
     "All Items" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部物品"
+          }
+        }
+      }
+    },
+    "All pro filters & LUTs" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部专业滤镜与 LUT"
+          }
+        }
+      }
     },
     "All styles" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部样式"
+          }
+        }
+      }
     },
     "Already have an account? Sign In" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已有账号？登录"
+          }
+        }
+      }
     },
     "Analyzing..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分析中…"
+          }
+        }
+      }
     },
     "and" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "和"
+          }
+        }
+      }
     },
     "Angular (Neon)" : {
       "localizations" : {
@@ -101,6 +843,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "角向（Neon）"
+          }
+        }
+      }
+    },
+    "Animated drink customization demo with flavor/size selectors and cup animations." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "饮品定制动画示例，带口味 / 杯型选择和杯子动画。"
+          }
+        }
+      }
+    },
+    "Animated floating capsule labels over an image. Labels fade in/out at specified positions, ideal for feature callouts." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "悬浮在图片上的胶囊标签动画，在指定位置淡入淡出，适合标注功能亮点。"
+          }
+        }
+      }
+    },
+    "Animated liquid chrome surface — three sequential value-noise samples domain-warp into a fluid metallic flow lit with a gamma curve and a high-power specular glint. Shadow / silver / highlight / tint colors are tunable; the cool spec bias is baked in for true chrome feel. Tap the gear to live-tune." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "动态液态金属表面：三次连续的值噪声采样做域扭曲，形成流动的金属质感，配合伽马曲线光照和高强度镜面高光。阴影 / 银色 / 高光 / 色调颜色均可调，内置冷色高光偏置，呈现真实的铬金属质感。点齿轮可实时调节。"
           }
         }
       }
@@ -125,20 +897,136 @@
         }
       }
     },
+    "Animated radar (spider) chart with axis labels, grid rings, and radial lines. Supports 3+ axes with customizable max value." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "带动画的雷达（蛛网）图，含坐标轴标签、网格环和放射线，支持 3 个以上的轴，最大值可自定义。"
+          }
+        }
+      }
+    },
+    "Animated three-dot bouncing indicator for chat typing states. Configurable dot size, color, and spacing." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊天“正在输入”的三点跳动指示器，点的大小、颜色和间距可配置。"
+          }
+        }
+      }
+    },
     "Animation" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "动画"
+          }
+        }
+      }
+    },
+    "Anytime" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "随时"
+          }
+        }
+      }
+    },
+    "App of the Year" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年度最佳 App"
+          }
+        }
+      }
     },
     "Apple" : {
-
+      "shouldTranslate" : false
+    },
+    "Apple Watch Activity Rings style concentric ring progress chart. Supports custom center content, dimensions, and animated appear." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Watch 活动圆环风格的同心环进度图，支持自定义中心内容、尺寸和出场动画。"
+          }
+        }
+      }
+    },
+    "Apple's SubscriptionStoreView with a glowing branded header, prominent plan picker, restore, redeem code and policy links." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "苹果原生 SubscriptionStoreView：发光的品牌头图、醒目的方案选择，以及恢复购买、兑换代码和政策链接。"
+          }
+        }
+      }
     },
     "Apps Built with ShipSwift" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 ShipSwift 构建的应用"
+          }
+        }
+      }
+    },
+    "AR constellation overlays" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AR 星座叠加"
+          }
+        }
+      }
+    },
+    "Assignment tracker" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作业追踪"
+          }
+        }
+      }
     },
     "AsyncImage" : {
-
+      "shouldTranslate" : false
+    },
+    "AsyncImage drop-in with memory and disk cache. A re-created view shows its image on the first frame instead of flashing the placeholder." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可直接替换 AsyncImage，带内存和磁盘缓存。视图重建时首帧就显示图片，不会闪出占位图。"
+          }
+        }
+      }
     },
     "At least 8 characters" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "至少 8 位字符"
+          }
+        }
+      }
     },
     "auth.alert.code_sent" : {
       "extractionState" : "manual",
@@ -922,11 +1810,45 @@
         }
       }
     },
+    "Auto-rotating quote display that cycles through texts with animated transitions and author attribution." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动轮播名言，带切换动画和作者署名。"
+          }
+        }
+      }
+    },
+    "Auto-scrolling horizontal FAQ carousel with alternating row directions. Tapping a pill triggers a callback." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动横向滚动的 FAQ 轮播，各行方向交替；点击胶囊会触发回调。"
+          }
+        }
+      }
+    },
     "Back" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回"
+          }
+        }
+      }
     },
     "Back to Sign In" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回登录"
+          }
+        }
+      }
     },
     "Background" : {
       "localizations" : {
@@ -938,56 +1860,356 @@
         }
       }
     },
+    "Background removal using VisionKit ImageAnalyzer. Capture or pick a photo to extract the primary subject." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 VisionKit ImageAnalyzer 去除背景，拍照或选图即可提取主体。"
+          }
+        }
+      }
+    },
+    "Batch editing" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "批量编辑"
+          }
+        }
+      }
+    },
+    "Become a Member" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成为会员"
+          }
+        }
+      }
+    },
+    "BEST VALUE" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最划算"
+          }
+        }
+      }
+    },
+    "Billed %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@计费"
+          }
+        }
+      }
+    },
     "Black" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑色"
+          }
+        }
+      }
     },
     "Bling" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闪耀"
+          }
+        }
+      }
     },
     "Bold" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粗体"
+          }
+        }
+      }
     },
     "Both are rebuilt every second. AsyncImage starts over from its placeholder each time; SWCachedImage shows the decoded image from memory on the first frame." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "两者每秒都会重建。AsyncImage 每次都从占位图重新开始；SWCachedImage 首帧就从内存显示已解码的图片。"
+          }
+        }
+      }
+    },
+    "Bottom sheet with text input, cancel and confirm buttons. Presented as medium detent for collecting user input." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "带输入框、取消和确认按钮的底部弹层，以中等高度弹出，用于收集用户输入。"
+          }
+        }
+      }
     },
     "Browse and manage your outfit collections here." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在这里浏览和管理你的穿搭合集。"
+          }
+        }
+      }
     },
     "Brushmo - Oral Health Companion" : {
-
+      "shouldTranslate" : false
     },
     "Bullet Point Text" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "项目符号文本"
+          }
+        }
+      }
+    },
+    "BulletPointText, GradientDivider, and LabelWithIcon — simple building blocks for lists, settings, and content sections." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BulletPointText、GradientDivider 和 LabelWithIcon：用于列表、设置和内容区块的基础组件。"
+          }
+        }
+      }
+    },
+    "Buy for %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "购买 %@"
+          }
+        }
+      }
     },
     "Camera" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相机"
+          }
+        }
+      }
     },
     "Camera permission denied" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相机权限被拒绝"
+          }
+        }
+      }
     },
     "Camera permission denied. Please enable in Settings" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相机权限被拒绝，请在设置中开启"
+          }
+        }
+      }
     },
     "Camera permission required" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要相机权限"
+          }
+        }
+      }
     },
     "Camera setup failed" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相机初始化失败"
+          }
+        }
+      }
+    },
+    "Camera with real-time Vision face landmark detection, front/back switching, landmark overlay toggle, and configurable color schemes." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "带 Vision 实时人脸关键点检测的相机，支持前后摄像头切换、关键点叠加开关和配色方案配置。"
+          }
+        }
+      }
     },
     "Cancel" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        }
+      }
+    },
+    "Cancel anytime in Settings." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可随时在设置中取消。"
+          }
+        }
+      }
+    },
+    "Cancel in a few taps from Settings." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在设置中点几下即可取消。"
+          }
+        }
+      }
+    },
+    "Canvas-rendered rotating 3D dot sphere — N dots distributed via spherical Fibonacci / Vogel spiral, optional morph between random 3D cloud and even sphere, one-axis perspective projection, palette cross-fade waves up the sphere. Tap the gear to tune palette, dot count / size, morph, rotation, and fade timing." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Canvas 渲染的旋转 3D 点阵球：N 个点按球面斐波那契 / Vogel 螺旋分布，可在随机 3D 点云与均匀球面之间变形，单轴透视投影，配色沿球面自下而上渐变过渡。点齿轮可调节配色、点数 / 点大小、变形、旋转和渐变节奏。"
+          }
+        }
+      }
+    },
+    "Canvas-rendered rotating 3D glyph sphere — any text (1 char tiles, multi-char rotates) drawn at each spherical Fibonacci point with perspective-scaled font, back-face culling, palette cross-fade waves up the sphere. Tap the gear to edit text, weight, glyph count, font size, palette, morph, rotation, and fade." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Canvas 渲染的旋转 3D 文字球：任意文字（单字平铺，多字轮换）绘制在每个球面斐波那契点上，字号随透视缩放，背面剔除，配色沿球面自下而上渐变过渡。点齿轮可编辑文字、字重、字数、字号、配色、变形、旋转和渐变。"
+          }
+        }
+      }
+    },
+    "Capsule status badge with five semantic styles (info, success, warning, error, neutral). LocalizedStringKey and String overloads." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "胶囊状态徽章，五种语义样式（信息、成功、警告、错误、中性），提供 LocalizedStringKey 与 String 两种重载。"
+          }
+        }
+      }
+    },
+    "Capsule-shaped search bar with magnifying glass, clear button and ultra-thin material background. Binds to a text string." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "胶囊形搜索栏，带放大镜、清除按钮和超薄材质背景，绑定文本字符串。"
+          }
+        }
+      }
+    },
+    "Capsule-shaped tab button for custom segmented controls and filter bars. Toggles between selected and unselected states." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "胶囊形标签按钮，用于自定义分段控件和筛选栏，可在选中与未选中之间切换。"
+          }
+        }
+      }
+    },
+    "Cat whisperer in my pocket" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "口袋里的猫语翻译官"
+          }
+        }
+      }
     },
     "Category" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分类"
+          }
+        }
+      }
     },
     "Celebrate!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "庆祝一下！"
+          }
+        }
+      }
+    },
+    "Celebration confetti burst overlay with Canvas-rendered particles at 60fps. Toggle between classic confetti and a Marina Bay Sands fireworks show with launch trails, blur glow, and water reflections." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "庆祝用的彩纸爆发覆盖层，Canvas 以 60fps 渲染粒子。可在经典彩纸和滨海湾金沙烟花秀之间切换，带升空轨迹、模糊辉光和水面倒影。"
+          }
+        }
+      }
     },
     "Cells" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单元格"
+          }
+        }
+      }
     },
     "Change Effects" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数值变化特效"
+          }
+        }
+      }
     },
     "Channel 1" : {
       "localizations" : {
@@ -1020,28 +2242,127 @@
       }
     },
     "Char Sphere" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字球"
+          }
+        }
+      }
     },
     "Char Sphere Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字球控制"
+          }
+        }
+      }
     },
     "Chat Bubble" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊天气泡"
+          }
+        }
+      }
+    },
+    "Chat interface with message bubbles, text input, voice recording waveform, and simple echo response simulation." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊天界面：消息气泡、文本输入、录音波形，以及简单的回声回复模拟。"
+          }
+        }
+      }
     },
     "Choose Effect" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择效果"
+          }
+        }
+      }
     },
     "Chromatic Glass" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "色散玻璃"
+          }
+        }
+      }
     },
     "Chromatic Glass Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "色散玻璃控制"
+          }
+        }
+      }
+    },
+    "Claim %lld%% Off" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立减 %lld%%"
+          }
+        }
+      }
+    },
+    "Claim My Offer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "领取优惠"
+          }
+        }
+      }
     },
     "Classic" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "经典"
+          }
+        }
+      }
     },
     "Clear All" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部清除"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
     },
     "Cloud" : {
       "localizations" : {
@@ -1054,13 +2375,27 @@
       }
     },
     "CMYK" : {
-
+      "shouldTranslate" : false
     },
     "Color" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "颜色"
+          }
+        }
+      }
     },
     "Color %lld" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "颜色 %lld"
+          }
+        }
+      }
     },
     "Color 1" : {
       "localizations" : {
@@ -1113,10 +2448,34 @@
       }
     },
     "Color Panels" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "彩色面板"
+          }
+        }
+      }
     },
     "Color Panels Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "彩色面板控制"
+          }
+        }
+      }
+    },
+    "Color-panels procedural background — pseudo-3D semi-transparent panels rotating around a central vertical axis. 1–7 color palette + edge highlight, skew, side blur, fade-in/out, per-panel gradient mixing. Tap the gear to live-tune all parameters." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "彩色面板程序化背景：半透明的伪 3D 面板绕中心竖轴旋转。1–7 色配色，带边缘高光、倾斜、侧边模糊、淡入淡出和面板内渐变混合。点齿轮可实时调节全部参数。"
+          }
+        }
+      }
     },
     "Colors" : {
       "localizations" : {
@@ -1128,68 +2487,486 @@
         }
       }
     },
+    "Come back to calm — your first year is half price." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回来找回平静：首年半价。"
+          }
+        }
+      }
+    },
+    "Compact numeric stepper with animated transitions and haptic feedback. Chevron-style increment/decrement buttons." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "紧凑的数字步进器，带切换动画和触感反馈，箭头样式的加减按钮。"
+          }
+        }
+      }
+    },
+    "Complete auth flow: email sign-in/up, phone sign-in with country code picker, verification code, forgot/reset password, Apple & Google social sign-in." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整登录流程：邮箱登录 / 注册、带国家区号选择的手机号登录、验证码、忘记 / 重置密码，以及 Apple 与 Google 第三方登录。"
+          }
+        }
+      }
+    },
     "Components" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "组件"
+          }
+        }
+      }
     },
     "Confetti Burst" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "彩纸爆发"
+          }
+        }
+      }
     },
     "Confirm New Password" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确认新密码"
+          }
+        }
+      }
     },
     "Confirm Password" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确认密码"
+          }
+        }
+      }
+    },
+    "Consumable" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "消耗型"
+          }
+        }
+      }
+    },
+    "Consumable packs with per-row price buttons, balance chip and per-unit savings." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "消耗型积分包：每行自带价格按钮，显示当前余额，并按单价算出优惠。"
+          }
+        }
+      }
     },
     "Continue" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续"
+          }
+        }
+      }
     },
     "Could not extract subject" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法提取主体"
+          }
+        }
+      }
     },
     "Count" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数量"
+          }
+        }
+      }
+    },
+    "credits" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "积分"
+          }
+        }
+      }
+    },
+    "CREDITS" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "积分"
+          }
+        }
+      }
+    },
+    "Credits are added to your balance instantly." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "积分即时到账。"
+          }
+        }
+      }
     },
     "Cups Sold" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "售出杯数"
+          }
+        }
+      }
     },
     "Custom" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义"
+          }
+        }
+      }
     },
     "Custom (blue, large)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义（蓝色、大号）"
+          }
+        }
+      }
+    },
+    "Custom Markdown renderer supporting headings, bold/italic, code blocks, lists, and dividers — ideal for LLM output." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义 Markdown 渲染器，支持标题、粗体 / 斜体、代码块、列表和分隔线，适合展示大模型输出。"
+          }
+        }
+      }
     },
     "Cutout" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "镂空"
+          }
+        }
+      }
     },
     "Cyan" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "青色"
+          }
+        }
+      }
+    },
+    "daily" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每天"
+          }
+        }
+      }
+    },
+    "Daily" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日付"
+          }
+        }
+      }
+    },
+    "Daily guided prompts" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每日引导提示"
+          }
+        }
+      }
+    },
+    "Daily tips that actually fit my cat. We both sleep through the night now." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每天的建议都真正适合我家猫，现在我们俩都能一觉睡到天亮。"
+          }
+        }
+      }
+    },
+    "Dark-site finder within 50 km" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50 公里内暗夜观星点查找"
+          }
+        }
+      }
+    },
+    "Dashboard KPI card with icon, animated numeric value, and customizable trailing slot. Pairs with SWKPIDeltaTag for period-over-period." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仪表盘 KPI 卡片：图标、带动画的数值和可自定义的尾部区域，可搭配 SWKPIDeltaTag 显示环比。"
+          }
+        }
+      }
     },
     "Date" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日期"
+          }
+        }
+      }
+    },
+    "day" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "天"
+          }
+        }
+      }
+    },
+    "Day %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 %lld 天"
+          }
+        }
+      }
+    },
+    "Day %lld · %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Day %1$lld · %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 %lld 天 · %@"
+          }
+        }
+      }
+    },
+    "DAYS" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "天"
+          }
+        }
+      }
     },
     "Default" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认"
+          }
+        }
+      }
     },
     "Default 120 × 120, radius 18" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认 120 × 120，圆角 18"
+          }
+        }
+      }
     },
     "Delete" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除"
+          }
+        }
+      }
     },
     "Delete Account" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注销账号"
+          }
+        }
+      }
     },
     "Delete Account?" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注销账号？"
+          }
+        }
+      }
     },
     "Deleting…" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注销中…"
+          }
+        }
+      }
+    },
+    "Demo mode — nothing to restore." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "演示模式：没有可恢复的购买。"
+          }
+        }
+      }
+    },
+    "Demo mode — purchases are simulated and nothing is charged." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "演示模式：购买为模拟操作，不会扣费。"
+          }
+        }
+      }
+    },
+    "Demo purchase: %@ · %@. No charge made." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Demo purchase: %1$@ · %2$@. No charge made."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "演示购买：%1$@ · %2$@，未扣费。"
+          }
+        }
+      }
+    },
+    "Discount applied at checkout" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "结账时自动抵扣"
+          }
+        }
+      }
     },
     "Display" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "展示"
+          }
+        }
+      }
+    },
+    "Domain-warped FBM smoke field — drops of ink diffusing through water. Two-stage warp on 5-octave value noise blends four ink colors plus a wispy glow highlight. Heavier per-pixel cost than Fractal Clouds. Tap the gear to live-tune." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "域扭曲的 FBM 烟雾场，像墨滴在水中扩散。在 5 层八度值噪声上做两级扭曲，混合四种墨色，外加缕缕辉光高光。单像素开销比分形云更高。点齿轮可实时调节。"
+          }
+        }
+      }
     },
     "Don't have an account? Sign Up" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有账号？注册"
+          }
+        }
+      }
     },
     "Done" : {
       "localizations" : {
@@ -1212,19 +2989,64 @@
       }
     },
     "Dot Orbit" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "环绕点阵"
+          }
+        }
+      }
     },
     "Dot Orbit Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "环绕点阵控制"
+          }
+        }
+      }
     },
     "Dot Sphere" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点阵球"
+          }
+        }
+      }
     },
     "Dot Sphere Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点阵球控制"
+          }
+        }
+      }
+    },
+    "Dot-orbit procedural background — Voronoi-cell dots orbiting around their cell centers + rotating individually, mapped onto a 1–10 step-discretized color ramp. Tap the gear to tune palette, dot size / range, orbit spreading, palette steps, and motion." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "环绕点阵程序化背景：Voronoi 单元中的圆点绕各自中心公转并自转，映射到 1–10 级离散色阶。点齿轮可调节配色、点大小 / 范围、轨道扩散、色阶数和运动。"
+          }
+        }
+      }
     },
     "Dots" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点阵"
+          }
+        }
+      }
     },
     "Dots Controls" : {
       "localizations" : {
@@ -1236,44 +3058,268 @@
         }
       }
     },
+    "Drag a glass orb filled with its own flowing color gradient — the sphere magnifies and bends its gradient with a spherical barrel warp, ringed by a cool Fresnel rim, an upper-left specular hot-spot, and faint edge RGB dispersion so it reads as a solid glass ball. Adapted from Inferno's Warping Loupe by Paul Hudson (MIT). Tap the gear to live-tune radius, magnification, refraction, edge highlight, dispersion, and color flow." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖动一颗内含流动渐变的玻璃球：球体用球面桶形畸变放大并弯曲内部渐变，外圈是冷色菲涅尔边缘，左上方有镜面高光，边缘带淡淡的 RGB 色散，看起来像一颗实心玻璃球。改编自 Paul Hudson 的 Inferno「Warping Loupe」（MIT）。点齿轮可实时调节半径、放大倍数、折射、边缘高光、色散和色彩流动。"
+          }
+        }
+      }
+    },
     "Drag the card to tilt its holographic finish" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖动卡片，倾斜查看全息效果"
+          }
+        }
+      }
+    },
+    "Draggable image comparison slider with auto-oscillating animation. Supports custom labels, speed, and aspect ratio." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可拖动的图片对比滑块，带自动来回摆动动画，支持自定义标签、速度和宽高比。"
+          }
+        }
+      }
+    },
+    "Drifting cumulus-like clouds built from a two-pass 5-octave FBM noise — the first pass warps the second's sample position for soft swirls. Sky / cloud / warm-tint colors, drift velocity, coverage, and warp depth are all tunable. Tap the gear to live-tune." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由两轮 5 层八度 FBM 噪声生成的飘动积云：第一轮扭曲第二轮的采样位置，形成柔和的漩涡。天空 / 云 / 暖色调颜色、漂移速度、覆盖率和扭曲深度均可调。点齿轮可实时调节。"
+          }
+        }
+      }
+    },
+    "Each HD image uses 5 credits. Credits never expire." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每张高清图片消耗 5 积分，积分永不过期。"
+          }
+        }
+      }
     },
     "Edge Highlight" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "边缘高光"
+          }
+        }
+      }
     },
     "Effect" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "效果"
+          }
+        }
+      }
     },
     "Email" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邮箱"
+          }
+        }
+      }
     },
     "English" : {
-
+      "shouldTranslate" : false
     },
     "Enter message..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入消息…"
+          }
+        }
+      }
     },
     "Enter your purpose/wish/favorite things for this generation (optional)..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入本次生成的用途 / 心愿 / 喜好（选填）…"
+          }
+        }
+      }
     },
     "Error" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "错误"
+          }
+        }
+      }
+    },
+    "every %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每 %@"
+          }
+        }
+      }
+    },
+    "Every %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每%@"
+          }
+        }
+      }
+    },
+    "Every future update" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未来所有更新"
+          }
+        }
+      }
+    },
+    "Every pro tool today, and every one we ship tomorrow." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天的全部专业工具，以及以后推出的每一个。"
+          }
+        }
+      }
+    },
+    "Every prompt, every practice, and private sync across your devices." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部写作提示与练习，以及多设备私密同步。"
+          }
+        }
+      }
+    },
+    "Everything in Plus" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "包含 Plus 的全部功能"
+          }
+        }
+      }
+    },
+    "Exam score predictions" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "考试成绩预测"
+          }
+        }
+      }
     },
     "Extracting subject..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在提取主体…"
+          }
+        }
+      }
     },
     "Face Camera" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "人脸相机"
+          }
+        }
+      }
     },
     "Failed to convert extracted image" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提取的图片转换失败"
+          }
+        }
+      }
+    },
+    "Family Sharing" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "家人共享"
+          }
+        }
+      }
     },
     "Favorites" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收藏"
+          }
+        }
+      }
+    },
+    "Features" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "功能"
+          }
+        }
+      }
     },
     "Feedback" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "反馈"
+          }
+        }
+      }
     },
     "Field" : {
       "localizations" : {
@@ -1286,16 +3332,55 @@
       }
     },
     "Filter" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "筛选"
+          }
+        }
+      }
+    },
+    "Flashcards" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "记忆卡片"
+          }
+        }
+      }
     },
     "Foil" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全息箔"
+          }
+        }
+      }
     },
     "Foil Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全息箔控制"
+          }
+        }
+      }
     },
     "Forgot Password?" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "忘记密码？"
+          }
+        }
+      }
     },
     "founder.cta" : {
       "extractionState" : "manual",
@@ -1504,62 +3589,297 @@
         }
       }
     },
+    "Free" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费版"
+          }
+        }
+      }
+    },
+    "Free vs Pro feature table with a Monthly / Yearly billing switch." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费版与 Pro 功能对比表，带月付 / 年付切换。"
+          }
+        }
+      }
+    },
     "Fresnel" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菲涅尔"
+          }
+        }
+      }
     },
     "Fresnel Color" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菲涅尔颜色"
+          }
+        }
+      }
     },
     "Fresnel Rim" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菲涅尔边缘"
+          }
+        }
+      }
     },
     "Front" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前景色"
+          }
+        }
+      }
+    },
+    "Full camera capture view with viewfinder overlay, pinch-to-zoom, zoom slider, photo library picker, and permission handling." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整的相机拍摄视图：取景框叠加、双指缩放、缩放滑块、相册选择和权限处理。"
+          }
+        }
+      }
+    },
+    "Full-bleed photo with a moving light leak, rising embers, award-style rating and a glowing button." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "满屏照片，带流动光晕、升腾的火星、奖杯式评分和会呼吸的发光按钮。"
+          }
+        }
+      }
+    },
+    "Full-color plasma backgrounds with five hand-tuned styles — Solar (warm), Prism (chromatic split), Spectrum (vertical split), Ember (glowing coals), Lilac (soft pulsing pastel). Switch styles in the sheet to load each style's signature 5-stop palette." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全彩等离子背景，五种精调风格：Solar（暖色）、Prism（色散分离）、Spectrum（竖向分离）、Ember（发光余烬）、Lilac（柔和脉动的粉彩）。在面板中切换风格，会载入各自的 5 色招牌配色。"
+          }
+        }
+      }
     },
     "Full-stack iOS + AWS backend, battle-tested" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 全栈 + AWS 后端，久经实战"
+          }
+        }
+      }
     },
     "FullPack" : {
-
+      "shouldTranslate" : false
     },
     "Fullpack - Packing & Outfit" : {
-
+      "shouldTranslate" : false
+    },
+    "Fullscreen loading overlay with blur material background, customizable message, optional SF Symbol icon with pulse animation." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全屏加载遮罩：模糊材质背景、可自定义提示文字，可选带脉动动画的 SF Symbol 图标。"
+          }
+        }
+      }
     },
     "Gap" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "间隙"
+          }
+        }
+      }
     },
     "General" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通用"
+          }
+        }
+      }
+    },
+    "Generic settings page with language switch, share, legal links, and account actions. Pushed via NavigationLink." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通用设置页：语言切换、分享、法律链接和账号操作，通过 NavigationLink 推入。"
+          }
+        }
+      }
     },
     "Geometry" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "几何"
+          }
+        }
+      }
+    },
+    "Get %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开通 %@"
+          }
+        }
+      }
+    },
+    "Get full access to every premium feature — free." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费畅享全部高级功能。"
+          }
+        }
+      }
+    },
+    "Get PawPal Pro" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开通 PawPal Pro"
+          }
+        }
+      }
     },
     "Get Started" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始使用"
+          }
+        }
+      }
+    },
+    "GitHub-style activity heatmap with streak tracking. Includes StreakCard, HeatmapGrid, HeatmapLegend sub-components." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub 风格的活跃热力图，带连续打卡统计，包含 StreakCard、HeatmapGrid、HeatmapLegend 子组件。"
+          }
+        }
+      }
     },
     "Glass" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "玻璃"
+          }
+        }
+      }
     },
     "Glass Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "玻璃控制"
+          }
+        }
+      }
     },
     "Glass Logo" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "玻璃徽标"
+          }
+        }
+      }
     },
     "Glass Logo Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "玻璃徽标控制"
+          }
+        }
+      }
     },
     "Glass Orb" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "玻璃球"
+          }
+        }
+      }
     },
     "Glass Orb Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "玻璃球控制"
+          }
+        }
+      }
     },
     "Glitter" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闪粉"
+          }
+        }
+      }
     },
     "Glitter Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闪粉控制"
+          }
+        }
+      }
     },
     "Glow" : {
       "localizations" : {
@@ -1572,22 +3892,67 @@
       }
     },
     "Glyph Palette (each char placed randomly)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字符库（每个字随机放置）"
+          }
+        }
+      }
     },
     "Gooey" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黏稠"
+          }
+        }
+      }
     },
     "Google" : {
-
+      "shouldTranslate" : false
     },
     "Gradient" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "渐变"
+          }
+        }
+      }
     },
     "Gradient Divider" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "渐变分隔线"
+          }
+        }
+      }
+    },
+    "Gradient light band that sweeps across content in a rounded rectangle. Great for image cards and thumbnails." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在圆角矩形内扫过内容的渐变光带，适合图片卡片和缩略图。"
+          }
+        }
+      }
     },
     "Grain" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "颗粒"
+          }
+        }
+      }
     },
     "Grain Gradient" : {
       "localizations" : {
@@ -1610,7 +3975,14 @@
       }
     },
     "Graph Filters" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图谱筛选"
+          }
+        }
+      }
     },
     "Grid" : {
       "localizations" : {
@@ -1622,8 +3994,35 @@
         }
       }
     },
+    "Grid lines, sweeping scan band, and noise layer overlay. Conveys an analyzing / processing visual effect." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网格线、扫描光带和噪点层叠加，营造“正在分析 / 处理”的视觉效果。"
+          }
+        }
+      }
+    },
+    "Grouped or stacked bar chart with horizontal scrolling, optional value labels, and configurable bar corner radius." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分组或堆叠柱状图，支持横向滚动、可选数值标签，柱子圆角可配置。"
+          }
+        }
+      }
+    },
     "Groups (%lld)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分组（%lld）"
+          }
+        }
+      }
     },
     "Halftone" : {
       "localizations" : {
@@ -1645,26 +4044,85 @@
         }
       }
     },
+    "Halftone image filter — wraps any source view in 4 dot styles (classic / gooey / holes / soft) × 2 grids (square / hex), plus a 4-channel CMYK plate mode. Toggle inverted, original colors, and procedural grain. Tap the gear to live-tune." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "半色调图像滤镜：可包裹任意源视图，4 种点样式（经典 / 黏稠 / 孔洞 / 柔和）× 2 种网格（方形 / 六边形），另有 4 通道 CMYK 分版模式。可切换反相、保留原色和程序化颗粒。点齿轮可实时调节。"
+          }
+        }
+      }
+    },
     "Happiness" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "幸福"
+          }
+        }
+      }
     },
     "HAPPY NEW YEAR" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新年快乐"
+          }
+        }
+      }
     },
     "Health" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "健康"
+          }
+        }
+      }
     },
     "Heavy" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特粗"
+          }
+        }
+      }
     },
     "Hello World" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你好，世界"
+          }
+        }
+      }
     },
     "Hex" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "六边形"
+          }
+        }
+      }
     },
     "Hide back faces" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏背面"
+          }
+        }
+      }
     },
     "Highlight" : {
       "localizations" : {
@@ -1677,16 +4135,54 @@
       }
     },
     "Highlight Color" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高光颜色"
+          }
+        }
+      }
     },
     "Holes" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "孔洞"
+          }
+        }
+      }
     },
     "Holographic Cards" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全息卡片"
+          }
+        }
+      }
+    },
+    "Holographic trading-card showcase. Drag a card to tilt its finish across five Metal foil effects: foil, glitter, intense bling, chromatic glass, and polished aluminum." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全息卡牌展示。拖动卡片倾斜查看五种 Metal 箔面效果：全息箔、闪粉、强烈闪耀、色散玻璃和抛光铝。"
+          }
+        }
+      }
     },
     "Home" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首页"
+          }
+        }
+      }
     },
     "home.copied" : {
       "extractionState" : "manual",
@@ -1858,14 +4354,111 @@
         }
       }
     },
+    "Honest free-trial timeline — today, reminder day, billing day — that draws itself in over a drifting aurora." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "坦诚的免费试用时间线：今天、提醒日、扣费日，在流动的极光上逐步绘出。"
+          }
+        }
+      }
+    },
+    "Horizontally scrollable scatter chart with generic category types, color mapping, and configurable axis ranges." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可横向滚动的散点图，支持泛型分类、颜色映射，坐标轴范围可配置。"
+          }
+        }
+      }
+    },
+    "How your free trial works" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费试用流程"
+          }
+        }
+      }
+    },
+    "HRS" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时"
+          }
+        }
+      }
+    },
     "I agree to" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我已阅读并同意"
+          }
+        }
+      }
+    },
+    "I finally know why she yells at 3 AM. The behavior notes are scarily accurate." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "终于知道它为什么凌晨 3 点大叫了，行为分析准得吓人。"
+          }
+        }
+      }
+    },
+    "Identify every star, planet and satellite above you." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "认出你头顶的每一颗恒星、行星和卫星。"
+          }
+        }
+      }
     },
     "Image Thumbnail" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片缩略图"
+          }
+        }
+      }
+    },
+    "INCLUDED" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "包含权益"
+          }
+        }
+      }
     },
     "Info" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "信息"
+          }
+        }
+      }
     },
     "Ink" : {
       "localizations" : {
@@ -1948,49 +4541,265 @@
       }
     },
     "Innovation distinguishes between a leader and a follower." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "领袖和跟风者的区别就在于创新。"
+          }
+        }
+      }
     },
     "Input" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入"
+          }
+        }
+      }
     },
     "Integrate TikTok App Events SDK to measure ad campaign performance, track user conversions, and optimize ad spend with accurate attribution data." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接入 TikTok App Events SDK，衡量广告投放效果、追踪用户转化，并用精准的归因数据优化广告投入。"
+          }
+        }
+      }
     },
     "Integration Steps" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接入步骤"
+          }
+        }
+      }
     },
     "Intense Bling" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "强烈闪耀"
+          }
+        }
+      }
     },
     "Intense Bling Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "强烈闪耀控制"
+          }
+        }
+      }
+    },
+    "Interactive 3D dependency graph on a single Canvas — drag to orbit, pinch to zoom, tap a dot to highlight its full prerequisite lineage with camera focus, plus a group-filter sheet and a native detail sheet. Ships with the open Marble curriculum dataset (1,590 topics)." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单个 Canvas 上的交互式 3D 依赖图谱：拖动旋转、双指缩放，点一个点即可高亮它的完整前置知识链并聚焦镜头，另有分组筛选面板和原生详情面板。内置开源的 Marble 课程数据集（1,590 个知识点）。"
+          }
+        }
+      }
+    },
+    "Interactive donut chart with tap-to-select categories. Selected segment expands with center overlay showing count and name." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可交互的环形图，点击选择分类，选中的扇区会外扩，中心显示数量和名称。"
+          }
+        }
+      }
+    },
+    "Intro offer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首期优惠"
+          }
+        }
+      }
     },
     "Inverted" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "反相"
+          }
+        }
+      }
+    },
+    "Join 2M+ students who plan less and remember more." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "和 200 万+ 学生一起，计划更省心，记得更牢。"
+          }
+        }
+      }
+    },
+    "Just %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅 %@"
+          }
+        }
+      }
+    },
+    "Key ideas from 6,000+ nonfiction books, in 15 minutes a day." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每天 15 分钟，读懂 6,000 多本非虚构好书的核心观点。"
+          }
+        }
+      }
     },
     "Kobe Bryant" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "科比·布莱恩特"
+          }
+        }
+      }
+    },
+    "Kōyō Membership" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kōyō 会员"
+          }
+        }
+      }
     },
     "Label with Icon" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "带图标的标签"
+          }
+        }
+      }
     },
     "Language" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语言"
+          }
+        }
+      }
+    },
+    "Lay a sheet of refractive glass over any content inside an analytic SDF region (circle or rounded rectangle). The rim bends the background hardest while the centre stays calm, a golden-angle disk frosts the content, the same taps split chromatically for dispersion, and tint, directional edge light, a 3D specular glint and a Fresnel rim finish it off. Tap the gear to live-tune Shape / Glass / Highlight / Fresnel / Tint." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在任意内容上覆盖一层折射玻璃，作用区域为解析式 SDF（圆形或圆角矩形）。边缘对背景的弯折最强，中心保持平稳；黄金角圆盘采样让内容呈磨砂感，同一组采样按通道分离产生色散；再加上色调、定向边缘光、3D 镜面高光和菲涅尔边缘。点齿轮可实时调节形状 / 玻璃 / 高光 / 菲涅尔 / 色调。"
+          }
+        }
+      }
     },
     "Legal" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "法律"
+          }
+        }
+      }
     },
     "Lens" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "镜片"
+          }
+        }
+      }
     },
     "Library" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "相册"
+          }
+        }
+      }
+    },
+    "Life-changing for new owners" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新手铲屎官的福音"
+          }
+        }
+      }
     },
     "Lifebang - Pro Cleaner" : {
-
+      "shouldTranslate" : false
+    },
+    "Lifetime" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "永久"
+          }
+        }
+      }
+    },
+    "LIFETIME" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "永久"
+          }
+        }
+      }
     },
     "Lifetime updates & new recipes included" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "终身免费更新，含新增 Recipe"
+          }
+        }
+      }
     },
     "Lighting" : {
       "localizations" : {
@@ -1998,6 +4807,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "光照"
+          }
+        }
+      }
+    },
+    "Limited-time offer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "限时优惠"
           }
         }
       }
@@ -2023,25 +4843,117 @@
       }
     },
     "Liquid Metal" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "液态金属滤镜"
+          }
+        }
+      }
     },
     "Liquid Metal Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "液态金属滤镜控制"
+          }
+        }
+      }
+    },
+    "Liquid-metal image filter — simplex-noise driven stripe pattern with per-channel chromatic refraction, edge-aware bulge, and flowing chrome over any opaque source view (SF Symbols, logos). Tap the gear to tune refraction, edge, liquid, pattern blur / scale, time scale." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "液态金属图像滤镜：由单纯形噪声驱动的条纹图案，按通道色散折射、感知边缘的鼓起，以及在任意不透明源视图（SF Symbols、徽标）上流动的铬金属光泽。点齿轮可调节折射、边缘、流体、图案模糊 / 缩放和时间缩放。"
+          }
+        }
+      }
+    },
+    "Live guided star parties" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直播导览观星会"
+          }
+        }
+      }
+    },
+    "Live trail conditions & storm alerts" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "实时路况与风暴预警"
+          }
+        }
+      }
     },
     "Loading data..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在加载数据…"
+          }
+        }
+      }
     },
     "Magenta" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "品红"
+          }
+        }
+      }
     },
     "Marina Bay Sands, Singapore" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新加坡滨海湾金沙"
+          }
+        }
+      }
     },
     "Material" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "材质"
+          }
+        }
+      }
     },
     "Medium" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中等"
+          }
+        }
+      }
+    },
+    "Membership" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会员"
+          }
+        }
+      }
     },
     "Metaballs" : {
       "localizations" : {
@@ -2064,13 +4976,162 @@
       }
     },
     "Metal" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "金属"
+          }
+        }
+      }
+    },
+    "Metal-shader 3D dot-grid backgrounds — switch between styles (wavy, mountains, …) via a single enum. Perspective projection with soft halos, crest highlighting, vignette, and a tunable horizon. Tap the gear in this preview to live-tune every parameter." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metal 着色器 3D 点阵背景，通过一个枚举切换风格（波浪、山峦等）。透视投影，带柔和光晕、波峰高光、暗角和可调地平线。点此预览中的齿轮可实时调节所有参数。"
+          }
+        }
+      }
+    },
+    "Metal-shader metaballs in two styles — Cluster (gooey blobs drifting on randomized radii/speeds/phases, colors blended where they overlap) and Fountain (a big central ball with up to 99 small balls streaming up: about half rise from the bottom and dissolve into it, half leave upward, their colors blending into the big ball like two liquids mixing). Tap the gear to switch style and tune count, ball/big-ball size, speed, and colors." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metal 着色器融球，两种风格：Cluster（黏稠的球体以随机半径 / 速度 / 相位漂移，重叠处颜色融合）和 Fountain（一个大球，最多 99 个小球向上流动：约一半从底部升起融入大球，另一半向上离开，颜色像两种液体一样与大球交融）。点齿轮可切换风格并调节数量、球 / 大球尺寸、速度和颜色。"
+          }
+        }
+      }
+    },
+    "Micro-interactions that fire on value changes via KeyframeAnimator: shake, jump, spin, ping rings, heart spray, +1 rise, one-shot shine, and haptics." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数值变化时通过 KeyframeAnimator 触发的微交互：抖动、跳动、旋转、波纹、爱心喷射、+1 上浮、一次性闪光和触感反馈。"
+          }
+        }
+      }
     },
     "Mid (web)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中层（网纹）"
+          }
+        }
+      }
+    },
+    "MIN" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分"
+          }
+        }
+      }
+    },
+    "mo" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月"
+          }
+        }
+      }
+    },
+    "month" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月"
+          }
+        }
+      }
+    },
+    "MONTH" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "个月"
+          }
+        }
+      }
+    },
+    "Month to month" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按月订阅"
+          }
+        }
+      }
+    },
+    "monthly" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每月"
+          }
+        }
+      }
+    },
+    "Monthly" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月付"
+          }
+        }
+      }
     },
     "Monthly Revenue" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月收入"
+          }
+        }
+      }
+    },
+    "MONTHS" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "个月"
+          }
+        }
+      }
+    },
+    "Most chosen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最多人选"
+          }
+        }
+      }
     },
     "Motion" : {
       "localizations" : {
@@ -2082,80 +5143,454 @@
         }
       }
     },
+    "Multi-layer twinkling starfield rendered via a Metal stitchable shader. Per-cell hash places stars, parallax layers drift downward at different speeds, and a sin-driven term twinkles each star. Tap the gear in this preview to live-tune layers, density, star size, twinkle, and colors." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 Metal stitchable 着色器渲染的多层闪烁星空：按单元哈希放置星星，视差层以不同速度向下漂移，正弦项让每颗星闪烁。点此预览中的齿轮可实时调节层数、密度、星星大小、闪烁和颜色。"
+          }
+        }
+      }
+    },
+    "Multi-page welcome flow with swipe navigation and skip support." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "多页欢迎引导，支持滑动翻页和跳过。"
+          }
+        }
+      }
+    },
+    "Multi-series line chart with horizontal scrolling, reference lines, point markers, and configurable interpolation methods." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "多系列折线图，支持横向滚动、参考线、数据点标记，插值方式可配置。"
+          }
+        }
+      }
+    },
     "Name" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名称"
+          }
+        }
+      }
     },
     "Nebula" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星云"
+          }
+        }
+      }
     },
     "Neuro Noise" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "神经网纹"
+          }
+        }
+      }
     },
     "Neuro Noise Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "神经网纹控制"
+          }
+        }
+      }
+    },
+    "Neuro-noise procedural background — 15-layer sine/cosine accumulation with rotated UV creates a glowing organic web of fluid lines. Front / mid / back 3-color palette. Tap the gear to tune palette, brightness, contrast, and speed." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "神经网纹程序化背景：15 层正弦 / 余弦叠加配合旋转 UV，生成发光的有机流线网络。前 / 中 / 后三色配色。点齿轮可调节配色、亮度、对比度和速度。"
+          }
+        }
+      }
     },
     "New Members" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新会员"
+          }
+        }
+      }
     },
     "New Password" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新密码"
+          }
+        }
+      }
     },
     "No Category" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未分类"
+          }
+        }
+      }
     },
     "No data" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂无数据"
+          }
+        }
+      }
+    },
+    "No payment now. Cancel anytime." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "现在无需付款，可随时取消。"
+          }
+        }
+      }
     },
     "No subject detected in the image" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片中未检测到主体"
+          }
+        }
+      }
     },
     "Noise" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "噪声"
+          }
+        }
+      }
     },
     "nothing yet" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂无"
+          }
+        }
+      }
     },
     "Notifications" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知"
+          }
+        }
+      }
+    },
+    "OFF" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "优惠"
+          }
+        }
+      }
+    },
+    "OFFER ENDED" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "优惠已结束"
+          }
+        }
+      }
+    },
+    "OFFER ENDS IN" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "优惠倒计时"
+          }
+        }
+      }
+    },
+    "Offline maps, live weather and 3D routes for 400,000 trails." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "40 万条步道的离线地图、实时天气和 3D 路线。"
+          }
+        }
+      }
+    },
+    "Offline topo maps in 200+ countries" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "覆盖 200 多个国家的离线地形图"
+          }
+        }
+      }
+    },
+    "Olive-green wallet pouch holding a stack of payment cards. Tap the eye to spring the cards out into a ladder and reveal the total balance." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "橄榄绿钱包收着一叠支付卡。点眼睛图标，卡片会弹出排成阶梯并显示总余额。"
+          }
+        }
+      }
+    },
+    "once" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次性"
+          }
+        }
+      }
     },
     "One MCP command — zero downloads, instant access" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一条 MCP 命令，无需下载，即刻可用"
+          }
+        }
+      }
+    },
+    "one-time" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次性"
+          }
+        }
+      }
+    },
+    "One-time payment. No subscription." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次性付款，无需订阅。"
+          }
+        }
+      }
+    },
+    "ONE-TIME PURCHASE" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次性买断"
+          }
+        }
+      }
+    },
+    "One-time purchase with a rotating gold emblem, sparkles and a price anchor." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次性买断：旋转的金色徽章、闪烁光点和原价对比。"
+          }
+        }
+      }
+    },
+    "One-time purchase." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次性购买。"
+          }
+        }
+      }
+    },
+    "Only %@/mo, billed %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Only %1$@/mo, billed %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅 %1$@/月，%2$@计费"
+          }
+        }
+      }
     },
     "Open Settings" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开设置"
+          }
+        }
+      }
     },
     "or continue with" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "或使用以下方式继续"
+          }
+        }
+      }
     },
     "Order #1024" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订单 #1024"
+          }
+        }
+      }
     },
     "Order #1025" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订单 #1025"
+          }
+        }
+      }
     },
     "Order #1026" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订单 #1026"
+          }
+        }
+      }
     },
     "Order #1027" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订单 #1027"
+          }
+        }
+      }
     },
     "Order #1028" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订单 #1028"
+          }
+        }
+      }
     },
     "Order list example" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订单列表示例"
+          }
+        }
+      }
     },
     "Original Colors" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留原色"
+          }
+        }
+      }
     },
     "Outfit" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "穿搭"
+          }
+        }
+      }
     },
     "Overview" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "概览"
+          }
+        }
+      }
     },
     "Page Content" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "页面内容"
+          }
+        }
+      }
     },
     "Palette" : {
       "localizations" : {
@@ -2168,16 +5603,44 @@
       }
     },
     "Palette (%lld / 7)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "配色（%lld / 7）"
+          }
+        }
+      }
     },
     "Palette (%lld / 10)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "配色（%lld / 10）"
+          }
+        }
+      }
     },
     "Palette (%lld)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "配色（%lld）"
+          }
+        }
+      }
     },
     "Panel %lld" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "面板 %lld"
+          }
+        }
+      }
     },
     "Paper" : {
       "localizations" : {
@@ -2190,19 +5653,86 @@
       }
     },
     "Particle Transitions" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粒子转场"
+          }
+        }
+      }
+    },
+    "Particle-powered transitions with a self-contained Canvas burst engine: poof smoke cloud, pop ripple with particle flurry, and anvil slam with dust impact." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由自带 Canvas 爆发引擎驱动的粒子转场：噗地一团烟雾、带粒子飞散的弹出涟漪，以及扬起尘土的铁砧重击。"
+          }
+        }
+      }
     },
     "Password" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密码"
+          }
+        }
+      }
     },
     "Passwords do not match" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "两次密码不一致"
+          }
+        }
+      }
     },
     "Past 60 days" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "过去 60 天"
+          }
+        }
+      }
     },
     "Pattern" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图案"
+          }
+        }
+      }
+    },
+    "Pay once · Yours forever · No subscription" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次付费 · 永久拥有 · 无需订阅"
+          }
+        }
+      }
+    },
+    "Pay once, keep it forever." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次付费，永久拥有。"
+          }
+        }
+      }
     },
     "paywall.alert.api_key_generated" : {
       "extractionState" : "manual",
@@ -2578,14 +6108,89 @@
         }
       }
     },
+    "per %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每%@"
+          }
+        }
+      }
+    },
+    "Periodically zooms in and shakes side-to-side, mimicking the iOS home-screen jiggle effect. Supports SF Symbols and asset images." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "周期性放大并左右抖动，模仿 iOS 主屏幕图标的晃动效果，支持 SF Symbols 和资源图片。"
+          }
+        }
+      }
+    },
+    "Personalized insights to understand your cat 3× better." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "个性化洞察，让你懂猫多 3 倍。"
+          }
+        }
+      }
+    },
+    "Pet Parents' Choice 2026" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2026 宠物家长之选"
+          }
+        }
+      }
+    },
     "Phone Number" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "手机号"
+          }
+        }
+      }
     },
     "Photo capture failed" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拍照失败"
+          }
+        }
+      }
     },
     "PIN 0000" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PIN 码 0000"
+          }
+        }
+      }
+    },
+    "Pixel Studio Pro.\nYours forever." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pixel Studio Pro\n永久归你。"
+          }
+        }
+      }
     },
     "Plasma" : {
       "localizations" : {
@@ -2618,73 +6223,367 @@
       }
     },
     "Plates" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分版"
+          }
+        }
+      }
     },
     "points" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "积分"
+          }
+        }
+      }
     },
     "Polished Aluminum" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "抛光铝"
+          }
+        }
+      }
     },
     "Polished Aluminum Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "抛光铝控制"
+          }
+        }
+      }
+    },
+    "Pomodoro focus timer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "番茄钟专注计时"
+          }
+        }
+      }
+    },
+    "Popular" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "热门"
+          }
+        }
+      }
     },
     "Preserve Luminosity" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保持亮度"
+          }
+        }
+      }
     },
     "Privacy" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐私"
+          }
+        }
+      }
     },
     "Privacy Policy" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐私政策"
+          }
+        }
+      }
+    },
+    "Private, encrypted sync" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "私密加密同步"
+          }
+        }
+      }
     },
     "PRO" : {
+      "shouldTranslate" : false
+    },
+    "Pro paywall with lifetime purchase, feature list, restore purchases, and sign-in for API key management." : {
 
     },
     "Processing" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "处理中"
+          }
+        }
+      }
+    },
+    "Pulsing concentric rings in four hand-tuned styles — Shape (5 geometric shapes: circle/square/diamond/hexagon/star), Diamond (L1 distance), Neon (circle + angular wobble), Warp (stretched ellipse). Three RGB channels phase-offset for chromatic-aberration sweep. Tap the gear to switch style and live-tune." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "四种精调风格的脉动同心环：Shape（圆 / 方 / 菱形 / 六边形 / 星形 5 种几何形状）、Diamond（L1 距离）、Neon（圆形 + 角向抖动）、Warp（拉伸椭圆）。三个 RGB 通道相位错开，形成色差扫掠。点齿轮可切换风格并实时调节。"
+          }
+        }
+      }
     },
     "Quality / Performance" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画质 / 性能"
+          }
+        }
+      }
     },
     "Quantity" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数量"
+          }
+        }
+      }
+    },
+    "Quarterly" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "季付"
+          }
+        }
+      }
     },
     "Query: %@" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查询：%@"
+          }
+        }
+      }
+    },
+    "Race-day pace predictions" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比赛日配速预测"
+          }
+        }
+      }
+    },
+    "RAW editing" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAW 编辑"
+          }
+        }
+      }
+    },
+    "Reach every summit" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登顶每一座山峰"
+          }
+        }
+      }
+    },
+    "Real-time audio coaching" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "实时语音指导"
+          }
+        }
+      }
+    },
+    "Real-time ISS & satellite alerts" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "国际空间站与卫星实时提醒"
+          }
+        }
+      }
     },
     "Recent" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近"
+          }
+        }
+      }
+    },
+    "Redeem Code" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "兑换代码"
+          }
+        }
+      }
     },
     "Reference" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "参考"
+          }
+        }
+      }
     },
     "Regular" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常规"
+          }
+        }
+      }
+    },
+    "Renews %@ at %@ until canceled." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Renews %1$@ at %2$@ until canceled."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@按 %2$@ 自动续订，直至取消。"
+          }
+        }
+      }
     },
     "Replay" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重播"
+          }
+        }
+      }
     },
     "Resend Code" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新发送"
+          }
+        }
+      }
     },
     "Reset" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置"
+          }
+        }
+      }
     },
     "Reset Password" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置密码"
+          }
+        }
+      }
     },
     "Resetting..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置中…"
+          }
+        }
+      }
     },
     "Resources" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "资源"
+          }
+        }
+      }
     },
     "Restore Purchases" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复购买"
+          }
+        }
+      }
     },
     "Ring" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "环"
+          }
+        }
+      }
     },
     "Rings" : {
       "localizations" : {
@@ -2696,38 +6595,181 @@
         }
       }
     },
+    "Run faster than ever" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跑得比以往更快"
+          }
+        }
+      }
+    },
+    "Save %lld%%" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "省 %lld%%"
+          }
+        }
+      }
+    },
+    "SAVE %lld%%" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "省 %lld%%"
+          }
+        }
+      }
+    },
     "Search" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索"
+          }
+        }
+      }
     },
     "Search..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索…"
+          }
+        }
+      }
+    },
+    "SEC" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "秒"
+          }
+        }
+      }
+    },
+    "Segmented Plus / Pro tiers, each with its own features, accent and plan cards." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分段切换 Plus / Pro 档位，每档有各自的功能、主题色和方案卡片。"
+          }
+        }
+      }
     },
     "Select All" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全选"
+          }
+        }
+      }
     },
     "Select Country" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择国家或地区"
+          }
+        }
+      }
     },
     "Select or capture a photo to extract the subject" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择或拍摄一张照片来提取主体"
+          }
+        }
+      }
     },
     "Semibold" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中粗"
+          }
+        }
+      }
     },
     "Send Reset Code" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送重置验证码"
+          }
+        }
+      }
     },
     "Send Verification Code" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送验证码"
+          }
+        }
+      }
     },
     "Sending..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送中…"
+          }
+        }
+      }
+    },
+    "Serif, paper-toned membership page listing monthly, quarterly and yearly cadences." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "衬线字体、纸张质感的会员页，列出月付、季付和年付。"
+          }
+        }
+      }
     },
     "Setting" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置"
+          }
+        }
+      }
     },
     "Settings" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置"
+          }
+        }
+      }
     },
     "settings.account.cancel" : {
       "extractionState" : "manual",
@@ -3209,31 +7251,80 @@
       }
     },
     "Share App" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享 App"
+          }
+        }
+      }
     },
     "ShipSwift" : {
-
+      "shouldTranslate" : false
     },
     "ShipSwift Pro" : {
-
+      "shouldTranslate" : false
     },
     "Show Add Sheet" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示添加面板"
+          }
+        }
+      }
     },
     "Show Default Loading" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示默认加载"
+          }
+        }
+      }
     },
     "Show Loading with Icon" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示带图标的加载"
+          }
+        }
+      }
     },
     "Sign Out" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出登录"
+          }
+        }
+      }
     },
     "Sign Out?" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出登录？"
+          }
+        }
+      }
     },
     "Signing Out…" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在退出…"
+          }
+        }
+      }
     },
     "Silver" : {
       "localizations" : {
@@ -3246,16 +7337,54 @@
       }
     },
     "Simplex Noise" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单纯形噪声"
+          }
+        }
+      }
     },
     "Simplex Noise Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单纯形噪声控制"
+          }
+        }
+      }
+    },
+    "Simplex-noise procedural background — two layered 2D simplex noises drive a 1–10 color gradient with stepped smooth transitions and wrap-around seam blending. Tap the gear to tune palette (add/remove colors), scale, steps per color, softness, and motion." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单纯形噪声程序化背景：两层 2D 单纯形噪声驱动 1–10 色渐变，分级平滑过渡，并对环绕接缝做混合。点齿轮可调节配色（增删颜色）、缩放、每色级数、柔和度和运动。"
+          }
+        }
+      }
     },
     "Skew" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "倾斜"
+          }
+        }
+      }
     },
     "Skip" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跳过"
+          }
+        }
+      }
     },
     "Sky" : {
       "localizations" : {
@@ -3277,26 +7406,133 @@
         }
       }
     },
+    "Slowly zooming hero photo with drifting snow, a stretchy header, benefit checklist and stacked plan rows." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缓缓推进的头图配飘雪，下拉可拉伸，附权益清单和纵向排列的方案。"
+          }
+        }
+      }
+    },
     "SmileMax - Glow Up Coach" : {
-
+      "shouldTranslate" : false
     },
     "Smoke Ring" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "烟圈"
+          }
+        }
+      }
     },
     "Smoke Ring Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "烟圈控制"
+          }
+        }
+      }
+    },
+    "Smoke-ring procedural background — polar-coordinate ring distorted by two phase-shifted FBM noise layers that cross-fade so the smoke never visibly loops. 1–10 color gradient + tunable radius / thickness / inner fill / noise iterations. Tap the gear to live-tune." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "烟圈程序化背景：极坐标圆环被两层相位错开的 FBM 噪声扭曲，两层交替淡入淡出，让烟雾看不出循环。1–10 色渐变，半径 / 厚度 / 内部填充 / 噪声迭代次数可调。点齿轮可实时调节。"
+          }
+        }
+      }
     },
     "Soft" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "柔和"
+          }
+        }
+      }
+    },
+    "Soft tri-color noise gradient with film grain — the 2025-era staple hero background (Apple Music posters, Spotify cards, Linear gradients). Two low-frequency noise samples blend three colors; a per-frame high-frequency hash adds the film grain. Tap the gear to live-tune." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "带胶片颗粒的柔和三色噪声渐变，2025 年前后流行的头图背景（Apple Music 海报、Spotify 卡片、Linear 渐变）。两次低频噪声采样混合三种颜色，每帧的高频哈希加上胶片颗粒。点齿轮可实时调节。"
+          }
+        }
+      }
     },
     "Spark - Goal Tracker & Diary" : {
-
+      "shouldTranslate" : false
+    },
+    "Special offer" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特别优惠"
+          }
+        }
+      }
+    },
+    "SpriteKit-powered concentric rings of colored dots with icons on the outermost ring. Custom center view via SwiftUI." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由 SpriteKit 驱动的彩色圆点同心环，最外圈带图标，中心视图可用 SwiftUI 自定义。"
+          }
+        }
+      }
     },
     "Square" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "方形"
+          }
+        }
+      }
+    },
+    "Square image tile with same-named ColorSet fallback. Renders the tint while the image decodes or when the asset is missing." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "方形图片块，带同名 ColorSet 兜底：图片解码中或资源缺失时显示该颜色。"
+          }
+        }
+      }
     },
     "Standard event types supported by TikTok Ads SDK. Custom events can also be tracked with arbitrary names." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TikTok Ads SDK 支持的标准事件类型，也可以用任意名称追踪自定义事件。"
+          }
+        }
+      }
+    },
+    "Standard or stacked area chart with smooth interpolation, optional line overlay, and configurable area opacity." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标准或堆叠面积图，平滑插值，可叠加折线，面积透明度可配置。"
+          }
+        }
+      }
     },
     "Star Color" : {
       "localizations" : {
@@ -3309,10 +7545,24 @@
       }
     },
     "Star Nest" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星巢"
+          }
+        }
+      }
     },
     "Star Nest Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星巢控制"
+          }
+        }
+      }
     },
     "Starfield Controls" : {
       "localizations" : {
@@ -3324,17 +7574,67 @@
         }
       }
     },
+    "Start %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始 %@"
+          }
+        }
+      }
+    },
     "Start Scan Today" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天就开始扫描"
+          }
+        }
+      }
     },
     "Start typing to see the bound value..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始输入，查看绑定的值…"
+          }
+        }
+      }
     },
     "Stay hungry, stay foolish." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "求知若饥，虚心若愚。"
+          }
+        }
+      }
     },
     "Steve Jobs" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "史蒂夫·乔布斯"
+          }
+        }
+      }
+    },
+    "Study smarter with Pro" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 Pro 更聪明地学习"
+          }
+        }
+      }
     },
     "Style" : {
       "localizations" : {
@@ -3347,13 +7647,44 @@
       }
     },
     "Subject extracted successfully" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主体提取成功"
+          }
+        }
+      }
     },
     "Subject extraction failed" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主体提取失败"
+          }
+        }
+      }
     },
     "Subject Lifting" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主体抠图"
+          }
+        }
+      }
+    },
+    "Subscribe" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订阅"
+          }
+        }
+      }
     },
     "Subscribe — $4.99 / month" : {
 
@@ -3361,14 +7692,46 @@
     "Subscribe — $29.99 / year" : {
 
     },
+    "Subscribe for %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订阅 %@"
+          }
+        }
+      }
+    },
     "Subscription" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订阅"
+          }
+        }
+      }
     },
     "Success" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功"
+          }
+        }
+      }
     },
     "Supported Events" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持的事件"
+          }
+        }
+      }
     },
     "Surface" : {
       "localizations" : {
@@ -3381,13 +7744,58 @@
       }
     },
     "SWCachedImage" : {
-
+      "shouldTranslate" : false
+    },
+    "Sweeps a glowing highlight band using the original content shape as mask. Ideal for text, icons, and SF Symbols." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以内容本身的形状为遮罩扫过一道发光高光，适合文字、图标和 SF Symbols。"
+          }
+        }
+      }
     },
     "Swirl" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "漩涡"
+          }
+        }
+      }
     },
     "Swirl Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "漩涡控制"
+          }
+        }
+      }
+    },
+    "Swirl procedural background — polar-coordinate angle bands twisted into spirals via `pow(length, -twist)`, folded to a triangular wave, mapped onto a 1–10 color anti-aliased gradient with optional simplex-noise distortion. Tap the gear to tune bands / twist / center / proportion / softness / noise / motion." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "漩涡程序化背景：极坐标角度带经 `pow(length, -twist)` 扭成螺旋，折叠为三角波，映射到 1–10 色抗锯齿渐变，可选单纯形噪声扰动。点齿轮可调节条带 / 扭曲 / 中心 / 比例 / 柔和度 / 噪声 / 运动。"
+          }
+        }
+      }
+    },
+    "Sync across devices" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "多设备同步"
+          }
+        }
+      }
     },
     "tab.animation" : {
       "extractionState" : "manual",
@@ -3474,47 +7882,227 @@
         }
       }
     },
+    "TabView template with selected/unselected icons and haptic feedback." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TabView 模板，带选中 / 未选中图标和触感反馈。"
+          }
+        }
+      }
+    },
     "Tap any row to fire its effect" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点任意一行触发对应效果"
+          }
+        }
+      }
     },
     "Tap to celebrate" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击庆祝"
+          }
+        }
+      }
     },
     "Tap to trigger alerts" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击触发提示"
+          }
+        }
+      }
+    },
+    "Tappable card with App Store / Photos style zoom transition — the card geometry-matches into a true full-screen view via iOS 18 `.navigationTransition(.zoom)`. Configurable title, subtitle, footer, gradient, and corner radius." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可点击的卡片，带 App Store / 照片风格的缩放转场：通过 iOS 18 `.navigationTransition(.zoom)` 让卡片几何匹配地展开成真正的全屏视图。标题、副标题、页脚、渐变和圆角均可配置。"
+          }
+        }
+      }
+    },
+    "Templates" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模板"
+          }
+        }
+      }
     },
     "Terms of Service" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服务条款"
+          }
+        }
+      }
+    },
+    "Terms of Use" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用条款"
+          }
+        }
+      }
     },
     "That is actually the dream. It's not the destination, it's the journey." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这才是真正的梦想：重要的不是终点，而是旅程。"
+          }
+        }
+      }
+    },
+    "The health log caught a kidney issue early. Our vet was impressed." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "健康记录及早发现了肾脏问题，兽医都很惊讶。"
+          }
+        }
+      }
+    },
+    "The Month" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一月"
+          }
+        }
+      }
     },
     "The only way to do great work is to love what you do." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成就伟大事业的唯一方法，就是热爱你所做的事。"
+          }
+        }
+      }
+    },
+    "The Season" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一季"
+          }
+        }
+      }
+    },
+    "The Year" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一年"
+          }
+        }
+      }
     },
     "Thinking" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "思考中"
+          }
+        }
+      }
     },
     "This action cannot be undone. All your data will be permanently deleted." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此操作不可撤销，你的所有数据将被永久删除。"
+          }
+        }
+      }
     },
     "Those times when you don't feel like working, you're too tired, you don't want to push yourself, but you do it anyway." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "那些你不想工作、累得不行、不想逼自己，却依然坚持去做的时刻。"
+          }
+        }
+      }
     },
     "Those times when you get up early, and you work hard, those times when you stay up late, and you work hard." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "那些你早早起床努力、熬到深夜仍在努力的时刻。"
+          }
+        }
+      }
+    },
+    "TikTok App Events SDK with ATT permission flow and event tracking for ad attribution." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TikTok App Events SDK，带 ATT 授权流程和用于广告归因的事件追踪。"
+          }
+        }
+      }
     },
     "TikTok Business SDK (GitHub)" : {
-
+      "shouldTranslate" : false
     },
     "TikTok Events Manager" : {
-
+      "shouldTranslate" : false
     },
     "TikTok Tracking" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TikTok 追踪"
+          }
+        }
+      }
     },
     "Tilt" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "倾斜"
+          }
+        }
+      }
     },
     "Tint" : {
       "localizations" : {
@@ -3527,22 +8115,85 @@
       }
     },
     "Tint Color" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "色调颜色"
+          }
+        }
+      }
     },
     "Tip: register a same-named ColorSet alongside the image set to get a brand-appropriate tint before the image decodes — or as a permanent fallback for empty states." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提示：在图片资源旁注册一个同名 ColorSet，图片解码前就能显示合适的品牌色，也可作为空状态的永久兜底。"
+          }
+        }
+      }
+    },
+    "Toast-style alert overlay with four preset styles (info, success, warning, error) and custom styling. Auto-dismisses after configurable duration." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toast 式提示浮层，四种预设样式（信息、成功、警告、错误），也支持自定义样式，按设定时长自动消失。"
+          }
+        }
+      }
+    },
+    "Today" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天"
+          }
+        }
+      }
     },
     "Today's Revenue" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日收入"
+          }
+        }
+      }
     },
     "Total Balance" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "总余额"
+          }
+        }
+      }
     },
     "Total Members" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会员总数"
+          }
+        }
+      }
     },
     "Transcribing..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "转写中…"
+          }
+        }
+      }
     },
     "Transform" : {
       "localizations" : {
@@ -3555,40 +8206,258 @@
       }
     },
     "Transitions" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "转场"
+          }
+        }
+      }
+    },
+    "Translucent light band sweep across any view. Commonly used on buttons, skeleton loaders, or cards to draw attention." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在任意视图上扫过的半透明光带，常用于按钮、骨架屏或卡片，吸引注意力。"
+          }
+        }
+      }
     },
     "Trending" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "热门"
+          }
+        }
+      }
+    },
+    "Trial" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "试用"
+          }
+        }
+      }
     },
     "Type a message..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入消息…"
+          }
+        }
+      }
     },
     "Type characters — e.g. 道德经" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入文字，例如：道德经"
+          }
+        }
+      }
+    },
+    "Typing and deleting text animation that cycles through strings. Six animation styles: spring, blur, fade, scale, wave, none." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逐字输入和删除的文字动画，循环展示多段文字。六种动画风格：弹簧、模糊、淡入淡出、缩放、波浪、无。"
+          }
+        }
+      }
+    },
+    "UI Demo — the App Store offer code sheet opens here" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UI 演示：这里会弹出 App Store 兑换码面板"
+          }
+        }
+      }
     },
     "Unable to access camera" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法访问相机"
+          }
+        }
+      }
     },
     "Unable to add camera input" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法添加相机输入"
+          }
+        }
+      }
     },
     "Unable to add photo output" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法添加照片输出"
+          }
+        }
+      }
     },
     "Unable to process photo data" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法处理照片数据"
+          }
+        }
+      }
     },
     "Unit: cups" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单位：杯"
+          }
+        }
+      }
     },
     "Unknown permission status" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "权限状态未知"
+          }
+        }
+      }
+    },
+    "Unlimited" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无限"
+          }
+        }
+      }
+    },
+    "Unlimited 4K exports" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无限次 4K 导出"
+          }
+        }
+      }
+    },
+    "Unlimited journal entries" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无限日记篇数"
+          }
+        }
+      }
+    },
+    "Unlimited observation logs" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无限观测记录"
+          }
+        }
+      }
+    },
+    "Unlimited route planning & sync" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无限路线规划与同步"
+          }
+        }
+      }
+    },
+    "Unlock every premium feature instantly." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即解锁全部高级功能。"
+          }
+        }
+      }
+    },
+    "Unlock Forever" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "永久解锁"
+          }
+        }
+      }
+    },
+    "Unlock the universe" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解锁整个宇宙"
+          }
+        }
+      }
     },
     "Unnamed Category" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未命名分类"
+          }
+        }
+      }
+    },
+    "Upgrade to %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "升级到 %@"
+          }
+        }
+      }
     },
     "UtilityMax - Financial Simulator" : {
-
+      "shouldTranslate" : false
     },
     "v%@ (%@)" : {
       "localizations" : {
@@ -3598,34 +8467,118 @@
             "value" : "v%1$@ (%2$@)"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "Value" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数值"
+          }
+        }
+      }
     },
     "Verification Code" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "验证码"
+          }
+        }
+      }
     },
     "Verify Email" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "验证邮箱"
+          }
+        }
+      }
     },
     "Verify Phone" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "验证手机号"
+          }
+        }
+      }
     },
     "Verifying..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "验证中…"
+          }
+        }
+      }
     },
     "Version" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本"
+          }
+        }
+      }
+    },
+    "Volumetric procedural space nebula — a fixed camera flies through a 3D space-folded fractal field, accumulating drifting stars and dark-matter voids per pixel with no texture sampling. Adapted from Pablo Roman Andrioli's classic Star Nest shader (MIT). Heaviest background in the library; use one full-screen instance. Tap the gear to live-tune zoom, speed, nebula color, and quality." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "体积式程序化星云：固定镜头穿行于 3D 空间折叠的分形场中，逐像素累积漂移的星星和暗物质空洞，不采样任何纹理。改编自 Pablo Roman Andrioli 的经典 Star Nest 着色器（MIT）。这是库里开销最大的背景，请只用一个全屏实例。点齿轮可实时调节缩放、速度、星云颜色和画质。"
+          }
+        }
+      }
     },
     "Voronoi" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "泰森多边形"
+          }
+        }
+      }
     },
     "Voronoi Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "泰森多边形控制"
+          }
+        }
+      }
+    },
+    "Voronoi procedural background — animated double-pass Voronoi with anti-aliased edges, 1–5 color cell ramp, optional gap border between cells, and radial inner glow shadow. Tap the gear to tune palette, density, distortion, gap, glow, and motion." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "泰森多边形程序化背景：带抗锯齿边缘的双层 Voronoi 动画，1–5 色单元色阶，可选单元间隙描边和径向内发光阴影。点齿轮可调节配色、密度、扭曲、间隙、辉光和运动。"
+          }
+        }
+      }
     },
     "vs yesterday" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "较昨日"
+          }
+        }
+      }
     },
     "Warm Tint" : {
       "localizations" : {
@@ -3638,43 +8591,301 @@
       }
     },
     "Warning" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "警告"
+          }
+        }
+      }
     },
     "Water" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水波"
+          }
+        }
+      }
     },
     "Water Controls" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水波控制"
+          }
+        }
+      }
+    },
+    "Water ripple image filter — simplex-noise wave drift + 6-octave rotated caustic distortion warps the source UVs and adds a sunlight-on-pool highlight tint. Tap the gear to live-tune size, caustic, waves, layering, edges, highlights, and colors." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水波纹图像滤镜：单纯形噪声的波浪漂移 + 6 层八度旋转焦散扭曲源图 UV，并加上泳池阳光般的高光色调。点齿轮可实时调节尺寸、焦散、波浪、层次、边缘、高光和颜色。"
+          }
+        }
+      }
+    },
+    "We'll remind you that your trial is ending soon." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "试用快结束时，我们会提醒你。"
+          }
+        }
+      }
     },
     "Wealth" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "财富"
+          }
+        }
+      }
+    },
+    "week" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "周"
+          }
+        }
+      }
+    },
+    "WEEK" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "周"
+          }
+        }
+      }
+    },
+    "weekly" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周"
+          }
+        }
+      }
+    },
+    "Weekly" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "周付"
+          }
+        }
+      }
+    },
+    "WEEKS" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "周"
+          }
+        }
+      }
     },
     "Weight" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字重"
+          }
+        }
+      }
+    },
+    "Welcome back gift" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回归礼"
+          }
+        }
+      }
     },
     "What You Get" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你将获得"
+          }
+        }
+      }
     },
     "Wheel" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "转轮"
+          }
+        }
+      }
+    },
+    "Win-back discount with animated mesh gradient, ticket card and live countdown." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "召回优惠：动态网格渐变、优惠券卡片和实时倒计时。"
+          }
+        }
+      }
     },
     "Wisdom" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "智慧"
+          }
+        }
+      }
+    },
+    "wk" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "周"
+          }
+        }
+      }
+    },
+    "Worth every penny" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "物超所值"
+          }
+        }
+      }
+    },
+    "year" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年"
+          }
+        }
+      }
+    },
+    "yearly" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每年"
+          }
+        }
+      }
+    },
+    "Yearly" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年付"
+          }
+        }
+      }
     },
     "Yellow" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黄色"
+          }
+        }
+      }
+    },
+    "You'll be charged %@. Cancel anytime before to pay nothing." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "届时将扣费 %@，在此之前取消则不收费。"
+          }
+        }
+      }
     },
     "Your Generation Purpose" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本次生成的用途"
+          }
+        }
+      }
     },
     "Your main feed and dashboard content goes here." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这里放你的主信息流和仪表盘内容。"
+          }
+        }
+      }
     },
     "Your time is limited, don't waste it living someone else's life." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的时间有限，不要浪费在过别人的生活上。"
+          }
+        }
+      }
+    },
+    "yr" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年"
+          }
+        }
+      }
     },
     "简体中文" : {
-
+      "shouldTranslate" : false
     }
   },
   "version" : "1.0"

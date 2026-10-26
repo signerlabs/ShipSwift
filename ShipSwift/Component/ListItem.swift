@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct ListItem: View {
+    /// Component name — shown as written (matches the type name in code).
     let title: String
     let icon: String
-    let description: String
+    /// Localized via the String Catalog.
+    let description: LocalizedStringKey
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
