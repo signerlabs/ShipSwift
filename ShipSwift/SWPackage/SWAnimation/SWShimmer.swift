@@ -84,7 +84,7 @@ struct SWShimmer<Content: View>: View {
                 .clipped()
             }
             .task {
-                // Delay one frame to ensure the view is fully loaded
+                // Wait ~0.1 s so layout settles before the repeating animation starts
                 try? await Task.sleep(nanoseconds: 100_000_000)
                 animate = true
             }

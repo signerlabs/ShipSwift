@@ -148,7 +148,8 @@ final class SWImageCache {
         let task = Task<CGImage?, Never> {
             defer { inflight[url] = nil }
             guard let (data, response) = try? await session.data(from: url) else { return nil }
-            let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+            // Non-HTTP responses (file:// URLs) carry no status code
+            let status = (response as? HTTPURLResponse)?.statusCode ?? 200
             guard status == 200 else {
                 if status == 404 || status == 410 { missing.insert(url) }
                 return nil

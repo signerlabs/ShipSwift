@@ -323,7 +323,7 @@ extension SWBarChart where CategoryType == String {
 
             Divider()
 
-            // Example 2: Stacked bar chart with value labels
+            // Example 2: Stacked bar chart
             Group {
                 let calendar = Calendar.current
                 let today = calendar.startOfDay(for: Date())

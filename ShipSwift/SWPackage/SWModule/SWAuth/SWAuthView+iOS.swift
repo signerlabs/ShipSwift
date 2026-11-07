@@ -97,7 +97,8 @@ struct SWAuthView: View {
 
     // Phone sign-in state
     @State private var phoneNumber = ""
-    @State private var countryCode = "+1"
+    // Dial codes are shared (+1 covers the US, Canada and the Caribbean), so the selection is tracked by name
+    @State private var countryName = "United States"
     @State private var showingCountryPicker = false
     @State private var countrySearchText = ""
     @State private var isResending = false
@@ -121,6 +122,12 @@ struct SWAuthView: View {
     private var isValidConfirmPassword: Bool { password == confirmPassword && isValidPassword }
 
     private var isValidCode: Bool { verificationCode.count == 6 }
+
+    private var selectedCountry: SWCountry? {
+        SWCountryData.allCountries.first { $0.name == countryName }
+    }
+
+    private var countryCode: String { selectedCountry?.code ?? "+1" }
 
     private var isValidPhone: Bool {
         let expectedLength = SWCountryData.phoneLength(for: countryCode)
@@ -206,8 +213,8 @@ struct SWAuthView: View {
                 countryCodePicker
             }
             .task {
-                // Pre-trigger network permission request to avoid permission dialog
-                // appearing during sign-in which could cause sign-in failure
+                // Make one request up front so the cellular data ("Wireless Data") prompt on
+                // China-region devices shows now, not in the middle of OAuth sign-in where it breaks the flow
                 await prefetchNetworkPermission()
             }
         }
@@ -217,7 +224,11 @@ struct SWAuthView: View {
 
     private func prefetchNetworkPermission() async {
         guard let url = URL(string: "https://www.apple.com") else { return }
-        _ = try? await URLSession.shared.data(from: url)
+        let session = URLSession(configuration: .ephemeral)
+        defer { session.finishTasksAndInvalidate() }
+        var request = URLRequest(url: url)
+        request.httpMethod = "HEAD"
+        _ = try? await session.data(for: request)
     }
 
     private var headerTitle: String {
@@ -252,9 +263,12 @@ struct SWAuthView: View {
             // Email sign-in area
             emailSignInSection
 
-            // Social sign-in area
+            // Social sign-in area (includes the agreement checkbox)
             if viewMode == .signIn {
                 socialSignInSection
+            } else {
+                // Sign-up also requires the agreement, so the checkbox must be visible here
+                SWAgreementChecker(agreementChecked: $agreementChecked)
             }
         }
     }
@@ -628,7 +642,7 @@ struct SWAuthView: View {
                     showingCountryPicker = true
                 } label: {
                     HStack(spacing: 4) {
-                        Text(SWCountryData.flag(for: countryCode))
+                        Text(selectedCountry?.flag ?? "🌍")
                         Text(countryCode)
                         Image(systemName: "chevron.down")
                             .font(.caption2)
@@ -766,7 +780,7 @@ struct SWAuthView: View {
                     Section(header: Text(letter)) {
                         ForEach(countries, id: \.name) { country in
                             Button {
-                                countryCode = country.code
+                                countryName = country.name
                                 countrySearchText = ""
                                 showingCountryPicker = false
                             } label: {
@@ -780,7 +794,7 @@ struct SWAuthView: View {
                                             .foregroundStyle(.secondary)
                                     }
                                     Spacer()
-                                    if countryCode == country.code {
+                                    if countryName == country.name {
                                         Image(systemName: "checkmark")
                                             .foregroundStyle(Color.accentColor)
                                     }

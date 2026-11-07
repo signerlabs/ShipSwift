@@ -289,19 +289,19 @@ private struct SWSmokeRingControlsSheet: View {
                 }
 
                 Section("Ring") {
-                    SliderRow(label: "Radius",     value: $radius,     range: 0...1,     step: 0.01)
-                    SliderRow(label: "Thickness",  value: $thickness,  range: 0.01...1,  step: 0.01)
-                    SliderRow(label: "Inner Fill", value: $innerShape, range: 0...4,     step: 0.05)
-                    SliderRow(label: "Scale",      value: $scale,      range: 0.05...4,  step: 0.05)
+                    SWSmokeRingSliderRow(label: "Radius",     value: $radius,     range: 0...1,     step: 0.01)
+                    SWSmokeRingSliderRow(label: "Thickness",  value: $thickness,  range: 0.01...1,  step: 0.01)
+                    SWSmokeRingSliderRow(label: "Inner Fill", value: $innerShape, range: 0...4,     step: 0.05)
+                    SWSmokeRingSliderRow(label: "Scale",      value: $scale,      range: 0.05...4,  step: 0.05)
                 }
 
                 Section("Noise") {
-                    SliderRow(label: "Noise Scale", value: $noiseScale,      range: 0.01...5, step: 0.01)
-                    SliderRow(label: "Iterations",  value: $noiseIterations, range: 1...8,    step: 1)
+                    SWSmokeRingSliderRow(label: "Noise Scale", value: $noiseScale,      range: 0.01...5, step: 0.01)
+                    SWSmokeRingSliderRow(label: "Iterations",  value: $noiseIterations, range: 1...8,    step: 1)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWSmokeRingSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Smoke Ring")
@@ -317,7 +317,7 @@ private struct SWSmokeRingControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWSmokeRingSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

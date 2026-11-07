@@ -356,18 +356,18 @@ private struct SWDotsControlsSheet: View {
                 }
 
                 Section("Sliders") {
-                    SliderRow(label: "Speed",         value: $speed,        range: 0...3,   step: 0.05)
-                    SliderRow(label: "Brightness",    value: $brightness,   range: 0...3,   step: 0.05)
-                    SliderRow(label: "Dot Size",      value: $dotSize,      range: 0.2...3, step: 0.05)
-                    SliderRow(label: "Grid Density",  value: $gridDensity,  range: 0.3...3, step: 0.05)
-                    SliderRow(label: "Pattern Scale", value: $patternScale, range: 0.2...3, step: 0.05)
-                    SliderRow(label: "Vignette",      value: $vignette,     range: 0...3,   step: 0.05)
+                    SWDotsSliderRow(label: "Speed",         value: $speed,        range: 0...3,   step: 0.05)
+                    SWDotsSliderRow(label: "Brightness",    value: $brightness,   range: 0...3,   step: 0.05)
+                    SWDotsSliderRow(label: "Dot Size",      value: $dotSize,      range: 0.2...3, step: 0.05)
+                    SWDotsSliderRow(label: "Grid Density",  value: $gridDensity,  range: 0.3...3, step: 0.05)
+                    SWDotsSliderRow(label: "Pattern Scale", value: $patternScale, range: 0.2...3, step: 0.05)
+                    SWDotsSliderRow(label: "Vignette",      value: $vignette,     range: 0...3,   step: 0.05)
 
                     // Hidden for flat-grid styles whose shaders ignore these.
                     if style.is3D {
-                        SliderRow(label: "Wave Amplitude", value: $amplitude, range: 0...3,      step: 0.05)
-                        SliderRow(label: "Depth Fade",     value: $depthFade, range: 0...3,      step: 0.05)
-                        SliderRow(label: "Horizon",        value: $horizon,   range: -1.0...0.4, step: 0.01)
+                        SWDotsSliderRow(label: "Wave Amplitude", value: $amplitude, range: 0...3,      step: 0.05)
+                        SWDotsSliderRow(label: "Depth Fade",     value: $depthFade, range: 0...3,      step: 0.05)
+                        SWDotsSliderRow(label: "Horizon",        value: $horizon,   range: -1.0...0.4, step: 0.01)
                     }
                 }
             }
@@ -384,7 +384,7 @@ private struct SWDotsControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWDotsSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

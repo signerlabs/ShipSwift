@@ -29,7 +29,7 @@ struct SWLabelWithIcon: View {
     var icon: String = "pencil"
     var bg: Color = .blue
     var name: LocalizedStringResource = "Name"
-    
+
     var body: some View {
         HStack {
             ZStack {
@@ -41,6 +41,7 @@ struct SWLabelWithIcon: View {
                     .foregroundStyle(.ultraThickMaterial)
             }
             .padding(5)
+            .accessibilityHidden(true)
             Text(name)
         }
     }
@@ -57,6 +58,7 @@ struct SWLabelWithImage: View {
                 .frame(width: 32, height: 32)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .padding(5)
+                .accessibilityHidden(true)
             Text(name)
         }
     }
@@ -67,25 +69,25 @@ struct SWLabelWithImage: View {
 #Preview {
     VStack(alignment: .leading) {
         SWLabelWithIcon()
-        
+
         SWLabelWithIcon(
             icon: "gearshape",
             bg: .orange,
             name: "Settings"
         )
-        
+
         SWLabelWithIcon(
             icon: "bell.badge",
             bg: .red,
             name: "Notifications"
         )
-        
+
         SWLabelWithIcon(
             icon: "lock.shield",
             bg: .green,
             name: "Privacy"
         )
-        
+
         SWLabelWithIcon(
             icon: "creditcard",
             bg: .purple,

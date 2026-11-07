@@ -332,7 +332,9 @@ final class SWCameraManager: NSObject, @unchecked Sendable {
         sessionQueue.async { [weak self] in
             guard let self else { return }
 
-            let newPosition: AVCaptureDevice.Position = self.cameraPosition == .front ? .back : .front
+            // Read the session-queue copy: cameraPosition is only updated later on the main thread,
+            // so a quick second tap would otherwise switch to the same camera again
+            let newPosition: AVCaptureDevice.Position = self._bgCameraPosition == .front ? .back : .front
 
             guard let newCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: newPosition) else {
                 return
@@ -417,25 +419,32 @@ final class SWCameraManager: NSObject, @unchecked Sendable {
 // MARK: - AVCapturePhotoCaptureDelegate
 
 extension SWCameraManager: AVCapturePhotoCaptureDelegate {
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+    /// Called on a background queue: decode the photo here, then deliver the result on the main thread
+    nonisolated func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if error != nil {
-            DispatchQueue.main.async {
-                self.onError?(String(localized: "Photo capture failed"))
-            }
-            captureCompletion?(nil)
+            finishCapture(nil, errorMessage: String(localized: "Photo capture failed"))
             return
         }
 
         guard let imageData = photo.fileDataRepresentation(),
               let image = UIImage(data: imageData) else {
-            DispatchQueue.main.async {
-                self.onError?(String(localized: "Unable to process photo data"))
-            }
-            captureCompletion?(nil)
+            finishCapture(nil, errorMessage: String(localized: "Unable to process photo data"))
             return
         }
 
-        captureCompletion?(image)
+        finishCapture(image, errorMessage: nil)
+    }
+
+    /// Report the capture result on the main thread (the completion usually updates view state)
+    private nonisolated func finishCapture(_ image: UIImage?, errorMessage: String?) {
+        Task { @MainActor in
+            if let errorMessage {
+                self.onError?(errorMessage)
+            }
+            let completion = self.captureCompletion
+            self.captureCompletion = nil
+            completion?(image)
+        }
     }
 }
 

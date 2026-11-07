@@ -91,6 +91,11 @@ final class SWLocationManager: NSObject {
     @ObservationIgnored
     private let geocoder = CLGeocoder()
 
+    /// Set by `startLocationServices()`; updates only start while a request is pending,
+    /// so creating the manager (or an authorization change) never turns on GPS by itself
+    @ObservationIgnored
+    private var isRequestPending = false
+
     #if os(iOS)
     private static let authorizedStatuses: Set<CLAuthorizationStatus> = [.authorizedAlways, .authorizedWhenInUse]
     #else
@@ -110,6 +115,7 @@ final class SWLocationManager: NSObject {
     func startLocationServices() {
         userLocation = nil
         currentLocation = nil
+        isRequestPending = true
         updateAuthorizationStatus()
 
         if isAuthorized {
@@ -148,6 +154,11 @@ extension SWLocationManager: CLLocationManagerDelegate {
         guard let location = locations.last else { return }
 
         Task { @MainActor in
+            // Keep the first fix only: stop right away so updates already queued
+            // don't start a second reverse geocode (CLGeocoder allows one at a time)
+            guard isRequestPending else { return }
+            isRequestPending = false
+            self.manager.stopUpdatingLocation()
             userLocation = location
             let name = await resolveLocationName(for: location)
             currentLocation = Location(
@@ -155,15 +166,14 @@ extension SWLocationManager: CLLocationManagerDelegate {
                 latitude: location.coordinate.latitude,
                 longitude: location.coordinate.longitude
             )
-            manager.stopUpdatingLocation()
         }
     }
 
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         Task { @MainActor in
             updateAuthorizationStatus()
-            if isAuthorized {
-                manager.startUpdatingLocation()
+            if isAuthorized && isRequestPending {
+                self.manager.startUpdatingLocation()
             }
         }
     }

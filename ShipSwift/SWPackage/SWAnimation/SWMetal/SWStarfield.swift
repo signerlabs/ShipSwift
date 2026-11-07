@@ -258,17 +258,17 @@ private struct SWStarfieldControlsSheet: View {
                 }
 
                 Section("Field") {
-                    SliderRow(label: "Layers",     value: $layers,    range: 1...8,    step: 1)
-                    SliderRow(label: "Base Scale", value: $baseScale, range: 5...200,  step: 1)
-                    SliderRow(label: "Scale Step", value: $scaleStep, range: 0...100,  step: 1)
-                    SliderRow(label: "Density",    value: $density,   range: 0...1,    step: 0.01)
-                    SliderRow(label: "Star Size",  value: $starSize,  range: 0.05...2, step: 0.05)
+                    SWStarfieldSliderRow(label: "Layers",     value: $layers,    range: 1...8,    step: 1)
+                    SWStarfieldSliderRow(label: "Base Scale", value: $baseScale, range: 5...200,  step: 1)
+                    SWStarfieldSliderRow(label: "Scale Step", value: $scaleStep, range: 0...100,  step: 1)
+                    SWStarfieldSliderRow(label: "Density",    value: $density,   range: 0...1,    step: 0.01)
+                    SWStarfieldSliderRow(label: "Star Size",  value: $starSize,  range: 0.05...2, step: 0.05)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed",          value: $speed,         range: 0...3,  step: 0.05)
-                    SliderRow(label: "Twinkle Speed",  value: $twinkleSpeed,  range: 0...10, step: 0.1)
-                    SliderRow(label: "Twinkle Amount", value: $twinkleAmount, range: 0...1,  step: 0.01)
+                    SWStarfieldSliderRow(label: "Speed",          value: $speed,         range: 0...3,  step: 0.05)
+                    SWStarfieldSliderRow(label: "Twinkle Speed",  value: $twinkleSpeed,  range: 0...10, step: 0.1)
+                    SWStarfieldSliderRow(label: "Twinkle Amount", value: $twinkleAmount, range: 0...1,  step: 0.01)
                 }
             }
             .navigationTitle("Starfield Controls")
@@ -284,7 +284,7 @@ private struct SWStarfieldControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWStarfieldSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

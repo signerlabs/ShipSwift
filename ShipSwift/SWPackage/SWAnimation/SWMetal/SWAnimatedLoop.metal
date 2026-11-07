@@ -15,7 +15,7 @@
 //    - `swAnimatedLoopNeon`    — circle rings + per-channel angular wobble
 //    - `swAnimatedLoopWarp`    — stretched-ellipse rings + 1D pattern
 //
-//  All four take the same 18-parameter signature so the Swift renderer can
+//  All four take the same 20-argument signature so the Swift renderer can
 //  use a single argument list and dispatch by name. Parameters that don't
 //  apply to a given style are touched with `(void)x;` to make the "unused
 //  on purpose" decision explicit.

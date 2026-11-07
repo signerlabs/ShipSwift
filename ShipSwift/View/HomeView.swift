@@ -183,7 +183,7 @@ struct HomeView: View {
 
     private var proStatusRow: some View {
         Group {
-            if storeManager.isPro {
+            if storeManager.hasProAccess {
                 Label("home.pro.unlocked", systemImage: "checkmark.seal.fill")
                     .foregroundStyle(.secondary)
             } else {

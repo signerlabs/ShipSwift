@@ -1,5 +1,5 @@
 //
-//  SWSubjectLiftingManager.swift
+//  SWSubjectLiftingManager+iOS.swift
 //  ShipSwift
 //
 //  Subject lifting (background removal) manager using VisionKit's
@@ -37,7 +37,7 @@
 //  Created by Wei Zhong on 3/8/26.
 //
 
-import VisionKit
+@preconcurrency import VisionKit
 import SwiftUI
 
 // MARK: - Extracted Result
@@ -119,7 +119,12 @@ final class SWSubjectLiftingManager {
             // Extract the subject image (background removed)
             let subjectImage = try await firstSubject.image
 
-            guard let pngData = subjectImage.pngData() else {
+            // Encode off the main actor: PNG-encoding a full-resolution cutout can stall the UI
+            let pngData = await Task.detached(priority: .userInitiated) {
+                subjectImage.pngData()
+            }.value
+
+            guard let pngData else {
                 processingState = .failed
                 onError?(String(localized: "Failed to convert extracted image"))
                 scheduleReset(after: 3)
@@ -150,7 +155,7 @@ final class SWSubjectLiftingManager {
 
     // MARK: - Private Helpers
 
-    /// Auto-reset to idle after a delay (for failed/completed states).
+    /// Auto-reset to idle after a delay (for failed states).
     private func scheduleReset(after seconds: Int) {
         Task {
             try? await Task.sleep(for: .seconds(seconds))

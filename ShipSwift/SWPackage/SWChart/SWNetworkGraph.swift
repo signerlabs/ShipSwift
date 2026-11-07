@@ -26,10 +26,10 @@
 //    - A filter toolbar button (top trailing) that opens a sheet listing one
 //      row per `group` with Select All / Clear All shortcuts. The toolbar
 //      item needs an enclosing NavigationStack to be visible.
-//    - A detail sheet for the selected node (medium detent, background
-//      interaction stays enabled so the graph can still be orbited) with the
-//      total prerequisite count and tappable "builds on" / "unlocks" rows
-//      plus a back stack.
+//    - A detail sheet for the selected node (short / medium / large detents;
+//      background interaction stays enabled up through medium so the graph
+//      can still be orbited) with the total prerequisite count and tappable
+//      "builds on" / "unlocks" rows plus a back stack.
 //
 //  Requires iOS 18+ / macOS 15+ (SwiftUI `TimelineView`, `Canvas`,
 //  `MagnifyGesture`).
@@ -588,7 +588,8 @@ private final class SWNetworkGraphCamera {
 // MARK: - Resolved Graph
 
 /// Index-based view of the graph: funnel positions, adjacency lists, and
-/// per-group counts, all derived once per `nodes`/`edges` change.
+/// per-group counts, derived from `nodes`/`edges` on each body evaluation
+/// (selection and filter changes, never per frame).
 private struct SWNetworkGraphResolved {
     let nodes: [SWNetworkGraphNode]
     let positions: [SIMD3<Double>]

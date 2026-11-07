@@ -19,7 +19,7 @@
 //  Usage:
 //    // Default — foil tracks the internal animation only
 //    SWFoil {
-//        Image("messi").resizable().scaledToFill()
+//        Image("photo").resizable().scaledToFill()
 //    }
 //
 //    // Tilt-driven — feed a normalized (-1...1) tilt from a DragGesture

@@ -55,6 +55,8 @@ struct SWSettingView: View {
                     Text("简体中文").tag("zh-Hans")
                 }
                 .onChange(of: selectedLanguage) { _, newValue in
+                    // The demo reset below fires onChange again; ignore it
+                    guard newValue != appLanguage else { return }
                     if isDemo {
                         selectedLanguage = appLanguage
                         SWAlertManager.shared.show(.info, message: "UI Demo — language switching is not functional")

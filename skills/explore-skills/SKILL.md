@@ -16,9 +16,9 @@ Browse the full catalog of ShipSwift components — production-ready SwiftUI imp
 
    | Category | Count | Examples |
    |----------|-------|---------|
-   | Animation | 9 | Shimmer, Typewriter, GlowSweep, MeshGradient, OrbitingLogos |
-   | Chart | 8 | Line, Bar, Area, Donut, Ring, Radar, Scatter, Heatmap |
-   | Component | 13 | Alert, Loading, Onboarding, Stepper, FloatingLabels |
+   | Animation | 44 | Shimmer, Typewriter, Confetti, Transitions, Metal effects (Foil, Plasma, Glass…) |
+   | Chart | 9 | Line, Bar, Area, Donut, Ring, Radar, Scatter, Heatmap, Network Graph |
+   | Component | 23 | Alert, Loading, Onboarding, CachedImage, KPI Card, Wallet |
    | Module | 7 | Auth, Camera, Chat, Paywall, Settings, SubjectLifting, TikTokTracking |
    | Util | 5 | Date/String/View extensions, DebugLog, LocationManager |
 

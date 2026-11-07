@@ -261,16 +261,16 @@ private struct SWWaterControlsSheet: View {
                 }
 
                 Section("Pattern") {
-                    SliderRow(label: "Size",       value: $size,       range: 0.01...7, step: 0.01)
-                    SliderRow(label: "Caustic",    value: $caustic,    range: 0...1,    step: 0.01)
-                    SliderRow(label: "Waves",      value: $waves,      range: 0...1,    step: 0.01)
-                    SliderRow(label: "Layering",   value: $layering,   range: 0...1,    step: 0.01)
-                    SliderRow(label: "Edges",      value: $edges,      range: 0...1,    step: 0.01)
-                    SliderRow(label: "Highlights", value: $highlights, range: 0...1,    step: 0.01)
+                    SWWaterSliderRow(label: "Size",       value: $size,       range: 0.01...7, step: 0.01)
+                    SWWaterSliderRow(label: "Caustic",    value: $caustic,    range: 0...1,    step: 0.01)
+                    SWWaterSliderRow(label: "Waves",      value: $waves,      range: 0...1,    step: 0.01)
+                    SWWaterSliderRow(label: "Layering",   value: $layering,   range: 0...1,    step: 0.01)
+                    SWWaterSliderRow(label: "Edges",      value: $edges,      range: 0...1,    step: 0.01)
+                    SWWaterSliderRow(label: "Highlights", value: $highlights, range: 0...1,    step: 0.01)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWWaterSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Water")
@@ -286,7 +286,7 @@ private struct SWWaterControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWWaterSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

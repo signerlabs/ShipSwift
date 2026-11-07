@@ -98,6 +98,9 @@ struct SWGlowSweep<Content: View>: View {
             .onAppear {
                 animate = true
             }
+            // The visible copy is hidden and the mask isn't exposed to
+            // accessibility, so hand VoiceOver the original content.
+            .accessibilityRepresentation { inner }
     }
 }
 

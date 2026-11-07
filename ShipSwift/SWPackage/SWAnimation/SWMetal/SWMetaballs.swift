@@ -312,15 +312,15 @@ private struct SWMetaballsControlsSheet: View {
                 }
 
                 Section("Field") {
-                    SliderRow(label: "Count", value: $count, range: style == .fountain ? 1...99 : 1...8, step: 1)
-                    SliderRow(label: "Size",  value: $size,  range: 0...1, step: 0.01)
+                    SWMetaballsSliderRow(label: "Count", value: $count, range: style == .fountain ? 1...99 : 1...8, step: 1)
+                    SWMetaballsSliderRow(label: "Size",  value: $size,  range: 0...1, step: 0.01)
                     if style == .fountain {
-                        SliderRow(label: "Big Ball Size", value: $bigSize, range: 0...1, step: 0.01)
+                        SWMetaballsSliderRow(label: "Big Ball Size", value: $bigSize, range: 0...1, step: 0.01)
                     }
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWMetaballsSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Metaballs")
@@ -336,7 +336,7 @@ private struct SWMetaballsControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWMetaballsSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

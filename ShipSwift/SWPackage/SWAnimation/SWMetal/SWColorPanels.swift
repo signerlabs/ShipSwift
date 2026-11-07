@@ -338,26 +338,26 @@ private struct SWColorPanelsControlsSheet: View {
                 }
 
                 Section("Wheel") {
-                    SliderRow(label: "Density",  value: $density,     range: 0.25...7,  step: 0.05)
-                    SliderRow(label: "Length",   value: $panelLength, range: 0.05...3,  step: 0.05)
-                    SliderRow(label: "Scale",    value: $scale,       range: 0.05...4,  step: 0.05)
+                    SWColorPanelsSliderRow(label: "Density",  value: $density,     range: 0.25...7,  step: 0.05)
+                    SWColorPanelsSliderRow(label: "Length",   value: $panelLength, range: 0.05...3,  step: 0.05)
+                    SWColorPanelsSliderRow(label: "Scale",    value: $scale,       range: 0.05...4,  step: 0.05)
                 }
 
                 Section("Skew") {
-                    SliderRow(label: "Angle 1",  value: $angle1, range: -1...1, step: 0.01)
-                    SliderRow(label: "Angle 2",  value: $angle2, range: -1...1, step: 0.01)
+                    SWColorPanelsSliderRow(label: "Angle 1",  value: $angle1, range: -1...1, step: 0.01)
+                    SWColorPanelsSliderRow(label: "Angle 2",  value: $angle2, range: -1...1, step: 0.01)
                 }
 
                 Section("Material") {
                     Toggle("Edge Highlight", isOn: $edges)
-                    SliderRow(label: "Side Blur", value: $blur,     range: 0...0.5, step: 0.01)
-                    SliderRow(label: "Fade In",   value: $fadeIn,   range: 0...1,   step: 0.01)
-                    SliderRow(label: "Fade Out",  value: $fadeOut,  range: 0...1,   step: 0.01)
-                    SliderRow(label: "Gradient",  value: $gradient, range: 0...1,   step: 0.01)
+                    SWColorPanelsSliderRow(label: "Side Blur", value: $blur,     range: 0...0.5, step: 0.01)
+                    SWColorPanelsSliderRow(label: "Fade In",   value: $fadeIn,   range: 0...1,   step: 0.01)
+                    SWColorPanelsSliderRow(label: "Fade Out",  value: $fadeOut,  range: 0...1,   step: 0.01)
+                    SWColorPanelsSliderRow(label: "Gradient",  value: $gradient, range: 0...1,   step: 0.01)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWColorPanelsSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Color Panels")
@@ -373,7 +373,7 @@ private struct SWColorPanelsControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWColorPanelsSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

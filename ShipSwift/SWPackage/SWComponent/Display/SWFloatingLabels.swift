@@ -71,8 +71,9 @@ struct SWFloatingLabels: View {
                             .opacity(cycle < 0.5 ? cycle * 2 : 1)
                     )
 
-                // Cycle through labels
-                ForEach(Array(labels.enumerated()), id: \.element.id) { index, label in
+                // Cycle through labels (keyed by position: callers often build
+                // `labels` inline, which mints new UUIDs on every parent render)
+                ForEach(Array(labels.enumerated()), id: \.offset) { index, label in
                     let delay = Double(index) * 0.3
                     let labelCycle = (cycle - delay).truncatingRemainder(dividingBy: cycleDuration)
                     let opacity = labelCycle > 0.5 && labelCycle < (cycleDuration - 0.5) ? 1.0 : 0.0

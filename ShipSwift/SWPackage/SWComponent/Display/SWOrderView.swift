@@ -37,10 +37,10 @@ struct SWOrderView: View {
     @State private var size: String = "Medium"
     @Namespace private var sizeNS
     @Namespace private var flavorNS
-    
+
     private let flavors = ["Matcha", "Chocolate", "Latte"]
     private let sizes = ["Medium", "Large", "XL"]
-    
+
     private var bg: Color {
         switch flavor {
         case "Latte":
@@ -51,7 +51,7 @@ struct SWOrderView: View {
             return Color(red: 0.2, green: 0.5, blue: 0.3)
         }
     }
-    
+
     var body: some View {
         ZStack {
             backgroundGradient
@@ -65,7 +65,7 @@ struct SWOrderView: View {
             #endif
         }
     }
-    
+
     private var backgroundGradient: some View {
         LinearGradient(colors: [.black, bg],
                        startPoint: .top, endPoint: .bottom)
@@ -74,7 +74,7 @@ struct SWOrderView: View {
         #endif
         .animation(.easeInOut, value: flavor)
     }
-    
+
     private var contentView: some View {
         VStack(spacing: 30) {
             cupsSection
@@ -84,7 +84,7 @@ struct SWOrderView: View {
             addToCartButton
         }
     }
-    
+
     private var cupsSection: some View {
         ZStack {
             ForEach(Array(0..<qty), id: \.self) { i in
@@ -98,21 +98,21 @@ struct SWOrderView: View {
         #endif
         .animation(.spring(), value: qty)
     }
-    
+
     private var quantityControl: some View {
         SWQuantityControl(qty: $qty)
     }
-    
+
     private var selectorsSection: some View {
         VStack(spacing: 20) {
             SWOrderSelector(items: sizes, sel: $size, ns: sizeNS, label: "Size")
             SWOrderSelector(items: flavors, sel: $flavor, ns: flavorNS, label: "Flavor")
         }
     }
-    
+
     private var addToCartButton: some View {
         Button {
-            
+
         } label: {
             Text("Add to Cart   ¥\(33 * qty)")
                 .font(.title3.bold())
@@ -133,6 +133,7 @@ struct SWCupView: View {
     let img: String
     let size: String
 
+    // Replace these with your own ImageResource references
     private var image: ImageResource {
         switch img {
         case "Matcha":  return .matcha
@@ -187,7 +188,7 @@ struct SWOrderSelector: View {
     @Binding var sel: String
     var ns: Namespace.ID
     var label: String
-    
+
     var body: some View {
         HStack {
             Text(label)
@@ -204,7 +205,7 @@ struct SWOrderSelector: View {
         }
         .padding(.horizontal)
     }
-    
+
     private func itemButton(_ item: String) -> some View {
         Text(item)
             .frame(maxWidth: .infinity)
@@ -217,6 +218,9 @@ struct SWOrderSelector: View {
                         .matchedGeometryEffect(id: "selector", in: ns)
                 }
             }
+            // Make the whole capsule segment tappable, not just the text glyphs
+            .contentShape(Capsule())
+            .accessibilityAddTraits(sel == item ? [.isButton, .isSelected] : .isButton)
             .onTapGesture {
                 withAnimation(.spring()) {
                     sel = item
@@ -229,7 +233,7 @@ struct SWOrderSelector: View {
 
 struct SWQuantityControl: View {
     @Binding var qty: Int
-    
+
     var body: some View {
         HStack(spacing: 40) {
             Button { if qty > 1 { qty -= 1 } } label: {
@@ -237,12 +241,12 @@ struct SWQuantityControl: View {
                     .font(.largeTitle)
                     .foregroundStyle(.white, .ultraThinMaterial)
             }
-            
+
             Text("\(qty)")
                 .font(.system(size: 40, weight: .black))
                 .contentTransition(.numericText())
                 .frame(width: 60)
-            
+
             Button { if qty < 3 { qty += 1 } } label: {
                 Image(systemName: "plus.circle.fill")
                     .font(.largeTitle)
@@ -258,7 +262,7 @@ struct SWQuantityControl: View {
 struct SWOrderButton: View {
     let icon: String
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Image(systemName: icon)

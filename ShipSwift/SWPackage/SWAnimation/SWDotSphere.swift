@@ -35,7 +35,7 @@
 //    // Morph between chaos and sphere
 //    SWDotSphere(morphAmount: 0.4)
 //
-//    // Demo / debug — adds a gear button that opens a live-tuning sheet.
+//    // Demo / debug — adds a toolbar button that opens a live-tuning sheet.
 //    SWDotSphere(showsControls: true)
 //
 //  Parameters:
@@ -49,7 +49,7 @@
 //    - fadeSeconds:    Seconds per color cross-fade (default 5.5).
 //    - waitSeconds:    Pause between fades (default 5.0).
 //    - dotSize:        Base dot diameter in points (default 3).
-//    - showsControls:  Attach a gear `ToolbarItem` that opens a
+//    - showsControls:  Attach a controls `ToolbarItem` that opens a
 //                      live-tuning sheet (default `false`).
 //
 
@@ -155,10 +155,12 @@ private struct SWDotSphereRenderer: View {
             let rotation = elapsed * rotationSpeed
             let totalCycle = max(0.001, fadeSeconds + waitSeconds)
             let timeInCycle = elapsed.truncatingRemainder(dividingBy: totalCycle)
-            let baseIdx = Int(floor(elapsed / totalCycle)) % max(1, colors.count)
-            let nextIdx = (baseIdx + 1) % max(1, colors.count)
-            let baseRGB = rgbComponents(colors[baseIdx])
-            let nextRGB = rgbComponents(colors[nextIdx])
+            // Fall back to white if the palette is empty.
+            let palette: [Color] = colors.isEmpty ? [.white] : colors
+            let baseIdx = Int(floor(elapsed / totalCycle)) % palette.count
+            let nextIdx = (baseIdx + 1) % palette.count
+            let baseRGB = rgbComponents(palette[baseIdx])
+            let nextRGB = rgbComponents(palette[nextIdx])
             let cosR = cos(rotation)
             let sinR = sin(rotation)
             let count = cloud.randomXYZ.count

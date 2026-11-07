@@ -230,13 +230,13 @@ private struct SWGrainGradientControlsSheet: View {
                 }
 
                 Section("Field") {
-                    SliderRow(label: "Scale",    value: $scale,    range: 0.2...5,   step: 0.05)
-                    SliderRow(label: "Grain",    value: $grain,    range: 0...0.3,   step: 0.005)
-                    SliderRow(label: "Contrast", value: $contrast, range: 0.1...4,   step: 0.05)
+                    SWGrainGradientSliderRow(label: "Scale",    value: $scale,    range: 0.2...5,   step: 0.05)
+                    SWGrainGradientSliderRow(label: "Grain",    value: $grain,    range: 0...0.3,   step: 0.005)
+                    SWGrainGradientSliderRow(label: "Contrast", value: $contrast, range: 0.1...4,   step: 0.05)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWGrainGradientSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Grain Gradient")
@@ -252,7 +252,7 @@ private struct SWGrainGradientControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWGrainGradientSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

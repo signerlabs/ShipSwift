@@ -35,6 +35,10 @@
 //    // 5. Haptic feedback: built in via .sensoryFeedback(.increase, trigger: selectedTab),
 //    //    triggered automatically on tab switch.
 //
+//    // 6. Tint: the selected tab uses .tint(.accent) — the AccentColor in your asset catalog.
+//    //    Set it explicitly: from iOS 26 the native tab bar ignores the asset catalog's global
+//    //    accent color and falls back to system blue. Replace .accent with your brand color.
+//
 //  Created by Wei Zhong on 3/1/26.
 //
 
@@ -114,6 +118,8 @@ struct SWRootTabView: View {
                 .environment(\.symbolVariants, .none)
             }
         }
+        // iOS 26+ tab bars ignore the global accent color; without this the selection is system blue
+        .tint(.accent)
         .sensoryFeedback(.increase, trigger: selectedTab)
     }
 }

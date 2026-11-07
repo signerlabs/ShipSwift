@@ -19,7 +19,7 @@
 //
 //  Parameters:
 //    - text: String                — Raw Markdown string to render
-//    - codeBackground: Color       — Background color for fenced code blocks (default: secondary fill)
+//    - codeBackground: Color       — Background color for fenced code blocks (default: .gray.opacity(0.12))
 //    - codeBorderColor: Color      — Border color for fenced code blocks (default: secondary)
 //    - codeCornerRadius: CGFloat   — Corner radius for code blocks (default: 8)
 //    - blockSpacing: CGFloat       — Vertical spacing between blocks (default: 6)

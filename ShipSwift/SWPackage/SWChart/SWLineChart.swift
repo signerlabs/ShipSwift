@@ -56,10 +56,9 @@
 //    - title: String?                                — Optional title
 //
 //  Notes:
-//    - Appear animation: via chartPlotStyle, a mask rectangle expands from left to right
-//      (easeOut 1.2s, 0.2s delay) only on the plot area, so axes/labels/legend stay visible.
-//      All data points are always rendered so axes stay stable.
-//    - Reference lines are also revealed progressively by the same mask animation
+//    - Appear animation: values grow from 0 to their targets (easeOut 1.2s, 0.2s delay).
+//      The Y-axis domain is computed from the real data, so axes stay stable while animating.
+//    - Reference lines grow from 0 with the same animation
 //
 //  Created by Wei Zhong on 2/13/26.
 //

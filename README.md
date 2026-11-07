@@ -102,23 +102,25 @@ Select a simulator or device, then press **Cmd+R** to build and run.
 
 ### SWAnimation — Animation Components
 
-**SwiftUI animations:** Shimmer · TypewriterText · ShakingIcon · GlowSweep · LightSweep · ScanningOverlay · AnimatedMeshGradient · BeforeAfterSlider · OrbitingLogos · FullScreenButton
+**SwiftUI animations:** Shimmer · TypewriterText · ShakingIcon · GlowSweep · LightSweep · ScanningOverlay · AnimatedMeshGradient · BeforeAfterSlider · OrbitingLogos · FullScreenButton · ChangeEffect · Confetti · Transition · ParticleTransition
 
 **Canvas-rendered 3D:** DotSphere · CharSphere
 
 **Metal-shader procedural backgrounds:** Dots · Starfield · FractalClouds · InkSmoke · LiquidChrome · Plasma · AnimatedLoop
 
-**Metal-shader backgrounds:** Metaballs · Halftone · Water · LiquidMetal · NeuroNoise · DotOrbit · Voronoi · SimplexNoise · ColorPanels · SmokeRing · Swirl
+**Metal-shader backgrounds:** Metaballs · Halftone · Water · LiquidMetal · NeuroNoise · DotOrbit · Voronoi · SimplexNoise · ColorPanels · SmokeRing · Swirl · StarNest · GrainGradient
 
-30 animation components total — see the [Showcase App](https://apps.apple.com/us/app/shipswift-mcp-codebase/id6759209764) for live previews.
+**Metal-shader effects on any view:** Foil · Glitter · IntenseBling · PolishedAluminum · ChromaticGlass · Glass · GlassOrb · GlassLogo
+
+44 animation components total — see the [Showcase App](https://apps.apple.com/us/app/shipswift-mcp-codebase/id6759209764) for live previews.
 
 ### SWChart — Chart Components
 
-LineChart · BarChart · AreaChart · DonutChart · RingChart · RadarChart · ScatterChart · ActivityHeatmap
+LineChart · BarChart · AreaChart · DonutChart · RingChart · RadarChart · ScatterChart · ActivityHeatmap · NetworkGraph
 
 ### SWComponent — UI Components
 
-**Display:** FloatingLabels · ScrollingFAQ · RotatingQuote · BulletPointText · GradientDivider · Label · MarkdownText · OnboardingView · OrderView · RootTabView · VideoPlayer
+**Display:** FloatingLabels · ScrollingFAQ · RotatingQuote · BulletPointText · GradientDivider · Label · MarkdownText · OnboardingView · OrderView · RootTabView · VideoPlayer · CachedImage · ImageThumbnail · KPICard · StatusBadge · Wallet
 **Feedback:** Alert · Loading · ThinkingIndicator
 **Input:** TabButton · Stepper · AddSheet · SearchBar
 

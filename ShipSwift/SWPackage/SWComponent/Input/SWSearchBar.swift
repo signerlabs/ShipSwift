@@ -39,6 +39,7 @@ struct SWSearchBar: View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
 
             TextField(placeholder, text: $text)
                 .autocorrectionDisabled()
@@ -51,6 +52,7 @@ struct SWSearchBar: View {
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Clear Text")
             }
         }
         .font(.system(size: 14))

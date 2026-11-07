@@ -2,9 +2,10 @@
 //  SWLiquidMetal.swift
 //  ShipSwift
 //
-//  Wraps any view in a flowing chromatic liquid-metal effect via a SwiftUI
-//  Metal `layerEffect`: simplex noise drives a stripe-pattern color split
-//  with refraction, edge-aware bulge, and per-channel chromatic shift.
+//  Wraps any view in a flowing liquid-metal effect via a SwiftUI Metal
+//  `layerEffect`: big low-frequency simplex-noise light/dark blocks drift
+//  one way across the silhouette, with a cool-blue fresnel rim, a slow
+//  brightness breath, and a bloom glow built from the metal itself.
 //
 //  Best paired with a bold, opaque silhouette (SF Symbol, logo) — the
 //  effect uses the source's red channel as its edge mask, so vector
@@ -20,10 +21,10 @@
 //            .font(.system(size: 300))
 //    }
 //
-//    // Subtler refraction, slower
+//    // Slower creep, softer rim
 //    SWLiquidMetal(
-//        refraction: 0.003,
-//        timeScale: 0.1
+//        timeScale: 0.05,
+//        fresnel: 0.3
 //    ) {
 //        Image(systemName: "swift")
 //            .font(.system(size: 300))
@@ -38,32 +39,20 @@
 //
 //  The defaults are tuned to land close to the WWDC-style "liquid metal Apple
 //  logo": a high-contrast cool-white-to-near-black polished-metal silhouette
-//  with broad curved reflection bands, a cool ambient bounce in the mid-tones,
+//  with big drifting reflection blocks, a cool ambient bounce in the mid-tones,
 //  a bright fresnel rim along the contour, and slow liquid creep. Every value
 //  is still adjustable, and `showsControls: true` exposes them in a live sheet.
 //
 //  Parameters:
 //    - speed: Multiplier on the internal animation time (default `1.0`).
-//    - refraction: Strength of the per-channel chromatic split in
-//                  `0...0.06`. Keep near zero for a neutral cool silver with
-//                  no rainbow fringing (default `0.001`).
 //    - edge: Edge mask sharpness in `0...1` — higher = tighter edge
 //            opacity falloff (default `0.8`).
-//    - liquid: Noise distortion strength in `0...1` (default `0.45`).
-//    - patternBlur: Stripe band softness in `0...0.05` (default `0.012`).
-//    - patternScale: Reflection-band density in `0.3...10` — sub-1.0 makes the
-//                    look governed by large NON-periodic reflection blocks
-//                    (2-3 big smooth zones, no repeating stripes); higher
-//                    values bring back denser periodic bands (default `0.5`).
 //    - timeScale: Base animation speed multiplier in `0...2` — slow liquid
 //                 creep (default `0.08`).
 //    - coolTint: Cool blue/cyan ambient bounce strength in `0...1`, injected
 //                into the highlight→shadow transition (default `0.5`).
 //    - fresnel: Cool-white rim-highlight strength along the silhouette
 //               contour in `0...1` (default `0.6`).
-//    - bandSoftness: Broad-band reflection blur multiplier in `1...8` —
-//                    higher melts adjacent bands into large smooth polished-
-//                    mercury blobs instead of thin lines (default `7.0`).
 //    - showsControls: Attach a gear `ToolbarItem` that opens a
 //                     live-tuning sheet (default `false`).
 //
@@ -78,20 +67,8 @@ struct SWLiquidMetal<Content: View>: View {
     /// Multiplier on the internal animation time.
     var speed: Float = 1.0
 
-    /// Strength of the per-channel chromatic split (near zero = neutral silver).
-    var refraction: Float = 0.001
-
     /// Edge mask sharpness in 0...1.
     var edge: Float = 0.8
-
-    /// Noise distortion strength in 0...1.
-    var liquid: Float = 0.45
-
-    /// Stripe band softness in 0...0.05.
-    var patternBlur: Float = 0.012
-
-    /// Reflection-band density in 0.3...10 (sub-1 = mostly non-periodic blocks).
-    var patternScale: Float = 0.5
 
     /// Base animation speed multiplier in 0...2 (slow liquid creep).
     var timeScale: Float = 0.08
@@ -102,9 +79,6 @@ struct SWLiquidMetal<Content: View>: View {
     /// Cool-white fresnel rim-highlight strength along the contour in 0...1.
     var fresnel: Float = 0.6
 
-    /// Broad-band reflection blur multiplier in 1...8 (higher = large smooth blobs).
-    var bandSoftness: Float = 7.0
-
     /// When `true`, attaches a gear `ToolbarItem` that opens a live-tuning sheet.
     var showsControls: Bool = false
 
@@ -112,28 +86,18 @@ struct SWLiquidMetal<Content: View>: View {
 
     init(
         speed: Float = 1.0,
-        refraction: Float = 0.001,
         edge: Float = 0.8,
-        liquid: Float = 0.45,
-        patternBlur: Float = 0.012,
-        patternScale: Float = 0.5,
         timeScale: Float = 0.08,
         coolTint: Float = 0.5,
         fresnel: Float = 0.6,
-        bandSoftness: Float = 7.0,
         showsControls: Bool = false,
         @ViewBuilder content: () -> Content
     ) {
         self.speed = speed
-        self.refraction = refraction
         self.edge = edge
-        self.liquid = liquid
-        self.patternBlur = patternBlur
-        self.patternScale = patternScale
         self.timeScale = timeScale
         self.coolTint = coolTint
         self.fresnel = fresnel
-        self.bandSoftness = bandSoftness
         self.showsControls = showsControls
         self.content = content()
     }
@@ -186,15 +150,10 @@ private struct SWLiquidMetalRenderer<Content: View>: View {
                     .boundingRect,
                     .float(elapsed),
                     .float(initial.speed),
-                    .float(initial.refraction),
                     .float(initial.edge),
-                    .float(initial.liquid),
-                    .float(initial.patternBlur),
-                    .float(initial.patternScale),
                     .float(initial.timeScale),
                     .float(initial.coolTint),
-                    .float(initial.fresnel),
-                    .float(initial.bandSoftness)
+                    .float(initial.fresnel)
                 ),
                 maxSampleOffset: .zero
             )
@@ -225,31 +184,21 @@ private struct SWLiquidMetalRenderer<Content: View>: View {
 
 private struct SWLiquidMetalControlled<Content: View>: View {
     @State private var speed: Float
-    @State private var refraction: Float
     @State private var edge: Float
-    @State private var liquid: Float
-    @State private var patternBlur: Float
-    @State private var patternScale: Float
     @State private var timeScale: Float
     @State private var coolTint: Float
     @State private var fresnel: Float
-    @State private var bandSoftness: Float
 
     @State private var showSheet = false
 
     private let content: Content
 
     init(initial: SWLiquidMetal<Content>, content: Content) {
-        _speed        = State(initialValue: initial.speed)
-        _refraction   = State(initialValue: initial.refraction)
-        _edge         = State(initialValue: initial.edge)
-        _liquid       = State(initialValue: initial.liquid)
-        _patternBlur  = State(initialValue: initial.patternBlur)
-        _patternScale = State(initialValue: initial.patternScale)
-        _timeScale    = State(initialValue: initial.timeScale)
-        _coolTint     = State(initialValue: initial.coolTint)
-        _fresnel      = State(initialValue: initial.fresnel)
-        _bandSoftness = State(initialValue: initial.bandSoftness)
+        _speed     = State(initialValue: initial.speed)
+        _edge      = State(initialValue: initial.edge)
+        _timeScale = State(initialValue: initial.timeScale)
+        _coolTint  = State(initialValue: initial.coolTint)
+        _fresnel   = State(initialValue: initial.fresnel)
         self.content = content
     }
 
@@ -263,15 +212,10 @@ private struct SWLiquidMetalControlled<Content: View>: View {
             SWLiquidMetalRenderer(
                 initial: SWLiquidMetal(
                     speed: speed,
-                    refraction: refraction,
                     edge: edge,
-                    liquid: liquid,
-                    patternBlur: patternBlur,
-                    patternScale: patternScale,
                     timeScale: timeScale,
                     coolTint: coolTint,
-                    fresnel: fresnel,
-                    bandSoftness: bandSoftness
+                    fresnel: fresnel
                 ) { content },
                 content: content
             )
@@ -289,15 +233,10 @@ private struct SWLiquidMetalControlled<Content: View>: View {
         .sheet(isPresented: $showSheet) {
             SWLiquidMetalControlsSheet(
                 speed: $speed,
-                refraction: $refraction,
                 edge: $edge,
-                liquid: $liquid,
-                patternBlur: $patternBlur,
-                patternScale: $patternScale,
                 timeScale: $timeScale,
                 coolTint: $coolTint,
-                fresnel: $fresnel,
-                bandSoftness: $bandSoftness
+                fresnel: $fresnel
             )
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
@@ -309,38 +248,25 @@ private struct SWLiquidMetalControlled<Content: View>: View {
 
 private struct SWLiquidMetalControlsSheet: View {
     @Binding var speed: Float
-    @Binding var refraction: Float
     @Binding var edge: Float
-    @Binding var liquid: Float
-    @Binding var patternBlur: Float
-    @Binding var patternScale: Float
     @Binding var timeScale: Float
     @Binding var coolTint: Float
     @Binding var fresnel: Float
-    @Binding var bandSoftness: Float
 
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("Pattern") {
-                    SliderRow(label: "Refraction",    value: $refraction,   range: 0...0.06,   step: 0.001)
-                    SliderRow(label: "Edge",          value: $edge,         range: 0...1,      step: 0.01)
-                    SliderRow(label: "Liquid",        value: $liquid,       range: 0...1,      step: 0.01)
-                    SliderRow(label: "Pattern Blur",  value: $patternBlur,  range: 0...0.05,   step: 0.001)
-                    SliderRow(label: "Pattern Scale", value: $patternScale, range: 0.3...10,   step: 0.05)
-                }
-
                 Section("Metal") {
-                    SliderRow(label: "Cool Tint",     value: $coolTint,     range: 0...1,      step: 0.01)
-                    SliderRow(label: "Fresnel Rim",   value: $fresnel,      range: 0...1,      step: 0.01)
-                    SliderRow(label: "Band Softness", value: $bandSoftness, range: 1...8,      step: 0.1)
+                    SWLiquidMetalSliderRow(label: "Edge",          value: $edge,         range: 0...1,      step: 0.01)
+                    SWLiquidMetalSliderRow(label: "Cool Tint",     value: $coolTint,     range: 0...1,      step: 0.01)
+                    SWLiquidMetalSliderRow(label: "Fresnel Rim",   value: $fresnel,      range: 0...1,      step: 0.01)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Time Scale", value: $timeScale, range: 0...2, step: 0.01)
-                    SliderRow(label: "Speed",      value: $speed,     range: 0...3, step: 0.05)
+                    SWLiquidMetalSliderRow(label: "Time Scale", value: $timeScale, range: 0...2, step: 0.01)
+                    SWLiquidMetalSliderRow(label: "Speed",      value: $speed,     range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Liquid Metal")
@@ -356,7 +282,7 @@ private struct SWLiquidMetalControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWLiquidMetalSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

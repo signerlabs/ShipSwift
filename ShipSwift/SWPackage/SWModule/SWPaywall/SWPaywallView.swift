@@ -67,8 +67,11 @@ struct SWPaywallView: View {
                     for: .termsOfService
                 )
                 .onInAppPurchaseCompletion { _, result in
-                    if case .success(.success(.verified)) = result {
+                    // A custom completion action replaces StoreKit's default of emitting the
+                    // transaction to Transaction.updates, so finish it here
+                    if case .success(.success(.verified(let transaction))) = result {
                         Task {
+                            await transaction.finish()
                             await storeManager.updatePurchaseStatus()
                             dismiss()
                         }
@@ -195,7 +198,9 @@ struct SWPaywallView: View {
     @ViewBuilder
     private var paywallContent: some View {
         VStack(spacing: 20) {
-            SWShakingIcon(image: Image(systemName: "apple.logo"))
+            Image(systemName: "apple.logo")
+                .font(.system(size: 80))
+                .symbolEffect(.wiggle, options: .repeat(.periodic(delay: 1.5)))
 
             Text(storeManager.config.title)
                 .font(.largeTitle)

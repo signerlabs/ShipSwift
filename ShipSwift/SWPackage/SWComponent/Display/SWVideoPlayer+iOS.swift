@@ -1,5 +1,5 @@
 //
-//  SWVideoPlayer.swift
+//  SWVideoPlayer+iOS.swift
 //  ShipSwift
 //
 //  A video showcase player with a paused first-frame preview + center play
@@ -26,7 +26,9 @@ public struct SWVideoPlayer: View {
 
     // MARK: - State
 
-    @State private var player: AVPlayer
+    /// Created on first appearance rather than in `init` (SwiftUI re-runs `init`
+    /// on every parent update), and replaced when `videoURL` changes.
+    @State private var player: AVPlayer?
     @State private var showFullscreen = false
 
     // MARK: - Init
@@ -45,7 +47,6 @@ public struct SWVideoPlayer: View {
         self.cornerRadius = cornerRadius
         self.onEnterFullscreen = onEnterFullscreen
         self.onExitFullscreen = onExitFullscreen
-        self._player = State(initialValue: AVPlayer(url: url))
     }
 
     public init(
@@ -58,7 +59,6 @@ public struct SWVideoPlayer: View {
         self.cornerRadius = cornerRadius
         self.onEnterFullscreen = onEnterFullscreen
         self.onExitFullscreen = onExitFullscreen
-        self._player = State(initialValue: AVPlayer(url: url))
     }
 
     // MARK: - Body
@@ -66,7 +66,9 @@ public struct SWVideoPlayer: View {
     public var body: some View {
         ZStack {
             // AVPlayerLayer paused at time 0 displays the first frame as the poster
-            InlineVideoLayerView(player: player)
+            if let player {
+                InlineVideoLayerView(player: player)
+            }
 
             // Dimming to make the play button stand out
             Color.black.opacity(0.25)
@@ -90,13 +92,27 @@ public struct SWVideoPlayer: View {
         .onTapGesture {
             showFullscreen = true
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Play video")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { showFullscreen = true }
+        .onAppear {
+            if player == nil {
+                player = AVPlayer(url: videoURL)
+            }
+        }
+        .onChange(of: videoURL) { _, newURL in
+            player = AVPlayer(url: newURL)
+        }
         .fullScreenCover(isPresented: $showFullscreen) {
-            SWVideoFullscreenPlayer(
-                player: player,
-                isPresented: $showFullscreen,
-                onEnter: onEnterFullscreen,
-                onExit: onExitFullscreen
-            )
+            if let player {
+                SWVideoFullscreenPlayer(
+                    player: player,
+                    isPresented: $showFullscreen,
+                    onEnter: onEnterFullscreen,
+                    onExit: onExitFullscreen
+                )
+            }
         }
     }
 }
@@ -117,7 +133,11 @@ private struct InlineVideoLayerView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: PlayerUIView, context: Context) {
+        // A new player (the video URL changed) needs its own first-frame poster
+        guard uiView.playerLayer.player !== player else { return }
         uiView.playerLayer.player = player
+        player.pause()
+        player.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero)
     }
 
     final class PlayerUIView: UIView {

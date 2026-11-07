@@ -213,13 +213,13 @@ private struct SWNeuroNoiseControlsSheet: View {
                 }
 
                 Section("Field") {
-                    SliderRow(label: "Scale",      value: $scale,      range: 0.05...1, step: 0.01)
-                    SliderRow(label: "Brightness", value: $brightness, range: 0...1,    step: 0.01)
-                    SliderRow(label: "Contrast",   value: $contrast,   range: 0...1,    step: 0.01)
+                    SWNeuroNoiseSliderRow(label: "Scale",      value: $scale,      range: 0.05...1, step: 0.01)
+                    SWNeuroNoiseSliderRow(label: "Brightness", value: $brightness, range: 0...1,    step: 0.01)
+                    SWNeuroNoiseSliderRow(label: "Contrast",   value: $contrast,   range: 0...1,    step: 0.01)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWNeuroNoiseSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Neuro Noise")
@@ -235,7 +235,7 @@ private struct SWNeuroNoiseControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWNeuroNoiseSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

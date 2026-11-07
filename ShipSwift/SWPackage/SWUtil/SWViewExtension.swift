@@ -128,20 +128,22 @@ extension View {
             .background(background)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .strokeBorder(
-                        LinearGradient(
-                            colors: [
-                                strokeColor,
-                                strokeColor.opacity(0.6),
-                                strokeColor.opacity(0.3),
-                                .clear
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: strokeWidth
-                    )
+                // Gradient masked by a plain stroke: a gradient-filled `strokeBorder` is drawn
+                // by CoreGraphics on the main thread over the whole card, every frame while scrolling
+                LinearGradient(
+                    colors: [
+                        strokeColor,
+                        strokeColor.opacity(0.6),
+                        strokeColor.opacity(0.3),
+                        .clear
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .mask {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .strokeBorder(lineWidth: strokeWidth)
+                }
             )
     }
 }

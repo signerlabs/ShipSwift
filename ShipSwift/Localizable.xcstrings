@@ -413,6 +413,66 @@
         }
       }
     },
+    "Clear Text" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除文字"
+          }
+        }
+      }
+    },
+    "Decrease" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "减少"
+          }
+        }
+      }
+    },
+    "Hide Balances" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏余额"
+          }
+        }
+      }
+    },
+    "Increase" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增加"
+          }
+        }
+      }
+    },
+    "Show Balances" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示余额"
+          }
+        }
+      }
+    },
+    "Play video" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放视频"
+          }
+        }
+      }
+    },
     "•" : {
       "shouldTranslate" : false
     },
@@ -4862,12 +4922,12 @@
         }
       }
     },
-    "Liquid-metal image filter — simplex-noise driven stripe pattern with per-channel chromatic refraction, edge-aware bulge, and flowing chrome over any opaque source view (SF Symbols, logos). Tap the gear to tune refraction, edge, liquid, pattern blur / scale, time scale." : {
+    "Liquid-metal image filter — big low-frequency light/dark metal blocks drift one way across any opaque source view (SF Symbols, logos), with a cool-blue Fresnel rim, a slow brightness breath, and a bloom glow built from the metal itself. Tap the gear to tune edge, cool tint, Fresnel rim, time scale, and speed." : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "液态金属图像滤镜：由单纯形噪声驱动的条纹图案，按通道色散折射、感知边缘的鼓起，以及在任意不透明源视图（SF Symbols、徽标）上流动的铬金属光泽。点齿轮可调节折射、边缘、流体、图案模糊 / 缩放和时间缩放。"
+            "value" : "液态金属图像滤镜：大块低频明暗金属块沿同一方向流过任意不透明源视图（SF Symbols、徽标），带冷蓝菲涅尔边光、缓慢的明暗呼吸，以及由金属自身生成的泛光。点齿轮可调节边缘、冷色调、菲涅尔边光、时间缩放和速度。"
           }
         }
       }

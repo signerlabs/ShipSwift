@@ -19,7 +19,7 @@
 //  Usage:
 //    // Default — gentle RGB split, internal only
 //    SWChromaticGlass {
-//        Image("ronaldo").resizable().scaledToFill()
+//        Image("photo").resizable().scaledToFill()
 //    }
 //
 //    // Tilt-driven, stronger separation
@@ -88,24 +88,22 @@ private struct SWChromaticGlassRenderer<Content: View>: View {
     let initial: SWChromaticGlass<Content>
     let content: Content
 
-    @State private var start: Date = .now
-
     var body: some View {
-        TimelineView(.animation) { ctx in
-            let elapsed = Float(ctx.date.timeIntervalSince(start))
-            // RGB split offsets the sample point — give the layerEffect a
-            // small offset budget so edge pixels can pull in neighbours.
-            content.layerEffect(
-                ShaderLibrary.swChromaticGlass(
-                    .boundingRect,
-                    .float2(Float(initial.tilt.width), Float(initial.tilt.height)),
-                    .float(elapsed),
-                    .float(initial.intensity),
-                    .float(initial.separation)
-                ),
-                maxSampleOffset: CGSize(width: 28, height: 28)
-            )
-        }
+        // The split is driven by `tilt` alone (the shader's `time` argument
+        // is unused), so there is no `TimelineView` — the effect re-renders
+        // only when `tilt` / `intensity` / `separation` change.
+        // RGB split offsets the sample point — give the layerEffect a
+        // small offset budget so edge pixels can pull in neighbours.
+        content.layerEffect(
+            ShaderLibrary.swChromaticGlass(
+                .boundingRect,
+                .float2(Float(initial.tilt.width), Float(initial.tilt.height)),
+                .float(0),
+                .float(initial.intensity),
+                .float(initial.separation)
+            ),
+            maxSampleOffset: CGSize(width: 28, height: 28)
+        )
     }
 }
 

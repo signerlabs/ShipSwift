@@ -328,11 +328,13 @@ enum SWActivityHeatmap {
         }
 
         var body: some View {
+            // Count once per render, not once per cell
+            let counts = recordCountByDay
             HStack {
                 Spacer()
                 FlowLayout(spacing: spacing) {
                     ForEach(targetDays, id: \.self) { date in
-                        let count = recordCountByDay[date] ?? 0
+                        let count = counts[date] ?? 0
 
                         RoundedRectangle(cornerRadius: 2)
                             .fill(colorForRecordCount(count))

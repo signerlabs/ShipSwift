@@ -18,7 +18,7 @@
 //  Usage:
 //    // Default — 50-cell glitter grid, internal twinkle only
 //    SWGlitter {
-//        Image("ronaldo").resizable().scaledToFill()
+//        Image("photo").resizable().scaledToFill()
 //    }
 //
 //    // Denser glitter, tilt-driven from a DragGesture

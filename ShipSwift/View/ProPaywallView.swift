@@ -125,7 +125,7 @@ struct ProPaywallView: View {
 
     private var purchaseSection: some View {
         VStack(spacing: 16) {
-            if storeManager.isPro {
+            if storeManager.hasProAccess {
                 // Already Pro
                 proStatusSection
             } else if let product = storeManager.lifetimeProduct {

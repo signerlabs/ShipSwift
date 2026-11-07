@@ -36,7 +36,7 @@
 //    - showLabels: Bool      — Whether to show axis labels (default true)
 //
 //  Notes:
-//    - Grid lines are drawn at 20/40/60/80/100 scale marks
+//    - Grid rings are drawn at 20/40/60/80/100% of maxValue
 //    - Data polygon uses accentColor for fill and stroke
 //    - Appear animation is easeOut 1.2 seconds
 //
@@ -142,11 +142,11 @@ struct SWRadarChart: View {
             let step = 2 * .pi / Double(data.count)
 
             ZStack {
-                // Draw background ring lines
+                // Draw background ring lines at 20/40/60/80/100% of maxValue
                 ForEach([20, 40, 60, 80, 100], id: \.self) { level in
                     Path { path in
                         for i in data.indices {
-                            let ratio = Double(level) / maxValue
+                            let ratio = Double(level) / 100
                             let angle = step * Double(i) - .pi / 2
                             let x = center.x + cos(angle) * radius * ratio
                             let y = center.y + sin(angle) * radius * ratio

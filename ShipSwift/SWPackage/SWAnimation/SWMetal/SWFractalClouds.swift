@@ -269,16 +269,16 @@ private struct SWFractalCloudsControlsSheet: View {
                 }
 
                 Section("Shape") {
-                    SliderRow(label: "Zoom",     value: $zoom,     range: 0.5...10, step: 0.1)
-                    SliderRow(label: "Coverage", value: $coverage, range: -1...1,   step: 0.05)
-                    SliderRow(label: "Warp",     value: $warp,     range: 0...5,    step: 0.05)
-                    SliderRow(label: "Warmth",   value: $warmth,   range: 0...2,    step: 0.05)
+                    SWFractalCloudsSliderRow(label: "Zoom",     value: $zoom,     range: 0.5...10, step: 0.1)
+                    SWFractalCloudsSliderRow(label: "Coverage", value: $coverage, range: -1...1,   step: 0.05)
+                    SWFractalCloudsSliderRow(label: "Warp",     value: $warp,     range: 0...5,    step: 0.05)
+                    SWFractalCloudsSliderRow(label: "Warmth",   value: $warmth,   range: 0...2,    step: 0.05)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed",   value: $speed,  range: 0...3,        step: 0.05)
-                    SliderRow(label: "Drift X", value: $driftX, range: -0.5...0.5,   step: 0.01)
-                    SliderRow(label: "Drift Y", value: $driftY, range: -0.5...0.5,   step: 0.01)
+                    SWFractalCloudsSliderRow(label: "Speed",   value: $speed,  range: 0...3,        step: 0.05)
+                    SWFractalCloudsSliderRow(label: "Drift X", value: $driftX, range: -0.5...0.5,   step: 0.01)
+                    SWFractalCloudsSliderRow(label: "Drift Y", value: $driftY, range: -0.5...0.5,   step: 0.01)
                 }
             }
             .navigationTitle("Fractal Clouds")
@@ -294,7 +294,7 @@ private struct SWFractalCloudsControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWFractalCloudsSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

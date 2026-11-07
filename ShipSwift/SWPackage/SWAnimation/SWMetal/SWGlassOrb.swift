@@ -153,7 +153,8 @@ private struct SWGlassOrbBody: View {
         // is plenty for the magnified / dispersed taps.
         let maxOffset = radius + 24
 
-        TimelineView(.animation) { context in
+        // The clock only drives the hue flow, so pause it when the flow is off.
+        TimelineView(.animation(minimumInterval: nil, paused: colorFlow == 0)) { context in
             // Cycle the gradient's hue over time so the orb's color flows. Kept
             // within 0...360 to avoid float-precision jitter on a large clock.
             let t = context.date.timeIntervalSinceReferenceDate

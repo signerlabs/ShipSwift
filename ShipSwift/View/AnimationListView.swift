@@ -399,7 +399,7 @@ struct AnimationListView: View {
                     ListItem(
                         title: "Liquid Metal",
                         icon: "drop.triangle.fill",
-                        description: "Liquid-metal image filter — simplex-noise driven stripe pattern with per-channel chromatic refraction, edge-aware bulge, and flowing chrome over any opaque source view (SF Symbols, logos). Tap the gear to tune refraction, edge, liquid, pattern blur / scale, time scale."
+                        description: "Liquid-metal image filter — big low-frequency light/dark metal blocks drift one way across any opaque source view (SF Symbols, logos), with a cool-blue Fresnel rim, a slow brightness breath, and a bloom glow built from the metal itself. Tap the gear to tune edge, cool tint, Fresnel rim, time scale, and speed."
                     )
                 }
 

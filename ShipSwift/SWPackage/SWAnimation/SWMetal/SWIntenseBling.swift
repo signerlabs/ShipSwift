@@ -19,7 +19,7 @@
 //  Usage:
 //    // Default — internal animation only
 //    SWIntenseBling {
-//        Image("messi").resizable().scaledToFill()
+//        Image("photo").resizable().scaledToFill()
 //    }
 //
 //    // Tilt-driven from a DragGesture

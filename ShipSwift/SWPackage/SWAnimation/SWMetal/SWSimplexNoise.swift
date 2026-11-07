@@ -241,13 +241,13 @@ private struct SWSimplexNoiseControlsSheet: View {
                 }
 
                 Section("Gradient") {
-                    SliderRow(label: "Scale",          value: $scale,         range: 0.05...4, step: 0.05)
-                    SliderRow(label: "Steps / Color",  value: $stepsPerColor, range: 1...10,   step: 1)
-                    SliderRow(label: "Softness",       value: $softness,      range: 0...1,    step: 0.01)
+                    SWSimplexNoiseSliderRow(label: "Scale",          value: $scale,         range: 0.05...4, step: 0.05)
+                    SWSimplexNoiseSliderRow(label: "Steps / Color",  value: $stepsPerColor, range: 1...10,   step: 1)
+                    SWSimplexNoiseSliderRow(label: "Softness",       value: $softness,      range: 0...1,    step: 0.01)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWSimplexNoiseSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Simplex Noise")
@@ -263,7 +263,7 @@ private struct SWSimplexNoiseControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWSimplexNoiseSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

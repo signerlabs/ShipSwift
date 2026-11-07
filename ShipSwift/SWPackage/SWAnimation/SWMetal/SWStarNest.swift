@@ -268,25 +268,25 @@ private struct SWStarNestControlsSheet: View {
         NavigationStack {
             Form {
                 Section("Camera") {
-                    SliderRow(label: "Zoom",   value: $zoom,   range: 0.2...2,    step: 0.01)
-                    SliderRow(label: "Angle X", value: $angleX, range: 0...6.283,  step: 0.01)
-                    SliderRow(label: "Angle Y", value: $angleY, range: 0...6.283,  step: 0.01)
-                    SliderRow(label: "Speed",  value: $speed,  range: 0...0.05,   step: 0.001)
+                    SWStarNestSliderRow(label: "Zoom",   value: $zoom,   range: 0.2...2,    step: 0.01)
+                    SWStarNestSliderRow(label: "Angle X", value: $angleX, range: 0...6.283,  step: 0.01)
+                    SWStarNestSliderRow(label: "Angle Y", value: $angleY, range: 0...6.283,  step: 0.01)
+                    SWStarNestSliderRow(label: "Speed",  value: $speed,  range: 0...0.05,   step: 0.001)
                 }
 
                 Section("Nebula") {
-                    SliderRow(label: "Brightness", value: $brightness, range: 0.0002...0.006, step: 0.0001)
-                    SliderRow(label: "Saturation", value: $saturation, range: 0...1,          step: 0.01)
-                    SliderRow(label: "Dark Matter", value: $darkmatter, range: 0...1,          step: 0.01)
-                    SliderRow(label: "Dist Fading", value: $distfading, range: 0.3...0.95,     step: 0.01)
+                    SWStarNestSliderRow(label: "Brightness", value: $brightness, range: 0.0002...0.006, step: 0.0001)
+                    SWStarNestSliderRow(label: "Saturation", value: $saturation, range: 0...1,          step: 0.01)
+                    SWStarNestSliderRow(label: "Dark Matter", value: $darkmatter, range: 0...1,          step: 0.01)
+                    SWStarNestSliderRow(label: "Dist Fading", value: $distfading, range: 0.3...0.95,     step: 0.01)
                 }
 
                 // Higher = more depth & detail, but quadratically more cost
                 // (volsteps × iterations folds per pixel). Lower these first if
                 // the frame rate drops on older devices.
                 Section("Quality / Performance") {
-                    SliderRow(label: "Vol Steps",  value: $volsteps,   range: 4...24, step: 1)
-                    SliderRow(label: "Iterations", value: $iterations, range: 4...24, step: 1)
+                    SWStarNestSliderRow(label: "Vol Steps",  value: $volsteps,   range: 4...24, step: 1)
+                    SWStarNestSliderRow(label: "Iterations", value: $iterations, range: 4...24, step: 1)
                 }
             }
             .navigationTitle("Star Nest")
@@ -302,7 +302,7 @@ private struct SWStarNestControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWStarNestSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

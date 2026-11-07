@@ -23,7 +23,7 @@
 //  Requires iOS 18+ / macOS 15+ (SwiftUI `TimelineView`, `Canvas`).
 //
 //  Usage:
-//    // Default — 240 "道" glyphs, white/cyan/pink wave on black
+//    // Default — 240 glyphs from Tao Te Ching ch. 1, white/cyan/pink wave on black
 //    SWCharSphere()
 //        .ignoresSafeArea()
 //
@@ -39,14 +39,14 @@
 //    // As a section background
 //    myContent.background { SWCharSphere() }
 //
-//    // Demo / debug — adds a gear button that opens a live-tuning sheet.
+//    // Demo / debug — adds a toolbar button that opens a live-tuning sheet.
 //    SWCharSphere(showsControls: true)
 //
 //  Parameters:
 //    - chars:          Glyph palette. Each sphere point is assigned a
 //                      random index into this array once at cloud-init
 //                      time, so the assignment is stable across frames
-//                      (default `["道"]`).
+//                      (default: Tao Te Ching chapter 1, 59 glyphs).
 //    - glyphCount:     Number of points on the sphere, 50...1000
 //                      (default 240; > 400 starts to overlap visibly).
 //    - colors:         Palette cycled through over time (default
@@ -59,12 +59,12 @@
 //    - fadeSeconds:    Seconds per color cross-fade (default 5.5).
 //    - waitSeconds:    Pause between fades (default 5.0).
 //    - fontSize:       Base font point size; perspective scales it
-//                      (default 10, range 4...30).
+//                      (default 7, range 4...30).
 //    - fontWeight:     Glyph weight (default `.semibold`).
 //    - hidesBackFaces: Skip points on the far side of the sphere so
 //                      back-side glyphs don't muddle the front
-//                      (default `true`).
-//    - showsControls:  Attach a gear `ToolbarItem` + bottom morph
+//                      (default `false`).
+//    - showsControls:  Attach a controls `ToolbarItem` + bottom morph
 //                      slider for live tuning (default `false`).
 //
 
@@ -221,10 +221,12 @@ private struct SWCharSphereRenderer: View {
             let rotation = elapsed * rotationSpeed
             let totalCycle = max(0.001, fadeSeconds + waitSeconds)
             let timeInCycle = elapsed.truncatingRemainder(dividingBy: totalCycle)
-            let baseIdx = Int(floor(elapsed / totalCycle)) % max(1, colors.count)
-            let nextIdx = (baseIdx + 1) % max(1, colors.count)
-            let baseRGB = rgbComponents(colors[baseIdx])
-            let nextRGB = rgbComponents(colors[nextIdx])
+            // Fall back to white if the palette is empty.
+            let palette: [Color] = colors.isEmpty ? [.white] : colors
+            let baseIdx = Int(floor(elapsed / totalCycle)) % palette.count
+            let nextIdx = (baseIdx + 1) % palette.count
+            let baseRGB = rgbComponents(palette[baseIdx])
+            let nextRGB = rgbComponents(palette[nextIdx])
             let cosR = cos(rotation)
             let sinR = sin(rotation)
             let count = cloud.randomXYZ.count

@@ -1,5 +1,5 @@
 //
-//  SWSubjectLiftingView.swift
+//  SWSubjectLiftingView+iOS.swift
 //  ShipSwift
 //
 //  Demo view showcasing subject lifting (background removal).
@@ -53,13 +53,21 @@ struct SWSubjectLiftingView: View {
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
-            SWCameraView(image: Binding(
-                get: { nil },
-                set: { image in
-                    guard let image else { return }
-                    Task { await manager.processImage(image) }
+            // SWCameraView has no close button of its own: host it in a NavigationStack with one
+            NavigationStack {
+                SWCameraView(image: Binding(
+                    get: { nil },
+                    set: { image in
+                        guard let image else { return }
+                        Task { await manager.processImage(image) }
+                    }
+                ))
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Close") { showCamera = false }
+                    }
                 }
-            ))
+            }
         }
         .onChange(of: selectedPhotoItem) {
             Task {

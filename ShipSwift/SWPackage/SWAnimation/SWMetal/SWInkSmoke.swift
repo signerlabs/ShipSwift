@@ -262,13 +262,13 @@ private struct SWInkSmokeControlsSheet: View {
                 }
 
                 Section("Field") {
-                    SliderRow(label: "Scale",     value: $scale,     range: 0.2...5,  step: 0.05)
-                    SliderRow(label: "Warp",      value: $warp,      range: 0...10,   step: 0.1)
-                    SliderRow(label: "Highlight", value: $highlight, range: 0...3,    step: 0.05)
+                    SWInkSmokeSliderRow(label: "Scale",     value: $scale,     range: 0.2...5,  step: 0.05)
+                    SWInkSmokeSliderRow(label: "Warp",      value: $warp,      range: 0...10,   step: 0.1)
+                    SWInkSmokeSliderRow(label: "Highlight", value: $highlight, range: 0...3,    step: 0.05)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWInkSmokeSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Ink Smoke")
@@ -284,7 +284,7 @@ private struct SWInkSmokeControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWInkSmokeSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

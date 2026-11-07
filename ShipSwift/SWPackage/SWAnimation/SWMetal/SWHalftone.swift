@@ -421,18 +421,18 @@ private struct SWHalftoneControlsSheet: View {
                 }
 
                 Section("Grid") {
-                    SliderRow(label: "Size",     value: $size,     range: 0...1, step: 0.01)
+                    SWHalftoneSliderRow(label: "Size",     value: $size,     range: 0...1, step: 0.01)
                     if isDots {
-                        SliderRow(label: "Radius", value: $radius, range: 0...2, step: 0.01)
+                        SWHalftoneSliderRow(label: "Radius", value: $radius, range: 0...2, step: 0.01)
                     }
-                    SliderRow(label: "Contrast", value: $contrast, range: 0...1, step: 0.01)
+                    SWHalftoneSliderRow(label: "Contrast", value: $contrast, range: 0...1, step: 0.01)
                 }
 
                 if isDots {
                     Section("Grain") {
-                        SliderRow(label: "Mixer",   value: $grainMixer,   range: 0...1, step: 0.01)
-                        SliderRow(label: "Overlay", value: $grainOverlay, range: 0...1, step: 0.01)
-                        SliderRow(label: "Size",    value: $grainSize,    range: 0...1, step: 0.01)
+                        SWHalftoneSliderRow(label: "Mixer",   value: $grainMixer,   range: 0...1, step: 0.01)
+                        SWHalftoneSliderRow(label: "Overlay", value: $grainOverlay, range: 0...1, step: 0.01)
+                        SWHalftoneSliderRow(label: "Size",    value: $grainSize,    range: 0...1, step: 0.01)
                     }
                 }
             }
@@ -449,7 +449,7 @@ private struct SWHalftoneControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWHalftoneSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

@@ -41,6 +41,10 @@
 //    // 5. Manually refresh purchase status
 //    await store.updatePurchaseStatus()
 //
+//    // 6. Custom one-time-purchase screen: load the lifetime product
+//    await store.loadLifetimeProduct()
+//    if let product = store.lifetimeProduct { /* show product.displayPrice */ }
+//
 //  Created by Wei Zhong on 3/1/26.
 //
 
@@ -55,18 +59,20 @@ final class SWStoreManager {
 
     static let shared = SWStoreManager()
 
-    // MARK: - Product Configuration (inline from app)
+    // MARK: - Configuration
 
-    /// Override these in your app's init or via a configure method
+    /// Override these properties in your app's init before presenting the paywall.
     struct PaywallConfig {
         var title = "Pro"
         var monthlyProductID = "com.example.app.monthly"
-        var yearlyProductID = "com.example.app.yearly"
+        var yearlyProductID  = "com.example.app.yearly"
         var lifetimeProductID = "com.example.app.lifetime"
-        var tripLimitForFreeUser = 3
-        var itemLimitForFreeUser = 20
         var privacyPolicyURL = "https://example.com/privacy"
         var termsOfServiceURL = "https://example.com/terms"
+
+        // Free-user resource limits (customize per app)
+        var tripLimitForFreeUser = 3
+        var itemLimitForFreeUser = 20
 
         struct Feature: Identifiable {
             let id = UUID()
@@ -81,7 +87,6 @@ final class SWStoreManager {
         }
     }
 
-    /// Configure this before showing the paywall
     var config = PaywallConfig()
 
     // MARK: - Product Type
@@ -94,8 +99,8 @@ final class SWStoreManager {
 
     private func productType(for id: String) -> ProductType? {
         if id == config.lifetimeProductID { return .lifetime }
-        if id == config.monthlyProductID { return .monthly }
-        if id == config.yearlyProductID { return .yearly }
+        if id == config.monthlyProductID  { return .monthly }
+        if id == config.yearlyProductID   { return .yearly }
         return nil
     }
 
@@ -104,13 +109,8 @@ final class SWStoreManager {
     private(set) var hasActiveSubscription = false
     private(set) var hasLifetimePurchase = false
 
-    /// Whether the server has an active Pro API key for this user
-    var hasServerPro = false
-
-    /// Cached API key from server
-    var apiKey: String?
-
-    var isPro: Bool { hasLifetimePurchase || hasActiveSubscription || hasServerPro }
+    /// True when the user has any active entitlement (subscription or lifetime).
+    var isPro: Bool { hasLifetimePurchase || hasActiveSubscription }
 
     // MARK: - Init
 
@@ -119,6 +119,8 @@ final class SWStoreManager {
         startObservingTransactions()
     }
 
+    /// Listens for real-time transaction updates (renewals, revocations, refunds)
+    /// delivered by the App Store while the app is running.
     private func startObservingTransactions() {
         Task { [weak self] in
             for await result in Transaction.updates {
@@ -131,6 +133,8 @@ final class SWStoreManager {
 
     // MARK: - Purchase Status
 
+    /// Iterates all current entitlements and updates the in-memory pro flags.
+    /// Call this on app launch and after any purchase/restore operation.
     func updatePurchaseStatus() async {
         var subscription = false
         var lifetime = false
@@ -156,55 +160,17 @@ final class SWStoreManager {
 
     // MARK: - Lifetime Product
 
-    /// The loaded lifetime product (for custom paywall UI)
+    /// The loaded lifetime product, for a custom one-time-purchase screen
+    /// (`SubscriptionStoreView` only lists subscriptions).
     private(set) var lifetimeProduct: Product?
 
-    /// Load the lifetime product from StoreKit
+    /// Loads `config.lifetimeProductID` from the App Store into `lifetimeProduct`.
     func loadLifetimeProduct() async {
         do {
             let products = try await Product.products(for: [config.lifetimeProductID])
             lifetimeProduct = products.first
         } catch {
             swDebugLog("Failed to load lifetime product: \(error)")
-        }
-    }
-
-    // MARK: - Server Pro Status
-
-    /// Check server pro status using Cognito ID token
-    func checkServerProStatus(idToken: String) async {
-        do {
-            let service = ShipSwiftAPIService()
-            let status = try await service.getApiKeyStatus(idToken: idToken)
-            hasServerPro = status.hasKey && status.status == "active"
-            if hasServerPro {
-                apiKey = status.apiKey
-            }
-        } catch {
-            swDebugLog("Failed to check server pro status: \(error)")
-        }
-    }
-
-    /// Sync App Store purchase to server and get API key
-    func syncPurchaseToServer(idToken: String) async -> String? {
-        // Get the latest transaction for the lifetime product
-        guard let result = await Transaction.latest(for: config.lifetimeProductID),
-              case .verified = result else {
-            return nil
-        }
-
-        do {
-            let service = ShipSwiftAPIService()
-            let response = try await service.verifyAppStorePurchase(
-                idToken: idToken,
-                signedTransactionInfo: result.jwsRepresentation
-            )
-            apiKey = response.apiKey
-            hasServerPro = true
-            return response.apiKey
-        } catch {
-            swDebugLog("Failed to sync purchase to server: \(error)")
-            return nil
         }
     }
 

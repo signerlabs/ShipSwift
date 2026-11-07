@@ -78,7 +78,10 @@ static float swGrainGradientVNoise(float2 p) {
     // Film grain — high-frequency hash on raw pixel position (independent
     // of `scale`) shifted per-frame so the grain shimmers like actual film.
     // Centered around 0 so it adds equally to highlights and shadows.
-    float g = swGrainGradientHash21(position * 0.5 + time * 60.0) - 0.5;
+    // The per-frame shift is wrapped: an unbounded `time * 60` grows past
+    // float precision inside the hash's `fract(p * 456.21)` within minutes,
+    // and the grain collapses into flat / banded patterns.
+    float g = swGrainGradientHash21(position * 0.5 + fmod(time * 60.0, 256.0)) - 0.5;
     col    += g * grain;
 
     return half4(half3(col), 1.0);

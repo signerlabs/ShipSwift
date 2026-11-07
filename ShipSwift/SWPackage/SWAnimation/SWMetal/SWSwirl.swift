@@ -322,21 +322,21 @@ private struct SWSwirlControlsSheet: View {
                 }
 
                 Section("Shape") {
-                    SliderRow(label: "Bands",       value: $bandCount,  range: 0...15,    step: 1)
-                    SliderRow(label: "Twist",       value: $twist,      range: 0...1,     step: 0.01)
-                    SliderRow(label: "Center",      value: $center,     range: 0...1,     step: 0.01)
-                    SliderRow(label: "Proportion",  value: $proportion, range: 0...1,     step: 0.01)
-                    SliderRow(label: "Softness",    value: $softness,   range: 0...1,     step: 0.01)
-                    SliderRow(label: "Scale",       value: $scale,      range: 0.05...4,  step: 0.05)
+                    SWSwirlSliderRow(label: "Bands",       value: $bandCount,  range: 0...15,    step: 1)
+                    SWSwirlSliderRow(label: "Twist",       value: $twist,      range: 0...1,     step: 0.01)
+                    SWSwirlSliderRow(label: "Center",      value: $center,     range: 0...1,     step: 0.01)
+                    SWSwirlSliderRow(label: "Proportion",  value: $proportion, range: 0...1,     step: 0.01)
+                    SWSwirlSliderRow(label: "Softness",    value: $softness,   range: 0...1,     step: 0.01)
+                    SWSwirlSliderRow(label: "Scale",       value: $scale,      range: 0.05...4,  step: 0.05)
                 }
 
                 Section("Noise") {
-                    SliderRow(label: "Strength",    value: $noise,          range: 0...1, step: 0.01)
-                    SliderRow(label: "Frequency",   value: $noiseFrequency, range: 0...1, step: 0.01)
+                    SWSwirlSliderRow(label: "Strength",    value: $noise,          range: 0...1, step: 0.01)
+                    SWSwirlSliderRow(label: "Frequency",   value: $noiseFrequency, range: 0...1, step: 0.01)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWSwirlSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Swirl")
@@ -352,7 +352,7 @@ private struct SWSwirlControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWSwirlSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

@@ -90,7 +90,6 @@ struct SWAuthView: View {
                 .frame(maxWidth: .infinity)
             }
         }
-        .task { await prefetchNetworkPermission() }
     }
 
     // MARK: - Panel
@@ -417,11 +416,6 @@ struct SWAuthView: View {
         guard isDemo else { return false }
         SWAlertManager.shared.show(.info, message: "UI Demo — auth actions are not functional")
         return true
-    }
-
-    private func prefetchNetworkPermission() async {
-        guard let url = URL(string: "https://www.apple.com") else { return }
-        _ = try? await URLSession.shared.data(from: url)
     }
 
     private func signInWithEmail() {

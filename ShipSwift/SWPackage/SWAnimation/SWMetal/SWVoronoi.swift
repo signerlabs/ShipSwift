@@ -250,15 +250,15 @@ private struct SWVoronoiControlsSheet: View {
                 }
 
                 Section("Cells") {
-                    SliderRow(label: "Density",    value: $scale,         range: 0.3...5,  step: 0.05)
-                    SliderRow(label: "Distortion", value: $distortion,    range: 0...0.5,  step: 0.01)
-                    SliderRow(label: "Gap",        value: $gap,           range: 0...0.1,  step: 0.001)
-                    SliderRow(label: "Glow",       value: $glow,          range: 0...1,    step: 0.01)
-                    SliderRow(label: "Steps",      value: $stepsPerColor, range: 1...3,    step: 1)
+                    SWVoronoiSliderRow(label: "Density",    value: $scale,         range: 0.3...5,  step: 0.05)
+                    SWVoronoiSliderRow(label: "Distortion", value: $distortion,    range: 0...0.5,  step: 0.01)
+                    SWVoronoiSliderRow(label: "Gap",        value: $gap,           range: 0...0.1,  step: 0.001)
+                    SWVoronoiSliderRow(label: "Glow",       value: $glow,          range: 0...1,    step: 0.01)
+                    SWVoronoiSliderRow(label: "Steps",      value: $stepsPerColor, range: 1...3,    step: 1)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWVoronoiSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Voronoi")
@@ -274,7 +274,7 @@ private struct SWVoronoiControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWVoronoiSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

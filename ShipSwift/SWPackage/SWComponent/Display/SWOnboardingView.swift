@@ -3,7 +3,7 @@
 //  ShipSwift
 //
 //  Multi-page onboarding view with swipe-to-navigate support, a "Continue / Get Started"
-//  button and a "Skip" button at the bottom. Page content is defined by the OnboardingPage
+//  button and a "Skip" button at the bottom. Page content is defined by the SWOnboardingPage
 //  enum (icon / title / description) — add or remove cases freely.
 //
 //  Usage:
@@ -12,8 +12,8 @@
 //        hasSeenOnboarding = true
 //    })
 //
-//    // 2. Customize pages: modify the OnboardingPage enum, add/remove cases and provide icon / title / description:
-//    enum OnboardingPage: CaseIterable {
+//    // 2. Customize pages: modify the SWOnboardingPage enum, add/remove cases and provide icon / title / description:
+//    enum SWOnboardingPage: CaseIterable {
 //        case shipFast
 //        case components
 //        case modular
@@ -35,8 +35,10 @@ import SwiftUI
 struct SWOnboardingView: View {
     let onComplete: () -> Void
 
-    private let pages = OnboardingPage.allCases
+    private let pages = SWOnboardingPage.allCases
     @State private var currentPage = 0
+
+    private var isLastPage: Bool { currentPage == pages.count - 1 }
 
     var body: some View {
         VStack {
@@ -68,7 +70,7 @@ struct SWOnboardingView: View {
 
             // Bottom confirm button
             Button {
-                if currentPage < pages.count - 1 {
+                if !isLastPage {
                     withAnimation {
                         currentPage += 1
                     }
@@ -76,26 +78,28 @@ struct SWOnboardingView: View {
                     onComplete()
                 }
             } label: {
-                Text(currentPage < pages.count - 1 ? "Continue" : "Get Started")
+                Text(isLastPage ? "Get Started" : "Continue")
             }
             .buttonStyle(.swPrimary)
+            .padding(.horizontal)
             .padding(.bottom)
 
-            // Bottom skip button
+            // Bottom skip button (hidden on the last page, where the main button finishes)
             Button {
                 onComplete()
             } label: {
                 Text("Skip")
                     .foregroundStyle(.secondary)
             }
-            .opacity(currentPage < pages.count - 1 ? 0 : 1)
+            .opacity(isLastPage ? 0 : 1)
+            .disabled(isLastPage)
+            .accessibilityHidden(isLastPage)
         }
-        .safeAreaPadding(.horizontal)
     }
 }
 
 // MARK: - Onboarding Page Model
-enum OnboardingPage: CaseIterable {
+enum SWOnboardingPage: CaseIterable {
     case shipFast
     case components
     case modular

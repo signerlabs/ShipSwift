@@ -381,7 +381,7 @@ private struct SWAnimatedLoopControlled: View {
 
     /// Builder that produces a fresh renderer using the current
     /// live-tweaked state. Wrapped in a helper so the `body` stays short
-    /// despite the renderer's 19-parameter initializer.
+    /// despite the renderer's 20-parameter initializer.
     private func makeRenderer() -> SWAnimatedLoopRenderer {
         SWAnimatedLoopRenderer(
             style: style,
@@ -517,7 +517,7 @@ private struct SWAnimatedLoopControlsSheet: View {
                         }
 
                         if shape == .star {
-                            SliderRow(label: "Petals", value: $petals, range: 3...12, step: 1)
+                            SWAnimatedLoopSliderRow(label: "Petals", value: $petals, range: 3...12, step: 1)
                         }
                     }
                 }
@@ -530,30 +530,30 @@ private struct SWAnimatedLoopControlsSheet: View {
                 }
 
                 Section("Rings") {
-                    SliderRow(label: "Lines",          value: $lines,         range: 1...20,        step: 1)
-                    SliderRow(label: "Spacing",        value: $spacing,       range: 0.5...20,      step: 0.1)
-                    SliderRow(label: "Line Width",     value: $lineWidth,     range: 0.0001...0.02, step: 0.0001)
-                    SliderRow(label: "Channel Offset", value: $channelOffset, range: -0.5...0.5,    step: 0.005)
-                    SliderRow(label: "Pattern Mod",    value: $patternMod,    range: 0.01...2,      step: 0.01)
+                    SWAnimatedLoopSliderRow(label: "Lines",          value: $lines,         range: 1...20,        step: 1)
+                    SWAnimatedLoopSliderRow(label: "Spacing",        value: $spacing,       range: 0.5...20,      step: 0.1)
+                    SWAnimatedLoopSliderRow(label: "Line Width",     value: $lineWidth,     range: 0.0001...0.02, step: 0.0001)
+                    SWAnimatedLoopSliderRow(label: "Channel Offset", value: $channelOffset, range: -0.5...0.5,    step: 0.005)
+                    SWAnimatedLoopSliderRow(label: "Pattern Mod",    value: $patternMod,    range: 0.01...2,      step: 0.01)
                 }
 
                 Section("Transform") {
-                    SliderRow(label: "Rotation", value: $rotation, range: -3.14...3.14, step: 0.05)
-                    SliderRow(label: "Scale",    value: $scale,    range: 0.2...5,      step: 0.05)
-                    SliderRow(label: "Center X", value: $centerX,  range: -1...1,       step: 0.05)
-                    SliderRow(label: "Center Y", value: $centerY,  range: -1...1,       step: 0.05)
+                    SWAnimatedLoopSliderRow(label: "Rotation", value: $rotation, range: -3.14...3.14, step: 0.05)
+                    SWAnimatedLoopSliderRow(label: "Scale",    value: $scale,    range: 0.2...5,      step: 0.05)
+                    SWAnimatedLoopSliderRow(label: "Center X", value: $centerX,  range: -1...1,       step: 0.05)
+                    SWAnimatedLoopSliderRow(label: "Center Y", value: $centerY,  range: -1...1,       step: 0.05)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...1, step: 0.01)
+                    SWAnimatedLoopSliderRow(label: "Speed", value: $speed, range: 0...1, step: 0.01)
                 }
 
                 // Angular controls only apply to the Neon style.
                 if style.supportsAngular {
                     Section("Angular (Neon)") {
-                        SliderRow(label: "Lobes",  value: $angularLobes,  range: 1...12, step: 1)
-                        SliderRow(label: "Amount", value: $angularAmount, range: 0...0.5, step: 0.005)
-                        SliderRow(label: "Speed",  value: $angularSpeed,  range: 0...3, step: 0.05)
+                        SWAnimatedLoopSliderRow(label: "Lobes",  value: $angularLobes,  range: 1...12, step: 1)
+                        SWAnimatedLoopSliderRow(label: "Amount", value: $angularAmount, range: 0...0.5, step: 0.005)
+                        SWAnimatedLoopSliderRow(label: "Speed",  value: $angularSpeed,  range: 0...3, step: 0.05)
                     }
                 }
             }
@@ -575,7 +575,7 @@ private struct SWAnimatedLoopControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWAnimatedLoopSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

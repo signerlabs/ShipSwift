@@ -63,7 +63,7 @@ struct ComponentViewCameraDemo: View {
 
 // MARK: - Face Camera Demo View (Real Camera with Face Tracking)
 
-/// SWFaceCameraView includes its own close button — present it directly.
+/// SWFaceCameraView has no close button of its own — it is pushed, so the back button closes it.
 struct ComponentViewFaceCameraDemo: View {
     var body: some View {
         SWFaceCameraView()

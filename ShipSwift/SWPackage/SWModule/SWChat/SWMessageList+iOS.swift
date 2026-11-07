@@ -24,12 +24,11 @@
 //        }
 //    }
 //
-//    // 2. Message model must conform to Identifiable
-//    struct ChatMessage: Identifiable {
-//        let id = UUID()
-//        let content: String
-//        let isUser: Bool
-//    }
+//    // 2. Any Identifiable message model works, e.g. SWChatMessage
+//    //    from SWChatView+iOS.swift
+//    let messages: [SWChatMessage] = [
+//        SWChatMessage(content: "Hello!", isUser: true)
+//    ]
 //
 //    // 3. SWMessageBubble aligns user messages to trailing, others to leading
 //    SWMessageBubble(isFromUser: true) {
@@ -56,7 +55,8 @@ private let swMessageBubbleBackground = Color(UIColor.systemGray6)
 /// LazyVStack causes infinite layout calculation loops during frequent updates, CPU 100%.
 ///
 /// ### 2. Throttled auto-scroll keeps the latest message visible
-/// When `messages.count` changes, the list scrolls to the bottom anchor.
+/// When `messages.count` changes, or the newest message grows (streaming),
+/// the list scrolls to the bottom anchor.
 /// Scrolling is throttled (max once per 400ms) with a 450ms trailing
 /// guarantee, preventing jank during fast streaming updates.
 ///
@@ -102,6 +102,13 @@ public struct SWMessageList<Message: Identifiable, Content: View>: View {
             List {
                 ForEach(messages) { message in
                     content(message)
+                        // Follow the newest message while it grows (streaming responses
+                        // replace its content in place, so messages.count does not change)
+                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { _ in
+                            if message.id == messages.last?.id {
+                                throttleScroll(proxy: proxy)
+                            }
+                        }
                         .id(message.id)
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)

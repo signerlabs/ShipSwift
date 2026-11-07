@@ -262,6 +262,10 @@ final class SWUserManager {
                 // Default to ready state directly
                 // If there is an onboarding flow, query backend status here
                 sessionState = .ready(tokens: tokens)
+            } catch SWServiceError.networkError {
+                // Offline with an expired ID token: keep the stored session so the next launch can restore it
+                swDebugLog("⚠️ [SWUserManager] Cannot refresh session while offline")
+                sessionState = .signedOut(errorMessage: SWServiceError.networkError.errorDescription)
             } catch {
                 // Session expired or token invalid, sign out to clean up local Amplify cache
                 swDebugLog("⚠️ [SWUserManager] Session expired, signing out:", error)
@@ -420,6 +424,7 @@ final class SWUserManager {
     /// Returns nil when:
     /// - User is not signed in
     /// - Refresh Token expired (30 days of inactivity), requires re-sign-in
+    /// - The device is offline and the ID Token has expired (the session is kept)
     ///
     /// Usage example:
     /// ```swift
@@ -445,6 +450,10 @@ final class SWUserManager {
             }
 
             return tokens.idToken
+        } catch SWServiceError.networkError {
+            // Offline: keep the session, the next call refreshes once the network is back
+            swDebugLog("⚠️ [SWUserManager] Token refresh failed while offline, keeping session")
+            return nil
         } catch {
             // Refresh token expired, sign out to avoid "fake logged-in" state
             swDebugLog("⚠️ [SWUserManager] Token refresh failed, signing out:", error)
@@ -519,7 +528,9 @@ final class SWUserManager {
 
         AppStore.requestReview(in: scene)
         #elseif os(macOS)
-        // Review request via StoreKit scene API not available on macOS
+        guard let controller = NSApplication.shared.keyWindow?.contentViewController else { return }
+
+        AppStore.requestReview(in: controller)
         #endif
 
         hasRequestedReview = true
@@ -567,6 +578,11 @@ actor SWAuthService {
 
     /// Sign in with email and password
     func signIn(email: String, password: String) async throws -> SWAuthTokens {
+        // A session kept while offline is still stored; Amplify rejects a new sign-in on top of it
+        if await isSignedIn() {
+            await signOut()
+        }
+
         let result = try await Amplify.Auth.signIn(
             username: email,
             password: password
@@ -657,8 +673,8 @@ actor SWAuthService {
                 accessToken: tokens.accessToken,
                 refreshToken: tokens.refreshToken
             )
-        case .failure:
-            throw SWServiceError.tokenMissing
+        case .failure(let error):
+            throw Self.tokenError(from: error)
         }
     }
 
@@ -679,9 +695,18 @@ actor SWAuthService {
                 accessToken: tokens.accessToken,
                 refreshToken: tokens.refreshToken
             )
-        case .failure:
-            throw SWServiceError.tokenMissing
+        case .failure(let error):
+            throw Self.tokenError(from: error)
         }
+    }
+
+    /// Offline is transient (`.networkError`, keep the session); any other failure means the session is gone (`.tokenMissing`)
+    private static func tokenError(from error: AuthError) -> SWServiceError {
+        if case .service(_, _, let underlyingError) = error,
+           case .network? = underlyingError as? AWSCognitoAuthError {
+            return .networkError
+        }
+        return .tokenMissing
     }
 
     // MARK: - Sign Out / Delete Account
@@ -715,7 +740,11 @@ actor SWAuthService {
             await signOut()
         }
 
-        let result = try await Amplify.Auth.signIn(username: phoneNumber)
+        // Passwordless custom auth flow, independent of the default flow in amplifyconfiguration.json
+        let options = AuthSignInRequest.Options(
+            pluginOptions: AWSAuthSignInOptions(authFlowType: .customWithoutSRP)
+        )
+        let result = try await Amplify.Auth.signIn(username: phoneNumber, options: options)
         // Cognito custom auth flow sends verification code automatically
         guard case .confirmSignInWithCustomChallenge = result.nextStep else {
             if result.isSignedIn {

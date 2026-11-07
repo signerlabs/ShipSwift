@@ -108,7 +108,7 @@ struct SettingView: View {
 
     private var proSection: some View {
         Section {
-            if storeManager.isPro {
+            if storeManager.hasProAccess {
                 // Pro status
                 HStack {
                     Label("settings.pro.active", systemImage: "checkmark.seal.fill")

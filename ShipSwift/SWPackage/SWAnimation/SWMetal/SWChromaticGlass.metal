@@ -44,7 +44,7 @@ using namespace metal;
     // Stronger at edges, follows tilt direction
     float2 center = float2(0.5, 0.5);
     float2 fromCenter = uv - center;
-    float edgeFactor = length(fromCenter) * 2.0; // 0 at center, 1 at corners
+    float edgeFactor = length(fromCenter) * 2.0; // 0 at center, 1 at edge midpoints, ~1.41 at corners
     edgeFactor = pow(edgeFactor, 1.5); // Non-linear falloff
 
     // Offset direction influenced by tilt

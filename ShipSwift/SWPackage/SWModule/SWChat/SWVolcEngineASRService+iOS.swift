@@ -121,6 +121,8 @@ public final class SWVolcEngineASRService: @unchecked Sendable {
     private var receiveBuffer = Data()
     private let queue = DispatchQueue(label: "com.shipswift.asr.websocket")
     private var audioConverter: AVAudioConverter?
+    /// Whether the end of the stream has been reported (main thread only)
+    @ObservationIgnored private var hasFinishedStream = false
     private let targetFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: 16000, channels: 1, interleaved: true)!
 
     // MARK: - Initialization
@@ -142,6 +144,7 @@ public final class SWVolcEngineASRService: @unchecked Sendable {
 
         transcribedText = ""
         error = nil
+        hasFinishedStream = false
 
         try await connectWebSocket()
         try sendFullClientRequest()
@@ -159,8 +162,11 @@ public final class SWVolcEngineASRService: @unchecked Sendable {
         sendEndOfAudio()
     }
 
-    /// Cancel recording
+    /// Cancel recording (discards results; no further callbacks are delivered)
     public func cancelRecording() {
+        onTranscriptionUpdate = nil
+        onTranscriptionComplete = nil
+        onError = nil
         isRecording = false
         stopAudioEngine()
         disconnectWebSocket()
@@ -266,11 +272,7 @@ public final class SWVolcEngineASRService: @unchecked Sendable {
             guard let self else { return }
 
             if error != nil {
-                DispatchQueue.main.async {
-                    if !self.transcribedText.isEmpty {
-                        self.onTranscriptionComplete?(self.transcribedText)
-                    }
-                }
+                self.finishStream()
                 return
             }
 
@@ -281,11 +283,7 @@ public final class SWVolcEngineASRService: @unchecked Sendable {
 
             if isComplete {
                 self.isConnected = false
-                DispatchQueue.main.async {
-                    if !self.transcribedText.isEmpty {
-                        self.onTranscriptionComplete?(self.transcribedText)
-                    }
-                }
+                self.finishStream()
             } else {
                 self.startReceivingFrames()
             }
@@ -341,11 +339,7 @@ public final class SWVolcEngineASRService: @unchecked Sendable {
                 handleServerResponse(payload)
             case 0x08:
                 isConnected = false
-                DispatchQueue.main.async {
-                    if !self.transcribedText.isEmpty {
-                        self.onTranscriptionComplete?(self.transcribedText)
-                    }
-                }
+                finishStream()
             case 0x09:
                 sendPong(payload)
             default:
@@ -355,6 +349,21 @@ public final class SWVolcEngineASRService: @unchecked Sendable {
 
         if offset > 0 {
             receiveBuffer.removeFirst(offset)
+        }
+    }
+
+    /// Report the end of the stream once, even when nothing was recognized,
+    /// so the caller can always leave its "transcribing" state
+    private func finishStream() {
+        DispatchQueue.main.async {
+            guard !self.hasFinishedStream else { return }
+            self.hasFinishedStream = true
+            // The connection is gone: if it ended while still recording, release the microphone
+            if self.isRecording {
+                self.isRecording = false
+                self.stopAudioEngine()
+            }
+            self.onTranscriptionComplete?(self.transcribedText)
         }
     }
 
@@ -595,10 +604,18 @@ public final class SWVolcEngineASRService: @unchecked Sendable {
     }
 
     private func stopAudioEngine() {
+        let wasRunning = audioEngine != nil
         audioEngine?.inputNode.removeTap(onBus: 0)
         audioEngine?.stop()
         audioEngine = nil
         audioConverter = nil
+
+        #if os(iOS)
+        // Hand the audio session back so audio from other apps (e.g. music) can resume
+        if wasRunning {
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        }
+        #endif
     }
 
     private func convertBuffer(_ buffer: AVAudioPCMBuffer) -> Data? {

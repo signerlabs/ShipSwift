@@ -43,7 +43,7 @@
 //      - color: Color     // Ring color
 //
 //  Parameters:
-//    - data: [DataPoint]              -- Array of ring data (first element is the outermost ring)
+//    - data: [DataPoint]              -- Array of ring data (first element is the innermost ring)
 //    - maxValue: Double               -- Maximum value for the ring scale (default 100)
 //    - size: CGFloat                  -- Overall chart size (default 250)
 //    - ringWidth: CGFloat             -- Width of each ring stroke (default 25)
@@ -51,7 +51,11 @@
 //    - center: () -> Center           -- Optional center content (default EmptyView)
 //
 //  Notes:
-//    - Appear animation is easeOut 1.2 seconds, triggered after a 0.2 second delay
+//    - Appear animation is easeOut 1.2 seconds, triggered after a 0.2 second delay;
+//      later value changes animate the same way
+//    - Rings are drawn inside `size` (strokes are inset by half the ring width)
+//    - Round caps are pulled in so each arc's ends match its value exactly;
+//      a full ring (value >= maxValue) is drawn without caps
 //
 //  Created by Wei Zhong on 3/1/26.
 //
@@ -71,7 +75,7 @@ struct SWRingChart<Center: View>: View {
 
     // MARK: - Properties
 
-    /// Array of ring data (first element is the outermost ring)
+    /// Array of ring data (first element is the innermost ring)
     let data: [DataPoint]
 
     /// Maximum value for the ring scale
@@ -89,7 +93,7 @@ struct SWRingChart<Center: View>: View {
     /// Optional center content
     @ViewBuilder let center: () -> Center
 
-    @State private var animatedValues: [Double]
+    @State private var hasAppeared = false
 
     // MARK: - Initializer
 
@@ -115,7 +119,6 @@ struct SWRingChart<Center: View>: View {
         self.ringWidth = ringWidth
         self.spacing = spacing
         self.center = center
-        self._animatedValues = State(initialValue: Array(repeating: 0, count: data.count))
     }
 
     // MARK: - Body
@@ -124,27 +127,25 @@ struct SWRingChart<Center: View>: View {
         VStack {
             // Nested rings
             ZStack {
-                ForEach(Array(data.enumerated()), id: \.element.id) { index, item in
+                // Rings are keyed by position: `DataPoint.id` is a fresh UUID whenever
+                // the caller rebuilds the array, which would tear the rings down
+                ForEach(Array(data.enumerated()), id: \.offset) { index, item in
                     let ringIndex = CGFloat(data.count - 1 - index)
                     let ringSize = size - ringIndex * (ringWidth + spacing) * 2
 
                     // Background ring (light color)
                     Circle()
-                        .stroke(
-                            item.color.opacity(0.15),
-                            style: StrokeStyle(lineWidth: ringWidth, lineCap: .round)
-                        )
+                        .strokeBorder(item.color.opacity(0.15), lineWidth: ringWidth)
                         .frame(width: ringSize, height: ringSize)
 
                     // Progress ring
-                    Circle()
-                        .trim(from: 0, to: animatedValues[index] / maxValue)
-                        .stroke(
-                            item.color,
-                            style: StrokeStyle(lineWidth: ringWidth, lineCap: .round)
-                        )
-                        .rotationEffect(.degrees(-90))
-                        .frame(width: ringSize, height: ringSize)
+                    ProgressArc(
+                        progress: hasAppeared ? item.value / maxValue : 0,
+                        lineWidth: ringWidth
+                    )
+                    .fill(item.color)
+                    .frame(width: ringSize, height: ringSize)
+                    .animation(.easeOut(duration: 1.2), value: item.value)
                 }
 
                 center()
@@ -165,14 +166,47 @@ struct SWRingChart<Center: View>: View {
         }
         .onAppear {
             withAnimation(.easeOut(duration: 1.2).delay(0.2)) {
-                for i in data.indices {
-                    animatedValues[i] = data[i].value
-                }
+                hasAppeared = true
             }
         }
     }
 
     // MARK: - Private Components
+
+    /// Progress arc starting at 12 o'clock. Round caps stick out half a line width past
+    /// each end of a trimmed path, so both ends are pulled in by that much and the arc's
+    /// outer edge matches the progress. A full ring is drawn without caps (no seam).
+    /// The path is inset by half the line width so the stroke stays inside the frame.
+    private struct ProgressArc: Shape {
+        var progress: Double
+        var lineWidth: CGFloat
+
+        nonisolated var animatableData: Double {
+            get { progress }
+            set { progress = newValue }
+        }
+
+        nonisolated func path(in rect: CGRect) -> Path {
+            guard progress > 0 else { return Path() }
+            let radius = max(min(rect.width, rect.height) / 2 - lineWidth / 2, 0.5)
+            let circle = Path { path in
+                path.addArc(
+                    center: CGPoint(x: rect.midX, y: rect.midY),
+                    radius: radius,
+                    startAngle: .degrees(-90),
+                    endAngle: .degrees(270),
+                    clockwise: false
+                )
+            }
+            if progress >= 1 {
+                return circle.strokedPath(StrokeStyle(lineWidth: lineWidth))
+            }
+            let cap = Double(lineWidth / 2 / (2 * .pi * radius))
+            return circle
+                .trimmedPath(from: cap, to: max(cap + 0.001, progress - cap))
+                .strokedPath(StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+        }
+    }
 
     /// Text label with bullet point
     private struct BulletPointText<Content: View>: View {

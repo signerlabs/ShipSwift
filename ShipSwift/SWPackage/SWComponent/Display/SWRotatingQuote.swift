@@ -53,37 +53,37 @@ import SwiftUI
 
 /// A component that rotates through multiple quote texts, supporting custom author and rotation interval
 struct SWRotatingQuote: View {
-    
+
     // MARK: - Configuration
-    
+
     /// Array of quote texts
     let quotes: [LocalizedStringResource]
-    
+
     /// Author name (displayed at bottom-right)
     let author: LocalizedStringResource
-    
+
     /// Text rotation interval (seconds)
     let interval: TimeInterval
-    
+
     /// Quote text font
     let quoteFont: Font
-    
+
     /// Author font
     let authorFont: Font
-    
+
     /// Font design
     let fontDesign: Font.Design
-    
+
     /// Text color
     let foregroundStyle: Color
-    
+
     // MARK: - State
-    
+
     @State private var currentTextIndex = 0
     @State private var textRotationTimer: Timer?
-    
+
     // MARK: - Initializer
-    
+
     /// Creates a rotating quote text component
     /// - Parameters:
     ///   - quotes: Array of quote texts (at least 1 required)
@@ -110,9 +110,9 @@ struct SWRotatingQuote: View {
         self.fontDesign = fontDesign
         self.foregroundStyle = foregroundStyle
     }
-    
+
     // MARK: - Body
-    
+
     var body: some View {
         ZStack {
             // Hidden placeholder text using the longest quote to determine height
@@ -120,29 +120,30 @@ struct SWRotatingQuote: View {
                 Text(longestQuote)
                     .font(quoteFont)
                     .contentTransition(.numericText())
-                
+
                 Spacer()
-                
+
                 HStack {
                     Spacer()
-                    
+
                     Text(author)
                         .font(authorFont)
                 }
             }
             .opacity(0)
-            
+            .accessibilityHidden(true)
+
             // Actual displayed content
             VStack(alignment: .leading) {
-                Text(quotes[safe: currentTextIndex] ?? quotes[0])
+                Text(quotes[safe: currentTextIndex] ?? quotes.first ?? "")
                     .font(quoteFont)
                     .contentTransition(.numericText())
-                
+
                 Spacer()
-                
+
                 HStack {
                     Spacer()
-                    
+
                     Text(author)
                         .font(authorFont)
                 }
@@ -153,25 +154,25 @@ struct SWRotatingQuote: View {
         .onAppear { startTextRotation() }
         .onDisappear { stopTextRotation() }
     }
-    
+
     // MARK: - Helper Properties
-    
+
     /// Find the longest quote text (used for placeholder)
     private var longestQuote: LocalizedStringResource {
         quotes.max { quote1, quote2 in
             String(localized: quote1).count < String(localized: quote2).count
-        } ?? quotes[0]
+        } ?? ""
     }
-    
+
     // MARK: - Timer Management
-    
+
     private func startTextRotation() {
         // No rotation needed if there is only one quote
         guard quotes.count > 1 else { return }
-        
+
         // Invalidate any previous timer
         textRotationTimer?.invalidate()
-        
+
         textRotationTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { _ in
             Task { @MainActor in
                 withAnimation {
@@ -181,7 +182,7 @@ struct SWRotatingQuote: View {
             }
         }
     }
-    
+
     private func stopTextRotation() {
         textRotationTimer?.invalidate()
         textRotationTimer = nil
@@ -211,9 +212,9 @@ private extension Array {
                 author: "Kobe Bryant"
             )
             .frame(height: 200)
-            
+
             Divider()
-            
+
             // Single quote (no rotation)
             SWRotatingQuote(
                 quotes: [
@@ -224,11 +225,11 @@ private extension Array {
                 authorFont: .title2
             )
             .frame(height: 200)
-            
+
             Divider()
-            
+
             // Custom style
-            
+
             SWRotatingQuote(
                 quotes: [
                     "The only way to do great work is to love what you do.",

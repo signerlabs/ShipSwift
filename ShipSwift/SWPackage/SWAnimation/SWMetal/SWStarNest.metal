@@ -73,7 +73,8 @@ static float3 swStarNestMod(float3 x, float3 y) {
 
     // Camera orientation. The original drives a1/a2 from the mouse; here they
     // are the caller-supplied `angleX` / `angleY` so the look is reproducible
-    // and tunable. The +0.5 / +0.8 base matches Star Nest's neutral framing.
+    // and tunable. Their defaults (0.5 / 0.8) are Star Nest's `.5 + mouse` /
+    // `.8 + mouse` base with the mouse at the origin — its neutral framing.
     float a1 = angleX;
     float a2 = angleY;
 

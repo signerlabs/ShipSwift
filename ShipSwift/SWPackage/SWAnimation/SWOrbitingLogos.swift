@@ -166,7 +166,7 @@ private class SWOrbitingLogosScene: SKScene {
     private func buildCircles() {
         let circles = generateCircles()
         var angleOffset: CGFloat = 0
-        let step = Int(round(Double(dotsPerCircle) / Double(images.count)))
+        let step = max(1, Int(round(Double(dotsPerCircle) / Double(max(1, images.count)))))
 
         for (circleIndex, circle) in circles.enumerated() {
             for dotIndex in 0..<dotsPerCircle {
@@ -184,7 +184,8 @@ private class SWOrbitingLogosScene: SKScene {
                 dot.physicsBody?.isDynamic = true
                 dot.physicsBody?.affectedByGravity = false
 
-                if circleIndex == 0, dotIndex % step == 0 {
+                // Rounding `step` can yield more slots than images; extra slots stay plain dots.
+                if circleIndex == 0, dotIndex % step == 0, outerCircleDots.count < images.count {
                     placeIconOnOuterCircle(for: dot)
                     outerCircleDots.append(dot)
                 }
@@ -226,6 +227,7 @@ private class SWOrbitingLogosScene: SKScene {
     }
 
     private func animateNextIcon() {
+        guard !outerCircleDots.isEmpty else { return }
         let dot = outerCircleDots[nextIconIndex]
 
         dot.physicsBody = SKPhysicsBody(circleOfRadius: 10)
@@ -321,11 +323,15 @@ private class SWOrbitingLogosScene: SKScene {
             dot.fillColor = getColor(for: angle)
         }
 
-        outerCircleDots[nextIconIndex].zRotation = -container.zRotation
+        if !outerCircleDots.isEmpty {
+            outerCircleDots[nextIconIndex].zRotation = -container.zRotation
+        }
     }
 
     private func getColor(for angle: CGFloat) -> SKColor {
-        guard let startIndex = gradient.lastIndex(where: { $0.angle <= angle }) else { return .white }
+        guard let found = gradient.lastIndex(where: { $0.angle <= angle }) else { return .white }
+        // An angle of exactly 2π matches the last stop; interpolate from the segment before it.
+        let startIndex = min(found, gradient.count - 2)
 
         let start = gradient[startIndex]
         let end = gradient[startIndex + 1]

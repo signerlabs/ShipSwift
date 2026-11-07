@@ -17,9 +17,9 @@
 //  `Shader`/`ShaderFunction`, Metal `stitchable`).
 //
 //  Usage:
-//    // Default — polished metal, internal animation only
+//    // Default — polished metal, still until tilted
 //    SWPolishedAluminum {
-//        Image("messi").resizable().scaledToFill()
+//        Image("photo").resizable().scaledToFill()
 //    }
 //
 //    // Tilt-driven from a DragGesture
@@ -34,13 +34,15 @@
 //            usually drag-driven (default `.zero`).
 //    - intensity: Blend of the metal finish over the source in `0...1`
 //                 (default `0.85`).
-//    - speed: Multiplier on the internal animation time (default `1.0`).
+//    - speed: Kept for API symmetry with the foil family; the finish has
+//             no time-driven motion, so it has no visible effect
+//             (default `1.0`).
 //    - showsControls: Attach a gear `ToolbarItem` that opens a live-tuning
 //                     sheet (default `false`).
 //
-//  Note: `time` is wired through for API symmetry with the foil family;
-//  the metal finish is driven mainly by `tilt`, so it reads as a still,
-//  reflective surface that comes alive on drag.
+//  Note: the shader's `time` argument is unused — the metal finish is
+//  driven entirely by `tilt`, so it reads as a still, reflective surface
+//  that comes alive on drag (and costs nothing while still).
 //
 
 import SwiftUI
@@ -54,7 +56,8 @@ struct SWPolishedAluminum<Content: View>: View {
     /// Blend of the metal finish over the source in 0...1.
     var intensity: Float = 0.85
 
-    /// Multiplier on the internal animation time.
+    /// Kept for API symmetry with the foil family; the finish has no
+    /// time-driven motion, so it has no visible effect.
     var speed: Float = 1.0
 
     /// When `true`, attaches a gear `ToolbarItem` that opens a live-tuning sheet.
@@ -91,21 +94,19 @@ private struct SWPolishedAluminumRenderer<Content: View>: View {
     let initial: SWPolishedAluminum<Content>
     let content: Content
 
-    @State private var start: Date = .now
-
     var body: some View {
-        TimelineView(.animation) { ctx in
-            let elapsed = Float(ctx.date.timeIntervalSince(start)) * initial.speed
-            content.layerEffect(
-                ShaderLibrary.swPolishedAluminum(
-                    .boundingRect,
-                    .float2(Float(initial.tilt.width), Float(initial.tilt.height)),
-                    .float(elapsed),
-                    .float(initial.intensity)
-                ),
-                maxSampleOffset: .zero
-            )
-        }
+        // The finish is driven by `tilt` alone (the shader's `time` argument
+        // is unused), so there is no `TimelineView` — the effect re-renders
+        // only when `tilt` / `intensity` change.
+        content.layerEffect(
+            ShaderLibrary.swPolishedAluminum(
+                .boundingRect,
+                .float2(Float(initial.tilt.width), Float(initial.tilt.height)),
+                .float(0),
+                .float(initial.intensity)
+            ),
+            maxSampleOffset: .zero
+        )
     }
 }
 
@@ -152,8 +153,7 @@ private struct SWPolishedAluminumControlled<Content: View>: View {
             SWPolishedAluminumControlsSheet(
                 tiltX: $tiltX,
                 tiltY: $tiltY,
-                intensity: $intensity,
-                speed: $speed
+                intensity: $intensity
             )
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
@@ -167,7 +167,6 @@ private struct SWPolishedAluminumControlsSheet: View {
     @Binding var tiltX: Float
     @Binding var tiltY: Float
     @Binding var intensity: Float
-    @Binding var speed: Float
 
     @Environment(\.dismiss) private var dismiss
 
@@ -180,9 +179,6 @@ private struct SWPolishedAluminumControlsSheet: View {
                 }
                 Section("Metal") {
                     SWPolishedAluminumSliderRow(label: "Intensity", value: $intensity, range: 0...1, step: 0.01)
-                }
-                Section("Motion") {
-                    SWPolishedAluminumSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Polished Aluminum")

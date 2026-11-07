@@ -130,7 +130,6 @@ struct SWTypewriterText: View {
     @State private var currentIndex = 0
     @State private var isDeleting = false
     @State private var charStates: [SWTypewriterTextCharState] = []
-    @State private var isActive = false
 
     var body: some View {
         HStack(spacing: 0) {
@@ -148,16 +147,14 @@ struct SWTypewriterText: View {
             Text("|")
                 .foregroundStyle(.clear)
         }
-        .onAppear {
-            isActive = true
+        // Restarts from the first text on appear and whenever `texts`
+        // changes; cancelled automatically when the view disappears.
+        .task(id: texts) {
             displayedText = ""
             charStates = []
             currentIndex = 0
             isDeleting = false
-            startTyping()
-        }
-        .onDisappear {
-            isActive = false
+            await runTypingLoop()
         }
     }
 
@@ -224,56 +221,47 @@ struct SWTypewriterText: View {
 
     // MARK: - Typing Logic
 
-    private func startTyping() {
-        guard !texts.isEmpty, isActive else { return }
-        typeNextCharacter()
-    }
+    private func runTypingLoop() async {
+        guard !texts.isEmpty else { return }
 
-    private func typeNextCharacter() {
-        guard isActive else { return }
+        while !Task.isCancelled {
+            let currentText = texts[currentIndex]
 
-        let currentText = texts[currentIndex]
-
-        if isDeleting {
-            if charStates.isEmpty {
-                // All characters deleted, switch to next text
-                isDeleting = false
-                displayedText = ""
-                currentIndex = (currentIndex + 1) % texts.count
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
-                    guard isActive else { return }
-                    typeNextCharacter()
+            if isDeleting {
+                if charStates.isEmpty {
+                    // All characters deleted, switch to next text
+                    isDeleting = false
+                    displayedText = ""
+                    currentIndex = (currentIndex + 1) % texts.count
+                    guard await pause(0.3) else { return }
+                } else {
+                    // Remove last character
+                    guard await pause(deletingSpeed) else { return }
+                    charStates.removeLast()
+                    displayedText = String(displayedText.dropLast())
                 }
-            } else {
-                // Remove last character
-                DispatchQueue.main.asyncAfter(deadline: .now() + deletingSpeed) { [self] in
-                    guard isActive else { return }
-                    if !charStates.isEmpty {
-                        _ = charStates.removeLast()
-                        displayedText = String(displayedText.dropLast())
-                    }
-                    typeNextCharacter()
-                }
-            }
-        } else {
-            if displayedText.count < currentText.count {
+            } else if displayedText.count < currentText.count {
                 let charIndex = currentText.index(currentText.startIndex, offsetBy: displayedText.count)
                 let newChar = currentText[charIndex]
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + typingSpeed) { [self] in
-                    guard isActive else { return }
-                    displayedText.append(newChar)
-                    charStates.append(SWTypewriterTextCharState(character: String(newChar)))
-                    typeNextCharacter()
-                }
+                guard await pause(typingSpeed) else { return }
+                displayedText.append(newChar)
+                charStates.append(SWTypewriterTextCharState(character: String(newChar)))
             } else {
                 // Typing complete, wait before deleting
-                DispatchQueue.main.asyncAfter(deadline: .now() + pauseDuration) { [self] in
-                    guard isActive else { return }
-                    isDeleting = true
-                    typeNextCharacter()
-                }
+                guard await pause(pauseDuration) else { return }
+                isDeleting = true
             }
+        }
+    }
+
+    /// Sleeps for `seconds`; returns `false` once the task is cancelled.
+    private func pause(_ seconds: Double) async -> Bool {
+        do {
+            try await Task.sleep(for: .seconds(seconds))
+            return true
+        } catch {
+            return false
         }
     }
 }

@@ -7,13 +7,25 @@
 //  pinch-to-zoom gesture, and zoom slider.
 //
 //  Usage:
-//    // 1. Present as a sheet with a @Binding UIImage
+//    // 1. Push it, or present it inside a NavigationStack that provides
+//    //    a close button (the view has no close button of its own)
 //    @State private var capturedImage: UIImage?
 //    @State private var showCamera = false
 //
+//    NavigationLink("Take Photo") {
+//        SWCameraView(image: $capturedImage)
+//    }
+//
 //    Button("Take Photo") { showCamera = true }
 //    .fullScreenCover(isPresented: $showCamera) {
-//        SWCameraView(image: $capturedImage)
+//        NavigationStack {
+//            SWCameraView(image: $capturedImage)
+//                .toolbar {
+//                    ToolbarItem(placement: .cancellationAction) {
+//                        Button("Close") { showCamera = false }
+//                    }
+//                }
+//        }
 //    }
 //
 //    // 2. The view auto-dismisses after capture or photo selection.
@@ -25,7 +37,6 @@
 //    //    - PhotosPicker for selecting from photo library
 //    //    - Pinch-to-zoom gesture and zoom slider
 //    //    - Front/back camera switching
-//    //    - Close button (top-left corner)
 //    //    - Unauthorized state with "Open Settings" button
 //
 //    // 4. Errors are shown via SWAlertManager.shared

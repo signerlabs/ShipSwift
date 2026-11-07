@@ -195,7 +195,9 @@ public struct SWWallet: View {
             //    front-largest / back-smallest ladder when revealed. The front
             //    card (largest index) is full size and sits lowest; cards further
             //    back shrink and rise, so a back card never covers the one in front.
-            ForEach(Array(cards.enumerated()), id: \.element.id) { index, card in
+            //    Keyed by position: `SWWalletCard.id` is a fresh UUID per instance,
+            //    so cards rebuilt by the caller would otherwise restart their views.
+            ForEach(Array(cards.enumerated()), id: \.offset) { index, card in
                 cardView(card)
                     .scaleEffect(cardScale(index), anchor: .top)
                     .offset(y: cardOffsetY(index))
@@ -329,6 +331,7 @@ public struct SWWallet: View {
                         .background(.white.opacity(0.12), in: Circle())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(isRevealed ? "Hide Balances" : "Show Balances")
                 .padding(.bottom, 14)
             }
             .padding(.horizontal, 20)

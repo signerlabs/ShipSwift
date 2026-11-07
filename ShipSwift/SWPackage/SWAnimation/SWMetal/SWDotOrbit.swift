@@ -244,15 +244,15 @@ private struct SWDotOrbitControlsSheet: View {
                 }
 
                 Section("Dots") {
-                    SliderRow(label: "Density",    value: $scale,         range: 0.5...10, step: 0.1)
-                    SliderRow(label: "Size",       value: $size,          range: 0...1,    step: 0.01)
-                    SliderRow(label: "Size Range", value: $sizeRange,     range: 0...1,    step: 0.01)
-                    SliderRow(label: "Spreading",  value: $spreading,     range: 0...1,    step: 0.01)
-                    SliderRow(label: "Steps",      value: $stepsPerColor, range: 1...4,    step: 1)
+                    SWDotOrbitSliderRow(label: "Density",    value: $scale,         range: 0.5...10, step: 0.1)
+                    SWDotOrbitSliderRow(label: "Size",       value: $size,          range: 0...1,    step: 0.01)
+                    SWDotOrbitSliderRow(label: "Size Range", value: $sizeRange,     range: 0...1,    step: 0.01)
+                    SWDotOrbitSliderRow(label: "Spreading",  value: $spreading,     range: 0...1,    step: 0.01)
+                    SWDotOrbitSliderRow(label: "Steps",      value: $stepsPerColor, range: 1...4,    step: 1)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWDotOrbitSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Dot Orbit")
@@ -268,7 +268,7 @@ private struct SWDotOrbitControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWDotOrbitSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

@@ -11,7 +11,7 @@
 //    // SF Symbol
 //    SWShakingIcon(image: Image(systemName: "bell.fill"))
 //
-//    // Asset image (automatically gets corner radius)
+//    // Asset image with rounded corners
 //    SWShakingIcon(image: Image(.myLogo), height: 100, cornerRadius: 16)
 //
 //    // Custom timing
@@ -89,7 +89,6 @@ struct SWShakingIcon: View {
             }
         }
     }
-
 }
 
 // MARK: - Preview

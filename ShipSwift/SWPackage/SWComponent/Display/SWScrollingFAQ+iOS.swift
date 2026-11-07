@@ -141,6 +141,10 @@ struct SWScrollingFAQ: View {
 
         func makeCoordinator() -> Coordinator { Coordinator() }
 
+        static func dismantleUIView(_ uiView: UIScrollView, coordinator: Coordinator) {
+            coordinator.stop()
+        }
+
         class Coordinator {
             weak var scrollView: UIScrollView?
             weak var stackView: UIStackView?
@@ -164,14 +168,23 @@ struct SWScrollingFAQ: View {
                 scrollView.contentOffset.x = unitWidth
 
                 started = true
-                displayLink = CADisplayLink(target: self, selector: #selector(tick))
+                displayLink = CADisplayLink(target: self, selector: #selector(tick(_:)))
                 displayLink?.add(to: .main, forMode: .common)
             }
 
-            @objc private func tick() {
+            /// The display link retains its target, so `deinit` alone would never
+            /// run; SwiftUI calls this from `dismantleUIView` when the row goes away.
+            func stop() {
+                displayLink?.invalidate()
+                displayLink = nil
+                started = false
+            }
+
+            @objc private func tick(_ link: CADisplayLink) {
                 guard let scrollView, unitWidth > 0 else { return }
 
-                let speed: CGFloat = 30 / 60.0
+                // 30 pt/s at any refresh rate (60 Hz, or 120 Hz on ProMotion)
+                let speed = 30 * CGFloat(link.targetTimestamp - link.timestamp)
                 var x = scrollView.contentOffset.x
 
                 if direction == .left {

@@ -278,19 +278,19 @@ private struct SWLiquidChromeControlsSheet: View {
                 }
 
                 Section("Surface") {
-                    SliderRow(label: "Scale",    value: $scale,    range: 0.2...5, step: 0.05)
-                    SliderRow(label: "Warp",     value: $warp,     range: 0...5,   step: 0.05)
-                    SliderRow(label: "Contrast", value: $contrast, range: 0.1...3, step: 0.05)
+                    SWLiquidChromeSliderRow(label: "Scale",    value: $scale,    range: 0.2...5, step: 0.05)
+                    SWLiquidChromeSliderRow(label: "Warp",     value: $warp,     range: 0...5,   step: 0.05)
+                    SWLiquidChromeSliderRow(label: "Contrast", value: $contrast, range: 0.1...3, step: 0.05)
                 }
 
                 Section("Lighting") {
-                    SliderRow(label: "Spec Power",    value: $specPower,    range: 1...50, step: 0.5)
-                    SliderRow(label: "Spec Strength", value: $specStrength, range: 0...2,  step: 0.05)
-                    SliderRow(label: "Tint Strength", value: $tintStrength, range: 0...2,  step: 0.05)
+                    SWLiquidChromeSliderRow(label: "Spec Power",    value: $specPower,    range: 1...50, step: 0.5)
+                    SWLiquidChromeSliderRow(label: "Spec Strength", value: $specStrength, range: 0...2,  step: 0.05)
+                    SWLiquidChromeSliderRow(label: "Tint Strength", value: $tintStrength, range: 0...2,  step: 0.05)
                 }
 
                 Section("Motion") {
-                    SliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
+                    SWLiquidChromeSliderRow(label: "Speed", value: $speed, range: 0...3, step: 0.05)
                 }
             }
             .navigationTitle("Liquid Chrome")
@@ -306,7 +306,7 @@ private struct SWLiquidChromeControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWLiquidChromeSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>

@@ -97,7 +97,7 @@ struct SWAddSheet: View {
 
         var body: some View {
             TextField(placeHolderText, text: $text, axis: .vertical)
-                .lineLimit(minLines...5)
+                .lineLimit(minLines...max(minLines, 5))
                 .focused($isFocused)
                 .padding()
                 .overlay(

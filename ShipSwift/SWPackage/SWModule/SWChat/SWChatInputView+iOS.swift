@@ -154,6 +154,11 @@ public struct SWChatInputView: View {
         )
         .padding(.horizontal)
         .padding(.vertical, 8)
+        .onDisappear {
+            // Release the microphone and the ASR connection when the input bar leaves the screen
+            asrService?.cancelRecording()
+            asrState = .idle
+        }
     }
 
     // MARK: - Input Area
@@ -255,6 +260,9 @@ public struct SWChatInputView: View {
         text = "" // Clear previous text
         asrState = .recording
 
+        // Close the previous session's connection before starting a new one
+        asrService?.cancelRecording()
+
         let service = SWVolcEngineASRService(config: asrConfig)
         asrService = service
 
@@ -277,6 +285,10 @@ public struct SWChatInputView: View {
         Task {
             do {
                 try await service.startRecording()
+                // The user may have tapped stop while the connection was still opening
+                if asrState != .recording {
+                    await service.stopRecording()
+                }
             } catch {
                 swDebugLog("[SWChatInput] Failed to start recording: \(error.localizedDescription)")
                 asrState = .idle

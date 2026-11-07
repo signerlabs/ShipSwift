@@ -311,8 +311,8 @@ private struct SWPlasmaControlled: View {
                         .font(.footnote.weight(.medium))
                         .foregroundStyle(.white.opacity(0.7))
                     HStack(spacing: 22) {
-                        PlasmaRingCircleButton(icon: "arrow.up") { makePlasma() }
-                        PlasmaRingPillButton(title: "Upgrade to Pro") { makePlasma() }
+                        SWPlasmaRingCircleButton(icon: "arrow.up") { makePlasma() }
+                        SWPlasmaRingPillButton(title: "Upgrade to Pro") { makePlasma() }
                     }
                 }
                 .padding(.vertical, 22)
@@ -380,9 +380,9 @@ private struct SWPlasmaControlsSheet: View {
                 }
 
                 Section("Field") {
-                    SliderRow(label: "Scale",      value: $scale,      range: 0.2...3, step: 0.05)
-                    SliderRow(label: "Intensity",  value: $intensity,  range: 0...2.5, step: 0.05)
-                    SliderRow(label: "Distortion", value: $distortion, range: 0...3,   step: 0.05)
+                    SWPlasmaSliderRow(label: "Scale",      value: $scale,      range: 0.2...3, step: 0.05)
+                    SWPlasmaSliderRow(label: "Intensity",  value: $intensity,  range: 0...2.5, step: 0.05)
+                    SWPlasmaSliderRow(label: "Distortion", value: $distortion, range: 0...3,   step: 0.05)
                 }
             }
             .navigationTitle("Plasma")
@@ -409,7 +409,7 @@ private struct SWPlasmaControlsSheet: View {
     }
 }
 
-private struct SliderRow: View {
+private struct SWPlasmaSliderRow: View {
     let label: String
     @Binding var value: Float
     let range: ClosedRange<Float>
@@ -432,10 +432,10 @@ private struct SliderRow: View {
 // MARK: - Button-Ring Demo Helpers
 
 /// Inset colors / sizes for the button-ring demo.
-private let plasmaButtonInk  = Color(red: 0.07, green: 0.07, blue: 0.08)
-private let plasmaRingWidth: CGFloat = 2.5
+private let swPlasmaButtonInk  = Color(red: 0.07, green: 0.07, blue: 0.08)
+private let swPlasmaRingWidth: CGFloat = 2.5
 
-private struct PlasmaRingCircleButton<Plasma: View>: View {
+private struct SWPlasmaRingCircleButton<Plasma: View>: View {
     let icon: String
     @ViewBuilder let plasma: () -> Plasma
 
@@ -444,8 +444,8 @@ private struct PlasmaRingCircleButton<Plasma: View>: View {
             plasma()
                 .clipShape(Circle())
             Circle()
-                .fill(plasmaButtonInk)
-                .padding(plasmaRingWidth)
+                .fill(swPlasmaButtonInk)
+                .padding(swPlasmaRingWidth)
             Image(systemName: icon)
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundStyle(.white)
@@ -454,7 +454,7 @@ private struct PlasmaRingCircleButton<Plasma: View>: View {
     }
 }
 
-private struct PlasmaRingPillButton<Plasma: View>: View {
+private struct SWPlasmaRingPillButton<Plasma: View>: View {
     let title: String
     @ViewBuilder let plasma: () -> Plasma
 
