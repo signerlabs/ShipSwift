@@ -6,7 +6,7 @@
 
 **AI-native SwiftUI component library — production-ready code that LLMs can use to build real apps.**
 
-[![Website](https://img.shields.io/badge/Website-shipswift.app-blue.svg)](https://www.shipswift.app/)
+[![Website](https://img.shields.io/badge/Website-shipswift.app-blue.svg)](https://shipswift.app)
 [![App Store](https://img.shields.io/badge/App_Store-Demo_App-black.svg)](https://apps.apple.com/us/app/shipswift-mcp-codebase/id6759209764)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Swift](https://img.shields.io/badge/Swift-5.0+-F05138.svg)](https://swift.org)
@@ -22,7 +22,7 @@
 
 One command gives your AI everything it needs — production-ready SwiftUI components, full-stack skills, and the context to build real apps without guessing.
 
-> **Browse every skill live at [shipswift.app](https://www.shipswift.app/)** — searchable catalog, copy-paste source, live previews.
+> **Browse every skill live at [shipswift.app/skills](https://shipswift.app/skills)** — searchable catalog, copy-paste source, live previews.
 
 Download the [Showcase App](https://apps.apple.com/us/app/shipswift-mcp-codebase/id6759209764) to preview every component on your device.
 
@@ -38,7 +38,7 @@ ShipSwift gets your AI 80% of the way. If you need the last 20% — your unique 
 
 Built on the same component library you see in this repo, so you keep ownership and can extend forever.
 
-**Get a quote:** [wei@signerlabs.com](mailto:wei@signerlabs.com) · [shipswift.app](https://www.shipswift.app/)
+**Get a quote:** [wei@signerlabs.com](mailto:wei@signerlabs.com) · [shipswift.app](https://shipswift.app)
 
 ## Quick Start
 
@@ -102,37 +102,37 @@ Select a simulator or device, then press **Cmd+R** to build and run.
 
 ### SWAnimation — Animation Components
 
-**SwiftUI animations:** Shimmer · TypewriterText · ShakingIcon · GlowSweep · LightSweep · ScanningOverlay · AnimatedMeshGradient · BeforeAfterSlider · OrbitingLogos · FullScreenButton · ChangeEffect · Confetti · Transition · ParticleTransition
+**SwiftUI animations:** [Shimmer](https://shipswift.app/skills/animation-shimmer) · [TypewriterText](https://shipswift.app/skills/animation-typewriter-text) · [ShakingIcon](https://shipswift.app/skills/animation-shaking-icon) · [GlowSweep](https://shipswift.app/skills/animation-glow-sweep) · [LightSweep](https://shipswift.app/skills/animation-light-sweep) · [ScanningOverlay](https://shipswift.app/skills/animation-scanning-overlay) · [AnimatedMeshGradient](https://shipswift.app/skills/animation-animated-mesh-gradient) · [BeforeAfterSlider](https://shipswift.app/skills/animation-before-after-slider) · [OrbitingLogos](https://shipswift.app/skills/animation-orbiting-logos) · [FullScreenButton](https://shipswift.app/skills/animation-full-screen-button) · [ChangeEffect](https://shipswift.app/skills/animation-change-effect) · [Confetti](https://shipswift.app/skills/animation-confetti) · [Transition](https://shipswift.app/skills/animation-transition) · [ParticleTransition](https://shipswift.app/skills/animation-particle-transition)
 
-**Canvas-rendered 3D:** DotSphere · CharSphere
+**Canvas-rendered 3D:** [DotSphere](https://shipswift.app/skills/dot-sphere) · [CharSphere](https://shipswift.app/skills/animation-char-sphere)
 
-**Metal-shader procedural backgrounds:** Dots · Starfield · FractalClouds · InkSmoke · LiquidChrome · Plasma · AnimatedLoop
+**Metal-shader procedural backgrounds:** [Dots](https://shipswift.app/skills/dots) · [Starfield](https://shipswift.app/skills/animation-starfield) · [FractalClouds](https://shipswift.app/skills/animation-fractal-clouds) · [InkSmoke](https://shipswift.app/skills/animation-ink-smoke) · [LiquidChrome](https://shipswift.app/skills/animation-liquid-chrome) · [Plasma](https://shipswift.app/skills/animation-plasma) · [AnimatedLoop](https://shipswift.app/skills/animation-animated-loop)
 
-**Metal-shader backgrounds:** Metaballs · Halftone · Water · LiquidMetal · NeuroNoise · DotOrbit · Voronoi · SimplexNoise · ColorPanels · SmokeRing · Swirl · StarNest · GrainGradient
+**Metal-shader backgrounds:** [Metaballs](https://shipswift.app/skills/metaballs) · [Halftone](https://shipswift.app/skills/animation-halftone) · [Water](https://shipswift.app/skills/animation-water) · [LiquidMetal](https://shipswift.app/skills/animation-liquid-metal) · [NeuroNoise](https://shipswift.app/skills/neuro-noise-simplex-noise) · [DotOrbit](https://shipswift.app/skills/dot-orbit-wallet) · [Voronoi](https://shipswift.app/skills/voronoi-swirl) · [SimplexNoise](https://shipswift.app/skills/neuro-noise-simplex-noise) · [ColorPanels](https://shipswift.app/skills/color-panels) · [SmokeRing](https://shipswift.app/skills/animation-smoke-ring) · [Swirl](https://shipswift.app/skills/voronoi-swirl) · [StarNest](https://shipswift.app/skills/star-nest) · [GrainGradient](https://shipswift.app/skills/animation-grain-gradient)
 
-**Metal-shader effects on any view:** Foil · Glitter · IntenseBling · PolishedAluminum · ChromaticGlass · Glass · GlassOrb · GlassLogo
+**Metal-shader effects on any view:** [Foil](https://shipswift.app/skills/animation-foil) · [Glitter](https://shipswift.app/skills/glitter) · [IntenseBling](https://shipswift.app/skills/animation-intense-bling) · [PolishedAluminum](https://shipswift.app/skills/animation-polished-aluminum) · [ChromaticGlass](https://shipswift.app/skills/animation-chromatic-glass) · [Glass](https://shipswift.app/skills/animation-glass) · [GlassOrb](https://shipswift.app/skills/animation-glass-orb) · [GlassLogo](https://shipswift.app/skills/glass-logo)
 
 44 animation components total — see the [Showcase App](https://apps.apple.com/us/app/shipswift-mcp-codebase/id6759209764) for live previews.
 
 ### SWChart — Chart Components
 
-LineChart · BarChart · AreaChart · DonutChart · RingChart · RadarChart · ScatterChart · ActivityHeatmap · NetworkGraph
+[LineChart](https://shipswift.app/skills/chart-line-chart) · [BarChart](https://shipswift.app/skills/chart-bar-chart) · [AreaChart](https://shipswift.app/skills/chart-area-chart) · [DonutChart](https://shipswift.app/skills/chart-donut-chart) · [RingChart](https://shipswift.app/skills/chart-ring-chart) · [RadarChart](https://shipswift.app/skills/chart-radar-chart) · [ScatterChart](https://shipswift.app/skills/chart-scatter-chart) · [ActivityHeatmap](https://shipswift.app/skills/chart-activity-heatmap) · [NetworkGraph](https://shipswift.app/skills/network-graph)
 
 ### SWComponent — UI Components
 
-**Display:** FloatingLabels · ScrollingFAQ · RotatingQuote · BulletPointText · GradientDivider · Label · MarkdownText · OnboardingView · OrderView · RootTabView · VideoPlayer · CachedImage · ImageThumbnail · KPICard · StatusBadge · Wallet
-**Feedback:** Alert · Loading · ThinkingIndicator
-**Input:** TabButton · Stepper · AddSheet · SearchBar
+**Display:** [FloatingLabels](https://shipswift.app/skills/component-floating-labels) · [ScrollingFAQ](https://shipswift.app/skills/component-scrolling-faq) · [RotatingQuote](https://shipswift.app/skills/component-rotating-quote) · [BulletPointText](https://shipswift.app/skills/component-bullet-point-text) · [GradientDivider](https://shipswift.app/skills/component-gradient-divider) · [Label](https://shipswift.app/skills/component-label) · [MarkdownText](https://shipswift.app/skills/component-markdown-text) · [OnboardingView](https://shipswift.app/skills/onboarding-view) · [OrderView](https://shipswift.app/skills/component-order-view) · [RootTabView](https://shipswift.app/skills/component-root-tab-view) · [VideoPlayer](https://shipswift.app/skills/component-video-player) · [CachedImage](https://shipswift.app/skills/component-cached-image) · [ImageThumbnail](https://shipswift.app/skills/component-image-thumbnail) · [KPICard](https://shipswift.app/skills/component-kpi-card) · [StatusBadge](https://shipswift.app/skills/component-status-badge) · [Wallet](https://shipswift.app/skills/dot-orbit-wallet)
+**Feedback:** [Alert](https://shipswift.app/skills/component-alert) · [Loading](https://shipswift.app/skills/component-loading) · [ThinkingIndicator](https://shipswift.app/skills/component-thinking-indicator)
+**Input:** [TabButton](https://shipswift.app/skills/component-tab-button) · [Stepper](https://shipswift.app/skills/component-stepper) · [AddSheet](https://shipswift.app/skills/component-add-sheet) · [SearchBar](https://shipswift.app/skills/component-search-bar)
 
 ### SWModule — Multi-File Frameworks
 
-- **SWAuth** — User authentication (Amplify/Cognito, social login, email/password, phone sign-in with country code picker)
-- **SWCamera** — Camera capture with viewfinder, zoom, photo picker, and face detection with Vision landmark tracking
-- **SWPaywall** — Subscription paywall using StoreKit 2 — *iOS client included free. Full-stack skill (backend + compliance + pitfalls) → [Pro](https://shipswift.app/#pricing)*
-- **SWChat** — All-in-one chat view with message list, text input, and optional voice recognition (VolcEngine ASR)
-- **SWSetting** — Settings page template with language switch, share, legal links, recommended apps
-- **SWSubjectLifting** — Background removal using VisionKit ImageAnalysis
-- **SWTikTokTracking** — TikTok Events API integration for attribution tracking — *iOS client included free. Full-stack skill (backend + compliance + pitfalls) → [Pro](https://shipswift.app/#pricing)*
+- **[SWAuth](https://shipswift.app/skills/auth-cognito)** — User authentication (Amplify/Cognito, social login, email/password, phone sign-in with country code picker)
+- **[SWCamera](https://shipswift.app/skills/camera)** — Camera capture with viewfinder, zoom, photo picker, and face detection with Vision landmark tracking
+- **[SWPaywall](https://shipswift.app/skills/subscription-storekit)** — Subscription paywall using StoreKit 2 — *iOS client included free. Full-stack skill (backend + compliance + pitfalls) → [Pro](https://shipswift.app/#pricing)*
+- **[SWChat](https://shipswift.app/skills/chat)** — All-in-one chat view with message list, text input, and optional voice recognition (VolcEngine ASR)
+- **[SWSetting](https://shipswift.app/skills/setting)** — Settings page template with language switch, share, legal links, recommended apps
+- **[SWSubjectLifting](https://shipswift.app/skills/subject-lifting)** — Background removal using VisionKit ImageAnalysis
+- **[SWTikTokTracking](https://shipswift.app/skills/tiktok-tracking)** — TikTok Events API integration for attribution tracking — *iOS client included free. Full-stack skill (backend + compliance + pitfalls) → [Pro](https://shipswift.app/#pricing)*
 
 ### SWUtil — Shared Utilities
 
